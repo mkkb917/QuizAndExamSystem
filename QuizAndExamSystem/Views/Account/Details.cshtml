@@ -1,0 +1,49 @@
+﻿@model ExamSystem.Models.ApplicationUser
+
+@{
+    ViewData["Title"] = "Account Details";
+    Layout = null;
+}
+
+<div class="row">
+    <div class="col-md-8 offset-2">
+        <div class="row">
+            <h4>Account</h4>
+            <hr />
+            <dl class="row">
+                <dt class="col-md-8">
+                    @Html.DisplayNameFor(model => model.Email)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Email)
+                </dd>
+@*                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.FirstName)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.FirstName)
+                </dd>*@
+@*                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.LastName)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.LastName)
+                </dd>*@
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.AccessFailedCount)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.AccessFailedCount)
+                </dd>
+               
+            </dl>
+        </div>
+        <div class="row">
+            <a class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@Model?.Id"> <i class="bi bi-pencil-square"></i> edit</a> |
+
+            <a class="btn btn-outline-info" asp-action="AllUsers"> <i class="bi bi-arrow"></i> Back to List</a>
+        </div>
+    </div>
+</div>
+
+

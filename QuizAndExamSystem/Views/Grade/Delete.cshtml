@@ -1,0 +1,71 @@
+﻿@model Grade
+
+@{
+    ViewData["Title"] = "Edit a Grade";
+    Layout = "_DashboardLayout";
+}
+
+<div class="container">
+    <h2 style="text-align:center; color:red;">Delete Class</h2>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <form asp-controller="Grade" asp-action="Delete">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="@Model.Id" />
+                <button type="submit" value="Delete" class="btn btn-success float-right"> <i class="fas fa-trash"></i> Delete </button>
+                <a class="btn btn-secondary" asp-action="Index"> <i class="fas fa-arrow-left"></i> Back</a>
+            </form>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive">
+                <div class="form-group">
+                    <label asp-for="Code" class="control-label"></label>
+                    <input asp-for="Code" class="form-control" disabled="disabled" />
+                    <span asp-validation-for="Code" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="GradeText" class="control-label"></label>
+                    <input asp-for="GradeText" class="form-control" disabled="disabled" />
+                    <span asp-validation-for="GradeText" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Status" class="control-label"></label>
+                    <input asp-for="Status" class="form-control" disabled="disabled" />
+                    <span asp-validation-for="Status" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CreatedOn" class="control-label"></label>
+                    <input asp-for="CreatedOn" class="form-control" disabled="disabled" />
+                    <span asp-validation-for="CreatedOn" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CreatedBy" class="control-label"></label>
+                    <input asp-for="CreatedBy" class="form-control" disabled="disabled" />
+                    <span asp-validation-for="CreatedBy" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="UpdatedOn" class="control-label"></label>
+                    <input asp-for="UpdatedOn" class="form-control" disabled="disabled" />
+                    <span asp-validation-for="UpdatedOn" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="UpdatedBy" class="control-label"></label>
+                    <input asp-for="UpdatedBy" class="form-control" disabled="disabled" />
+                    <span asp-validation-for="UpdatedBy" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <form asp-controller="Grade" asp-action="Delete">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="@Model.Id" />
+                        <button type="submit" value="Delete" class="btn btn-outline-success float-right" ><i class="fas fa-trash"></i> </button>
+                        <a class="btn btn-outline-secondary" asp-action="Index"><i class="fas fa-arrow-left"></i> Back</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+</div>

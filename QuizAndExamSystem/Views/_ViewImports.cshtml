@@ -1,0 +1,11 @@
+﻿@using ExamSystem
+@using ExamSystem.Models
+@using ExamSystem.Data.Base
+@using ExamSystem.Data.Services
+@using Microsoft.AspNetCore.Identity
+@using ExamSystem.Data.ViewModels
+@using ExamSystem.Data.Static
+@using AspNetCore.ReCaptcha
+@inject UserManager<ApplicationUser> userManager;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, Griesoft.AspNetCore.ReCaptcha

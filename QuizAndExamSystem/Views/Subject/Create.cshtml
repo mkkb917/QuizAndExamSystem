@@ -1,0 +1,100 @@
+﻿@model SubjectsVM
+@inject UserManager<ApplicationUser> userManager;
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Create New Subject</h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive">
+                <form asp-action="Create">
+                    <table id="tblData" class="table table-bordered table-hover">
+                        <div class="form-group">
+                            @*<input type="submit" value="Create" class="btn btn-primary float-right" />*@
+                            <button type="submit" class="btn btn-success float-right"><i class="fas fa-floppy-disk"></i> Save</button>
+                            @if (TempData["GradeId"] != null)
+                            {
+                                <a asp-action="SubjectsList" asp-route-id="@TempData["GradeId"]" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Back</a>
+                            }
+                            else
+                            {
+                                <a asp-action="Index" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+                            }
+                        </div>
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input asp-for="user" type="hidden" value="@User.Identity.Name" />
+                        <div class="form-group">
+                            <label asp-for="GradeId" class="control-label"></label>
+                            @{
+                                if (TempData["GradeId"] != null)
+                                {
+                                    <input asp-for="GradeId" value="@TempData["GradeId"]" class="form-control" readonly="readonly" />
+                                }
+                                else
+                                {
+                                    <select asp-for="GradeId" class="form-control" asp-items="ViewBag.Grades"></select>
+                                }
+                            }
+
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Code" class="control-label"></label>
+                            <input asp-for="Code" class="form-control" />
+                            <span asp-validation-for="Code" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="SubjectText" class="control-label"></label>
+                            <input asp-for="SubjectText" class="form-control" />
+                            <span asp-validation-for="SubjectText" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Status" class="control-label"></label>
+                            @{
+                                if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                                {
+                                    <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()"><option value="">---Select---</option></select>
+                                }
+                                else
+                                {
+                                    <input asp-for="Status" value="1" type="number" class="form-control" disabled="disabled" />
+                                }
+                            }
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Description" class="control-label"></label>
+                            <input asp-for="Description" class="form-control" type="text" placeholder="Enter the Subject Description" />
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <hr />
+                        <div class="form-group">
+                            @*<input type="submit" value="Create" class="btn btn-primary float-right" />*@
+                            <button type="submit" class="btn btn-success float-right"><i class="fas fa-floppy-disk"></i> Save</button>
+                            @if (TempData["GradeId"] != null)
+                            {
+                                <a asp-action="SubjectsList" asp-route-id="@TempData["GradeId"]" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Back</a>
+                            }
+                            else
+                            {
+                                <a asp-action="Index" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+                            }
+                        </div>
+                    </table>
+                </form>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+</div>
+
+

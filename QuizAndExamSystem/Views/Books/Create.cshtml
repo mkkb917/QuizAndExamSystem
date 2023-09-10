@@ -1,0 +1,117 @@
+﻿@model ExamSystem.Models.Books
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+@{
+    if (ViewBag.filetype != null)
+    {
+        <h4><strong>Error:</strong>@ViewBag.filetype</h4>
+    }
+}
+<!-- Include Google ReCaptcha on form submit-->
+@*@Html.ReCaptcha()*@
+
+<div class="row">
+    <div class="col-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Upload New Books</h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive">
+                <form asp-action="Create" method="post" enctype="multipart/form-data">
+                    <table id="tblData" class="table table-bordered table-hover">
+                        <input type="hidden" asp-for="CreatedBy" value="@userManager.GetUserName(User)" />
+                        <div class="form-group">
+                            <a class="btn btn-secondary" asp-controller="Books" asp-action="UserIndex"> <i class="fa fa-arrow-left"></i> Back</a>
+                            <button type="submit" class="btn btn-success float-right"><i class="fas fa-floppy-disk"></i> Save</button>
+                        </div>
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label class="control-label">Select a file</label>
+                            <input asp-for="FileName" type="file" id="uploadBox" accept="file/pdf" class="form-control" />
+                            <span asp-validation-for="FileName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Title" class="control-label"></label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Category:</label>
+                            <select asp-for="Code" class="form-control" asp-items="Html.GetEnumSelectList<BookCategory>()"><option value="">---Select---</option></select>
+                            <span asp-validation-for="Code" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Description" class="control-label"></label>
+                            <input asp-for="Description" class="form-control" />
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Status" class="control-label"></label>
+                            @{
+                                if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                                {
+                                    <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()"><option value="">---Select---</option></select>
+                                }
+                                else
+                                {
+                                    <input asp-for="Status" value="@Status.Inactive" class="form-control" disabled />
+                                    <label> will be activated and displayed after approval from admin</label>
+                                }
+                            }
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="BookType" class="control-label"></label>
+                            <input asp-for="BookType" class="form-control" type="text" />
+                            <span asp-validation-for="BookType" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Author" class="control-label"></label>
+                            <input asp-for="Author" class="form-control" type="text" />
+                            <span asp-validation-for="Author" class="text-danger"></span>
+                        </div>
+                        <hr />
+                        <div class="form-group">
+
+                            <button re-invisible type="submit" class="btn btn-success float-right">
+                                @*<recaptcha-v3 form-id="yourFormId" action="submit"></recaptcha-v3>*@
+                                <i class="fas fa-floppy-disk"></i> Save
+                            </button>
+                        </div>
+
+                    </table>
+                </form>
+            </div>
+            <!-- /.card-body -->
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="d-flex flex-column align-items-center embed-responsive">
+            <iframe src="" id="FilePreview" class="embed-responsive-item" alt="Book Thumbnail" width="300" height="800"> </iframe>
+        </div>
+    </div>
+    <!-- /.col -->
+</div>
+
+
+@section Scripts {
+
+    <script>
+        $('#uploadBox').on('change', function() {
+            var file = this.files[0];
+
+            if (file.type == 'application/pdf') {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('FilePreview').data = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+    }

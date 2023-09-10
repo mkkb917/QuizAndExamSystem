@@ -1,0 +1,139 @@
+﻿@model QuestionVM
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+<div class="container">
+    <h2 style="text-align:center; color:red;">Question Detials</h2>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <!-- /.card-header -->
+            <div class="card-body table-responsive">
+                <!--<form asp-action="Create">-->
+                <form asp-action="Delete">
+                    <div class="col-12">
+                        <input type="hidden" asp-for="Id" />
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success float-right"><i class="fas fa-trash"></i> Delete</button>
+                            <a asp-controller="Question" asp-action="index" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+                        </div>
+                    </div>
+                </form>
+
+               <!-- Question Section-->
+                <div id="question" class="table  table-hover">
+                    <div class="row"><h5>Question Statement</h5></div>
+                    <div class="row">
+                        <div class=" col-lg-2 col-md-2 col-sm-12 col-12"> Question</div>
+                        <div class="col-lg-5 col-md-5 col-sm-12 col-12 ">
+                            <label class="form-control">
+                                @Html.DisplayFor(model => model.QuestionText)
+                            </label>
+                        </div>
+                        <div class="col-lg-5 col-md-5 col-sm-12 col-12 ">
+                            <label  class=" form-control" dir="rtl">
+                                @Html.DisplayFor(model => model.QuestionTextL)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <hr style="background-color: white; height: 1px; border: 0;" />
+                <!-- Choice section-->
+                <div id="choice" class="row">
+                    <div class="table  table-hover">
+                        <div class="row">
+                            <h5>choices</h5>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-2 col-md-2 col-sm-12 col-12">Option 1</div>
+                            <div class="col-lg-5 col-md-5 col-sm-12 col-12">
+                                <label  class="form-control" maxlength="100">
+                                    @Html.DisplayFor(model => model.ChoiceTitle1)
+                                </label>
+                            </div>
+                            <div class="col-lg-5 col-md-5 col-sm-12 col-12">
+                                <label  class="form-control" maxlength="100" dir="rtl">
+                                    @Html.DisplayFor(model => model.ChoiceTitleL1)
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-2 col-md-2 col-sm-12 col-12">Option 2</div>
+                            <div class="col-lg-5 col-md-5 col-sm-12 col-12">
+                                <label  class="form-control" maxlength="100">
+                                    @Html.DisplayFor(model => model.ChoiceTitle2)
+                                </label>
+                            </div>
+                            <div class="col-lg-5 col-md-5 col-sm-12 col-12">
+                                <label  class="form-control" maxlength="100" dir="rtl">
+                                    @Html.DisplayFor(model => model.ChoiceTitleL2)
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-2 col-md-2 col-sm-12 col-12">Option 3</div>
+                            <div class="col-lg-5 col-md-5 col-sm-12 col-12">
+                                <label  class="form-control" maxlength="100">
+                                    @Html.DisplayFor(model => model.ChoiceTitle3)
+                                </label>
+                            </div>
+                            <div class="col-lg-5 col-md-5 col-sm-12 col-12">
+                                <label  class="form-control" maxlength="100" dir="rtl">
+                                    @Html.DisplayFor(model => model.ChoiceTitleL3)
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-2 col-md-2 col-sm-12 col-12">Option 4</div>
+                            <div class="col-lg-5 col-md-5 col-sm-12 col-12">
+                                <label  class="form-control" maxlength="100">
+                                    @Html.DisplayFor(model => model.ChoiceTitle4)
+                                </label>
+                            </div>
+                            <div class="col-lg-5 col-md-5 col-sm-12 col-12">
+                                <label  class="form-control"  dir="rtl">
+                                    @Html.DisplayFor(model => model.ChoiceTitleL4)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="background-color: white; height: 1px; border: 0;" />
+                </div>
+                <hr style="background-color: white; height: 1px; border: 0;" />
+                <!-- Answer section-->
+                <div id="answer" class="table  table-hover">
+                    <div class="row">
+                        <h5>Answer</h5>
+                    </div>
+                    <div class="row">
+                        <div class=" col-lg-2 col-md-2 col-sm-2 col-12">Answer</div>
+                        <div class=" col-lg-5 col-md-5 col-sm-5 col-12">
+                            <textarea asp-for="CorrectAnswer" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class=" col-lg-5 col-md-5 col-sm-5 col-12">
+                            <textarea asp-for="CorrectAnswerL" class="form-control" rows="3" dir="rtl"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <hr style="background-color: white; height: 1px; border: 0;" />
+                <form asp-action="Delete">
+                    <div class="col-12">
+                        <input type="hidden" asp-for="Id" />
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success float-right"><i class="fas fa-trash"></i> Delete</button>
+                            <a asp-controller="Question" asp-action="index" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+</div>

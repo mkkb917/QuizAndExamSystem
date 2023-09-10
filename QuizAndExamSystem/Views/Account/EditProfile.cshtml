@@ -1,0 +1,251 @@
+﻿@model ProfileVM
+@using ExamSystem;
+@{
+    ViewData["Title"] = "User Profile";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+<div class="container">
+    <div class="main-body">
+        <form method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="@Model.Id" type="hidden" />
+            <input asp-for="@Model.UserName" type="hidden" />
+            <input asp-for="@Model.Email" type="hidden" />
+            <div class="row gutters-sm">
+                <div class="col-md-5 mb-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex flex-column align-items-center text-center">
+                                <img src="@WC.ProfileImagePath@Model.ProfileImage" id="ProfilePreview" alt="Admin" class="rounded-circle" width="150">
+                                <input type="file" name="profilepics" id="uploadBox" class="form-control" />
+                                <span asp-validation-for="@Model.ProfileImage" class="text-danger"></span>
+                                <div class="mt-3">
+                                    <h4>@Model.UserName</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mt-3">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                <h6 class="mb-0"><svg xmlns="@Model.Email" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-globe mr-2 icon-inline"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>Website</h6>
+                                <span class="text-secondary text-danger"><input asp-for="@Model.Email" type="email" disabled class="form-control" /></span>
+                                <span asp-validation-for="@Model.Linkedin" class="text-danger"></span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                <h6 class="mb-0"><svg xmlns="@Model.Twitter" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter mr-2 icon-inline text-info"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>Twitter</h6>
+                                <span class="text-secondary"><input asp-for="@Model.Twitter" type="url"  class="form-control" /></span>
+                                <span asp-validation-for="@Model.Twitter" class="text-danger"></span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                <h6 class="mb-0"><svg xmlns="@Model.Instagram" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-instagram mr-2 icon-inline text-danger"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>Instagram</h6>
+                                <span class="text-secondary"><input asp-for="@Model.Instagram" type="url" class="form-control" /></span>
+                                <span asp-validation-for="@Model.Instagram" class="text-danger"></span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                <h6 class="mb-0"><svg xmlns="@Model.Facebook" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-facebook mr-2 icon-inline text-primary"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>Facebook</h6>
+                                <span class="text-secondary"><input asp-for="@Model.Facebook" type="url" class="form-control" /></span>
+                                <span asp-validation-for="@Model.Facebook" class="text-danger"></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <h3>Personal Information</h3>
+                            <hr />
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h6 class="mb-0">First Name:</h6>
+                                </div>
+                                <div class="col-sm-8 text-secondary">
+                                    <input id="FirstName" asp-for="@Model.FirstName" type="text" class="form-control" />
+                                    <span asp-validation-for="@Model.FirstName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h6 class="mb-0">Last Name:</h6>
+                                </div>
+                                <div class="col-sm-8 text-secondary">
+                                    <input id="LastName" asp-for="LastName" type="text" class="form-control" />
+                                    <span asp-validation-for="LastName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h6 class="mb-0">Gender:</h6>
+                                </div>
+                                <div class="col-sm-8 text-secondary">
+                                    <select id="Gender" asp-for="Gender" class="form-control" asp-items="Html.GetEnumSelectList<Gender>()"></select>
+                                    <span asp-validation-for="Gender" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h6 class="mb-0">Father Name:</h6>
+                                </div>
+                                <div class="col-sm-8 text-secondary">
+                                    <input id="FatherName" asp-for="@Model.FatherName" type="text" class="form-control" />
+                                    <span asp-validation-for="FatherName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h6 class="mb-0">Biography:</h6>
+                                </div>
+                                <div class="col-sm-8 text-secondary">
+                                    <input id="Biography" asp-for="@Model.Biography" type="text" class="form-control" />
+                                    <span asp-validation-for="@Model.Biography" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h6 class="mb-0">Date of Birth:</h6>
+                                </div>
+                                <div class="col-sm-8 text-secondary ">
+                                    <input id="DateOfBirth" asp-for="@Model.DateOfBirth" type="date" class="form-control" min="1950-01-01" max="2022-01-01" />
+                                    <span asp-validation-for="@Model.DateOfBirth" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h6 class="mb-0">CNIC Number:</h6>
+                                </div>
+                                <div class="col-sm-8 text-secondary ">
+                                    <input id="CNIC" asp-for="@Model.CNIC" type="text" class="form-control" />
+                                    <span asp-validation-for="@Model.CNIC" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h6 class="mb-0">Higest Degree:</h6>
+                                </div>
+                                <div class="col-sm-8 text-secondary">
+                                    <select id="HigestDegree" asp-for="HighestDegree" class="form-control" asp-items="Html.GetEnumSelectList<Degrees>()"></select>
+                                    <span asp-validation-for="@Model.HighestDegree" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h6 class="mb-0">Qualification:</h6>
+                                </div>
+                                <div class="col-sm-8 text-secondary">
+                                    <input id="DegreeName" asp-for="@Model.DegreeName" type="text" class="form-control" />
+                                    <span asp-validation-for="@Model.DegreeName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h6 class="mb-0">Phone:</h6>
+                                </div>
+                                <div class="col-sm-8 text-secondary">
+                                    <input asp-for="@Model.ContactNo" type="tel" class="form-control" />
+                                    <span asp-validation-for="@Model.ContactNo" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h6 class="mb-0">Mobile:</h6>
+                                </div>
+                                <div class="col-sm-8 text-secondary">
+                                    <input asp-for="@Model.CellPhoneNo" type="tel" class="form-control" />
+                                    <span asp-validation-for="@Model.CellPhoneNo" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h6 class="mb-0">Whatsapp:</h6>
+                                </div>
+                                <div class="col-sm-8 text-secondary">
+                                    <input asp-for="@Model.WhatsApp" type="tel" class="form-control" />
+                                    <span asp-validation-for="@Model.WhatsApp" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h6 class="mb-0">Address:</h6>
+                                </div>
+                                <div class="col-sm-8 text-secondary">
+                                    <input id="HomeAddress" asp-for="@Model.HomeAddress" type="text" class="form-control" />
+                                    <span asp-validation-for="@Model.HomeAddress" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h6 class="mb-0">City:</h6>
+                                </div>
+                                <div class="col-sm-8 text-secondary">
+                                    <input id="City" asp-for="@Model.City" type="text" class="form-control" />
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h6 class="mb-0">Postal Code:</h6>
+                                </div>
+                                <div class="col-sm-8 text-secondary">
+                                    <input id="PostalCode" asp-for="@Model.PostalCode" type="number" class="form-control" />
+                                    <span asp-validation-for="@Model.PostalCode" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h6 class="mb-0">State:</h6>
+                                </div>
+                                <div class="col-sm-8 text-secondary">
+                                    <select id="State" asp-for="State" class="form-control" asp-items="Html.GetEnumSelectList<State>()"></select>
+                                    <span asp-validation-for="@Model.State" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h6 class="mb-0">Country:</h6>
+                                </div>
+                                <div class="col-sm-8 text-secondary">
+                                    <select id="Country" asp-for="Country" class="form-control" asp-items="Html.GetEnumSelectList<Country>()"></select>
+                                    <span asp-validation-for="@Model.Country" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="row">
+                <button asp-action="EditProfile" asp-route-id="@Model.Id" class="btn btn-success float-right"><i class="fas fa-floppy-disk"></i> Update</button>
+                <a class="btn btn-outline-info" asp-action="Profile" asp-route-id="@Model.Id"> <i class="bi bi-arrow"></i> Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script>
+        <partial name="_ValidationScriptsPartial" />
+
+            $("#uploadBox").on("change", function () {
+                var output = document.getElementById('ProfilePreview');
+                output.src = $(this).val();
+            })
+    </script>
+}

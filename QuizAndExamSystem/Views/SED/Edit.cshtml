@@ -1,0 +1,111 @@
+﻿@model ExamSystem.Models.SED
+@inject UserManager<ApplicationUser> userManager;
+@using ExamSystem
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+<div class="row">
+    <div class="col-8">
+        <div class="card">
+            <!-- /.card-header -->
+            <div style="text-align:center; color:red;"> Update Notification</div>
+            <div class="card-body table-responsive">
+
+                <form method="post" asp-action="Edit" enctype="multipart/form-data">
+                    <table id="tblData" class="table table-bordered table-hover m-3">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="CreatedBy" />
+                        <input type="hidden" asp-for="CreatedOn" />
+                        <input type="hidden" asp-for="UpdatedBy" value="@userManager.GetUserName(User)" />
+                        <input type="hidden" asp-for="UpdatedOn" value="@DateTime.Now.Date" />
+                        <input type="hidden" asp-for="FileName" />
+                        <input type="hidden" asp-for="FileFaceImage" />
+                        
+                        <div class="form-group">
+                            <input type="file" id="uploadBox" name="upload" accept="file/pdf" multiple class="form-control" />
+                            
+                            <span asp-validation-for="FileName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Title" class="control-label"></label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Date" class="control-label"></label>
+                            <input asp-for="Date" class="form-control" />
+                            <span asp-validation-for="Date" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="IssuedBy" class="control-label"></label>
+                            <input asp-for="IssuedBy" class="form-control" />
+                            <span asp-validation-for="IssuedBy" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Status" class="control-label"></label>
+                            @{
+                                if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                                {
+                                    <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()"></select>
+                                }
+                                else
+                                {
+                                    <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()" disabled></select>
+                                }
+                            }
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Category:</label>
+                            @*<input asp-for="Code" class="form-control" />*@
+                            <select asp-for="Code" class="form-control" asp-items="Html.GetEnumSelectList<SEDCategory>()"></select>
+                            <span asp-validation-for="Code" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Description" class="control-label"></label>
+                            <input asp-for="Description" class="form-control" />
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Save" class="btn btn-primary" />
+                        </div>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="d-flex flex-column align-items-center text-center">
+            <div class="form-group">
+            </div>
+            <img src="@WC.PDF_SED_Path@Model.FileFaceImage" id="NotificationPreview" alt="Notification" class="img">
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // ok code
+        $("#uploadBox").on("change", function() {
+            displayPicture(this);
+        });
+        function displayPicture(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    document.getElementById('NotificationPreview').setAttribute('src', e.target.result);
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+}

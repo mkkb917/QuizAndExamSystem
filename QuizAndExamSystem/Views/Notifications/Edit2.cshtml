@@ -1,0 +1,91 @@
+﻿@model ExamSystem.Models.Notification
+@inject UserManager<ApplicationUser> userManager;
+@using ExamSystem
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+
+<h4>Notification</h4>
+<hr />
+<div class="row">
+    <div class="col-8">
+        <div class="card">
+            <form asp-action="Edit" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="CreatedBy" />
+                <input type="hidden" asp-for="CreatedOn" />
+                <input type="hidden" asp-for="UpdatedBy" />
+                <input type="hidden" asp-for="UpdatedOn" />
+                
+                <div class="form-group">
+                    <label asp-for="NotificationFile" class="control-label"></label>
+                    <input type="file" name="Notification" id="uploadBox" />
+                    <input asp-for="NotificationFile" class="form-control" />
+                    <span asp-validation-for="NotificationFile" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="NotificationDate" class="control-label"></label>
+                    <input asp-for="NotificationDate" class="form-control" />
+                    <span asp-validation-for="NotificationDate" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="IssuedBy" class="control-label"></label>
+                    <input asp-for="IssuedBy" class="form-control" />
+                    <span asp-validation-for="IssuedBy" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Status" class="control-label"></label>
+                    @{
+                        if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()"></select>
+                        }
+                        else
+                        {
+                            <input asp-for="Status" value="1" type="number" class="form-control" disabled="disabled" />
+                        }
+                    }
+                    <span asp-validation-for="Status" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Code" class="control-label"></label>
+                    <input asp-for="Code" class="form-control" />
+                    <span asp-validation-for="Code" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label"></label>
+                    <input asp-for="Description" class="form-control" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="d-flex flex-column align-items-center text-center">
+            <img src="@WC.NotificationPath@Model.NotificationFile" id="NotificationPreview" alt="Notification" class="img">
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        //$(document).ready(function() {
+        //    var output = document.getElementById('NotificationPreview');
+        //    output.src = $("uploadBox").val();
+        //})
+
+        $("#uploadBox").on("change", function() {
+            var output = document.getElementById('NotificationPreview');
+            output.src = $(this).val();
+        })
+    </script>
+}

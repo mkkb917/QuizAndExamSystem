@@ -1,0 +1,88 @@
+﻿@model ExamSystem.Models.Grade
+
+@{
+    ViewData["Title"] = "Grade Details";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+
+<div class="container">
+    <h2 style="text-align:center; color:red;">Class Details</h2>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div>
+                <a class="btn btn-primary float-right" asp-action="Edit" asp-route-id="@Model?.Id"><i class="fas fa-pencil-square"></i> Edit</a>
+                <a asp-action="index" class="btn btn-secondary"> <i class="fa fa-arrow-left"></i> Back</a>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive">
+                <table class="table table-bordered table-hover">
+                    <tr class="row">
+                        <th class="th-sm col-sm-4">
+                            @Html.DisplayNameFor(model => model.Id)
+                        </th>
+                        <td class="col-sm-8">
+                            @Html.DisplayFor(model => model.Id)
+                        </td>
+                        <th class="th-sm col-sm-4">
+                            @Html.DisplayNameFor(model => model.Code)
+                        </th>
+                        <td class="col-sm-8">
+                            @Html.DisplayFor(model => model.Code)
+                        </td>
+                        <th class="th-sm col-sm-4">
+                            @Html.DisplayNameFor(model => model.GradeText)
+                        </th>
+                        <td class="col-sm-8">
+                            @Html.DisplayFor(model => model.GradeText)
+                        </td>
+                        <th class="th-sm col-sm-4">
+                            @Html.DisplayNameFor(model => model.Status)
+                        </th>
+                        <td class="col-sm-8">
+                            @Html.DisplayFor(model => model.Status)
+                        </td>
+                        <th class="th-sm col-sm-4">
+                            @Html.DisplayNameFor(model => model.Description)
+                        </th>
+                        <td class="col-sm-8">
+                            @Html.DisplayFor(model => model.Description)
+                        </td>
+                        <th class="th-sm col-sm-4">
+                            @Html.DisplayNameFor(model => model.CreatedOn)
+                        </th>
+                        <td class="col-sm-8">
+                            @Html.DisplayFor(model => model.CreatedOn)
+                        </td>
+                        <th class="th-sm col-sm-4">
+                            @Html.DisplayNameFor(model => model.CreatedBy)
+                        </th>
+                        <td class="col-sm-8">
+                            @Html.DisplayFor(model => model.CreatedBy)
+                        </td>
+                        <th class="th-sm col-sm-4">
+                            @Html.DisplayNameFor(model => model.UpdatedOn)
+                        </th>
+                        <td class="col-sm-8">
+                            @Html.DisplayFor(model => model.UpdatedOn)
+                        </td>
+                        <th class="th-sm col-sm-4">
+                            @Html.DisplayNameFor(model => model.UpdatedBy)
+                        </th>
+                        <td class="col-sm-8">
+                            @Html.DisplayFor(model => model.UpdatedBy)
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+
+</div>
+<!-- /.col -->
+</div>

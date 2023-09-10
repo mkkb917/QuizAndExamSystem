@@ -1,0 +1,112 @@
+﻿@{
+    ViewData["Title"] = "Pairing Scheme";
+    Layout = "_DashboardLayout";
+    //int sno = 0;
+}
+
+
+
+<div class="container">
+    <h2 style="text-align:center; color:forestgreen;">Pairing Scheme</h2>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <!-- /.card-header -->
+            <div class="card-body table-responsive">
+                @*<a asp-controller="Paper" asp-action="EditPairingScheme" asp-route-id="@Model.Id" class="btn btn-success float-right"><i class="fas fa-pencil"></i> Edit</a>*@
+                <hr style="background-color: white; height: 1px; border: 0;" />
+
+
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 col-sm-12 col-12 m-2">
+                        <label class="control-label">Choose Class</label>
+                        <select id="GradeDDL" name="GradeDDL" class="form-control" asp-items="ViewBag.Grades"> <option selected disabled>---Select Grade---</option>  </select>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 col-12 m-2">
+                        <label class="control-label">Choose Subject</label>
+                        <select id="SubjectDDL" name="SubjectDDL" onconchange="selectedText" class="form-control"> <option selected disabled>---Select Subject---</option> </select>
+                    </div>
+                </div>
+
+
+                <!-- Pairing Scheme-->
+                <div class="table  table-hover">
+                    <div class="row d-flex justify-content-center">
+                        <h3 class="h3">Pairing Scheme </h3>
+                    </div>
+                    <!-- Table for Pairing scheme-->
+                    <table id="tableUnits" class="table table-responsive table-bordered">
+                        <tbody>
+                            <tr>
+                                <th>Unit Id </th>
+                                <th>Unit Name </th>
+                                <th>MCQs Count</th>
+                                <th>MCQs Marks</th>
+                                <th>SEQs Count</th>
+                                <th>SEQs Marks</th>
+                                <th>LongQuestions Count</th>
+                                <th>LongQuestion Marks</th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <hr style="background-color: white; height: 1px; border: 0;" />
+
+                <div class="col-12">
+                    <div class="form-group">
+                        @*<a asp-controller="Paper" asp-action="Upsert" asp-route-id="@Model.Id" class="btn btn-success float-right"><i class="fas fa-pencil"></i> Edit</a>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+
+    <script>
+        // Script Code for Grade, Subject and Topic DDL
+        $(document).ready(function () {
+            // grades comes from ViewBag.Grades
+            // on change of gradeDDL                //code ok
+            $('#GradeDDL').change(function () {
+                var id = $(this).val();
+                $('#SubjectDDL').empty();
+                $('#SubjectDDL').append("<option>--Select Subject--</option>");
+                $.ajax({
+                    url: '/Paper/Subject?id=' + id,
+                    success:
+                        function (responce) {
+                            $.each(responce, function (i, data) {
+                                $('#SubjectDDL').append("<option value=" + data.id + ">" + data.subjectText + "</option>");
+                            });
+                        }
+                });
+            });
+
+            // on change of SubjectDDL                      Code OK
+            $('#SubjectDDL').change(function () {
+                var id = $(this).val();
+                $('#tableUnits tr:not(:first)').remove();
+                $.ajax({
+                    type: "POST",
+                    url: '/Paper/GetPairingData?id=' + id,
+                    data: '{ }',
+                    success: function (response) {
+                        var trHTML = '';
+                        //trHTML += '<tr><th>Unit Name </th><th>MCQs Count</th><th>MCQs Marks</th><th>SEQs Count</th><th>SEQs Marks</th><th>LongQuestions Count</th><th>LongQuestion Marks</th></tr>;
+                        $.each(response, function (i, item) {
+                            //trHTML += '<tr><td>' + item.code + '</td><td>' + item.topicText + '</td><td><table><tr><td>MCQs</td><td>'+item.mcqCount+'</td><td><input type="number"></td></tr><tr><td>SEQs</td><td>' + item.seqCount + '</td></tr><tr><td>Long Questions</td><td>' + item.longQCount + '</td></tr><tr><td>Fill in the blanks</td><td>' + item.fillinBlankCount + '</td></tr></table></td>';
+                            trHTML += '<tr><td>' + item.code + '</td><td>' + item.topicText + '</td><td>' + item.mcqCount + '</td><td>' + item.mcqMarks + '</td><td>' + item.seqCount + '</td><td>' + item.seqMarks + '</td><td>' + item.longQCount + '</td><td>' + item.longQMarks + '</td></tr>';
+                        });
+                        $('#tableUnits').append(trHTML);
+                    }
+                });
+            });
+
+        });
+
+    </script>
+
+}

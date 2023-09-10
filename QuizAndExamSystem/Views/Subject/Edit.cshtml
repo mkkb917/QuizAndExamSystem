@@ -1,0 +1,72 @@
+﻿@model SubjectsVM
+
+@{
+    ViewData["Title"] = "Edit a Subject";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+<div class="container">
+    <h2 style="text-align:center; color:red;"> Update Subject</h2>
+</div>
+
+
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <!-- /.card-header -->
+            <div class="card-body table-responsive">
+                <table id="tblData" class="table table-bordered table-hover">
+                    <form asp-action="Edit">
+                        <div class="form-group">
+                            <input type="hidden" value="@Model.Id" />
+                            <button type="submit" value="Update" class="btn btn-success float-right" > <i class="fas fa-floppy-disk"></i> Update </button>
+                            <a class="btn btn-secondary" asp-action="SubjectsList" asp-route-id="@Model.GradeId"> <i class="fas fa-arrow-left"></i> Back</a>
+                        </div>
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input asp-for="user" type="hidden" value="@User.Identity.Name" />
+                        <input asp-for="GradeId" type="hidden" value="@Model.GradeId" />
+                        <div class="form-group">
+                            <label asp-for="Grade" class="control-label"></label>
+                            <select asp-for="GradeId" class="form-control" asp-items="ViewBag.Grades" disabled></select>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="SubjectText" class="control-label"></label>
+                            <input asp-for="SubjectText" class="form-control" />
+                            <span asp-validation-for="SubjectText" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Status" class="control-label"></label>
+                            @{
+                                if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                                {
+                                    <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()"></select>
+                                }
+                                else
+                                {
+                                    <input asp-for="Status" value="1" type="number" class="form-control" disabled="disabled" />
+                                }
+                            }
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Description" class="control-label"></label>
+                            <textarea asp-for="Description" class="form-control" type="text" placeholder="Enter the Subject Description" ></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="hidden" value="@Model.Id" />
+                            <button type="submit" value="Update" class="btn btn-success float-right" ><i class="fas fa-floppy-disk"></i> Update</button>
+                            <!-- hidden value for redirection of method back to SubjectsList after post -->
+                           
+                            <a class="btn btn-secondary" asp-action="SubjectsList" asp-route-id="@Model.GradeId"><i class="fas fa-arrow-left"></i> Back</a>
+                        </div>
+                    </form>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+</div>

@@ -1,0 +1,36 @@
+﻿@model Quiz
+@{
+    ViewData["Title"] = " Quiz";
+    Layout = "_DashboardLayout";
+
+}
+<div class="row">
+    <div class="form-group">
+        <a asp-controller="Quiz" asp-action="UserQuiz" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+    </div>
+    <div class="col-12">
+        <div class="card">
+            <!-- /.card-header -->
+            <div class="card-body table-responsive">
+                <!--<form asp-action="Create">-->
+
+                <div style="width:850px; height:600px; padding:20px; text-align:center; border: 10px solid #787878">
+                    <div style="width:800px; height:550px; padding:20px; text-align:center; border: 5px solid #787878">
+                        <span style="font-size:50px; font-weight:bold">Certificate of Completion</span>
+                        <br><br>
+                        <span style="font-size:25px"><i>This is to certify that</i></span>
+                        <br><br>
+                        <span style="font-size:30px"><b>@Model.CreatedBy</b></span><br /><br />
+                        <span style="font-size:25px"><i>has completed the Quiz</i></span> <br /><br />
+                        <span style="font-size:30px">@Model.Subject</span> <br /><br />
+                        <span style="font-size:20px">with score of <b>@Model.ObtainedScores</b> out of <b>@Model.TotalScores</b></span> <br /><br />
+                        <span style="font-size:25px"><i>dated</i></span><br>
+                        <span style="font-size:30px">@Model.CreatedOn.ToShortDateString()</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

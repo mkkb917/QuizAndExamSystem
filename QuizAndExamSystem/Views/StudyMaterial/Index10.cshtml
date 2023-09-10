@@ -1,0 +1,52 @@
+﻿@model IEnumerable<ExamSystem.Models.Uploads>
+@using ExamSystem
+@{
+    ViewData["Title"] = "All 10th Class Data";
+    Layout = "_Layout";
+
+}
+
+
+@if (Model != null)
+{
+
+    <div class="container">
+        <div class="text-center">
+            <button class="btn btn-dark filter-button" data-filter="all">All</button>
+            @foreach (var obj in Enum.GetNames(typeof(UploadsCategory)))
+            {
+                <button class="btn btn-outline-primary filter-button" data-filter="@Enum.Parse(typeof(UploadsCategory), obj)"> @obj </button> <!--obj.Code.Replace(' ','_')-->
+            }
+        </div>
+        <br>
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                // partial view of all StudyMaterial files based on Code and status
+                <partial name="_IndividualUploadView" model="item" />
+            }
+        </div>
+    </div>
+}
+else
+{
+    <h4 class="mt-4 mb-5"><strong>No Data found</strong></h4>
+}
+
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $(".filter-button").click(function () {
+                var value = $(this).attr('data-filter');
+                if (value == "all") {
+                    $('.filter').show('1000');
+                }
+                else {
+                    $('.filter').not('.' + value).hide('3000');
+                    $('.filter').filter('.' + value).show('3000');
+                }
+            });
+        });
+    </script>
+}

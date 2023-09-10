@@ -1,0 +1,71 @@
+﻿
+@{
+    ViewData["Title"] = "Cascade DDL View";
+}
+
+<h1> Cascade DDL View</h1>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-3">
+
+            <form method="post">
+                <div class="form-group">
+                    <label> Grade</label>
+                    <select class="form-control" id="Grade" >
+                        <option>--Select Grade--</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label > Subject</label>
+                    <select class="form-control" id="Subject">
+                        <option>--Select Subject--</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label > Topic</label>
+                    <select class="form-control" id="Topic">
+                        <option>--Select Topic--</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label> Question</label>
+                    <select class="form-control" id="Question">
+                        <option>--Select Question--</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button action="submit" value="Save" class="btn btn-outline-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+<script>
+$(document).ready(function() {
+
+});
+    $('#Grade').on("click",function() {
+        $.ajax({
+            url: '/CascadeDDL/Grade',
+            success: function(result) {  
+                $.each(result, function(i, data)){
+                    $('#Grade').append('<Option value=' + data.id + '>' + data.GradeName + '</Option>');
+                }
+            }
+        });
+    });
+
+    function GetGrade(){
+        $.ajax({
+            url: '/CascadeDDL/Grade',
+            success: function(result) {  
+                $.each(result, function(i, data)){
+                    $('#Grade').append('<Option value=' + data.id + '>' + data.GradeName + '</Option>');
+                }
+            }
+        });
+    }
+</script>
+}

@@ -1,0 +1,22 @@
+﻿@model ExamSystem.Data.ViewModels.PaperViewVM
+
+@{
+    ViewData["Title"] = "Paper View";
+    Layout = "_DashboardLayout";
+
+}
+
+<!-- Call the Partial View to display paper-->
+<div>
+    <partial name="_ObjectiveBoardLayout" model="Model" />
+    <br />
+    <partial name="_SubjectiveBoardLayout" model="Model" />
+</div>
+
+<div class="col-12">
+    <div class="link-group">
+        <a asp-controller="Paper" asp-action="UserPapers" class="btn btn-success float-right">Download</a>
+        <a asp-controller="paper" asp-action="GeneratePaper" class="btn btn-primary"><i class="fas fa-new"></i> Generate New Paper</a>
+    </div>
+
+</div> 

@@ -1,0 +1,105 @@
+﻿@model SubjectsIndexVM
+
+@{
+    ViewData["Title"] = "All Subjects of ";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+    int sno = 1;
+}
+
+<div class="container">
+    <h2 style="text-align:center; color:red;"> @Model.GradeName Subjects</h2>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div>
+                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                {
+                    <a asp-controller="Subject" asp-action="Create" asp-route-id="@Model.GradeId" class="btn btn-primary float-right"> <i class="fas fa-plus-circle"></i> Add New Subject</a>
+                }
+                <a class="btn btn-secondary" asp-controller="Grade" asp-action="index"> <i class="fa fa-arrow-left"></i> Back</a>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive">
+                <table id="tblData" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <th>Code</th>
+                            }
+                            <th> Subject Name</th>
+                            <th> Status</th>
+                            <th> Description</th>
+                            <th> Total Units</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.SubjectVm)
+                        {
+                            <tr>
+                                <td>
+                                    @(
+                                        sno++
+                                        )
+                                </td>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <td>@Html.DisplayFor(Model => item.Code)</td>
+                                }
+                                <td><a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(Model => item.SubjectText)</a></td>
+                                <td>
+                                    @if (item.Status == Status.Active)
+                                    {
+                                        <span class="badge badge-success">
+                                            @Html.DisplayFor(modelItem => item.Status)
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-danger">
+                                            @Html.DisplayFor(modelItem => item.Status)
+                                        </span>
+                                    }
+                                </td>
+                                <td>@Html.DisplayFor(Model => item.Description)</td>
+                                <td>@Html.DisplayFor(Model => item.Topic.Count)</td>
+                                
+
+                                <td>
+                                    @if (item.Status == Status.Active)
+                                    {
+                                        <a asp-controller="Topic" asp-action="TopicsList" asp-route-id="@item.Id" class="btn btn-primary"><i class="bi bi-pencil-square"></i> Manage Units</a>
+                                    }
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <a asp-controller="Subject" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary"><i class="bi bi-pencil-square"></i> Edit</a>
+
+                                        <a asp - controller="Subject" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger"><i class="bi bi-trash"></i> Delete</a>
+                                    }
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+</div>
+
+@section Scripts{
+    <script>
+        // search bar
+        $(document).ready(function () {
+            $('#tblData').DataTable();
+            $('.dataTables_length').addClass('bs-select');
+        });
+    </script>
+    }

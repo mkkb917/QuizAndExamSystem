@@ -1,0 +1,201 @@
+﻿@model ExamSystem.Data.ViewModels.PaperViewVM
+
+@{
+    ViewData["Title"] = "PaperBoardLayout";
+    //Layout = "PaperBoardLayout";
+    int i = 1;
+    TimeSpan t = TimeSpan.FromMinutes(Convert.ToInt32(Model.Setting.Duration));
+}
+<div>
+    @*style="background-repeat:no-repeat; align-items:center; background-position:center; background-size:contain; background-image:url('https://localhost:7278/images/logo.png');">*@
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <table style="width:100%; border:solid;text-align:center; margin:0px;padding:0px">
+        <tr style="border:solid;">
+            <td style="border:solid">
+                <div style="align-items:center">
+                    <img src="https://localhost:7278/images/school/@Model.Setting.SchoolLogo" style="width: 100px; height: 100px">
+                </div>
+            </td>
+            <td colspan="2" style="width:100%;">
+                <table style="width:100%; text-align:center; margin:0px; ">
+                    <tr style="margin:0px;">
+                        <td colspan="4" style="width:80%;">
+                            <h1 style="font-family:'Century Schoolbook'; color:aqua;"><strong> @Model.Setting.SchoolName </strong></h1>
+                        </td>
+                    </tr>
+                    <tr style="margin:0px;">
+                        <td style="width:26%;margin:0px;">
+                            <h4 style="align-items:center; margin:0px;"> @Model.Setting.ClassName </h4>
+                        </td>
+                        <td style="width:26%;margin:0px; ">
+                            <h4 style="align-items:center; margin:0px;"> @Model.Setting.SubjectName </h4>
+                        </td>
+                        <td style="width:22%;margin:0px;">
+                            <h4 style="align-items:center; margin:0px;"> @Model.Setting.TeacherName</h4>
+                        </td>
+                        <td style="width:26%;margin:0px;">
+                            <h4 style="align-items:center; margin:0px;"> @Model.Setting.ExamName </h4>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <table style="width:100%; border:solid;text-align:center; margin:0px;">
+        <tr style="border:solid">
+            <td style="width:20%; border-right:solid;">
+                <table style="width:100%;  text-align:center; margin:0px; ">
+                    <tr style="margin:0px;">
+                        <td style="">
+                            <p style="margin:0px;">Total Marks: @Model.Setting.TotalMarks</p>
+                        </td>
+                    </tr>
+                    <tr style="margin:0px;">
+                        <td style="align-content:center;margin:0px;">
+                            <p style="margin:0px;">Passing Marks: @Model.Setting.PassingMarks</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td style="width:60%; ">
+                <table style="width:100%;  text-align:center; margin:0px; ">
+                    <tr style="margin:0px;">
+                        <td style="width:30%; text-align:left;">
+                            <p style="margin:0px;">Roll No:</p>
+                        </td>
+                        <td style="width:70%; text-align:left;">
+                            <p style="margin:0px;">Student Name:</p>
+                        </td>
+                    </tr>
+                </table>
+
+            </td>
+            <td style="width:20%; border-left:solid;">
+                <table style="width:100%;  text-align:center; margin:0px; ">
+                    <tr style="margin:0px;">
+                        <td style="">
+                            <p style="color:red;margin:0px;">Date:&nbsp;&nbsp;@Model.Setting.ConductDate.ToString("dd-MMM-yyyy")</p>
+                        </td>
+                    </tr>
+                    <tr style="margin:0px;">
+                        <td style="align-content:center;margin:0px;">
+                            <p style="margin:0px;">Time: @t.ToString(@"hh\:mm") Hours</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <table style="width:100%;border:solid; margin:0px; padding:0px;">
+        <tr style="margin:0px;">
+            <td style="width:5%; text-align:left; border:solid;">
+                <p style="margin:0px;">Marks</p>
+            </td>
+            <td style="width:8%; text-align:left; border:solid;">
+                <p style="margin:0px;">Q1:</p>
+            </td>
+            <td style="width:8%; text-align:left; border:solid;">
+                <p style="margin:0px;">Q2:</p>
+            </td>
+            <td style="width:8%; text-align:left; border:solid;">
+                <p style="margin:0px;">Q3:</p>
+            </td>
+            <td style="width:8%; text-align:left; border:solid;">
+                <p style="margin:0px;">Q4:</p>
+            </td>
+            <td style="width:8%; text-align:left; border:solid;">
+                <p style="margin:0px;">Q5:</p>
+            </td>
+            <td style="width:8%; text-align:left; border:solid;">
+                <p style="margin:0px;">Q6:</p>
+            </td>
+            <td style="width:8%; text-align:left; border:solid;">
+                <p style="margin:0px;">Q7:</p>
+            </td>
+            <td style="width:8%; text-align:left; border:solid;">
+                <p style="margin:0px;">Q8:</p>
+            </td>
+            <td style="width:8%; text-align:left; border:solid;">
+                <p style="margin:0px;">Q9:</p>
+            </td>
+            <td style="width:8%; text-align:left; border:solid;">
+                <p style="margin:0px;">Q10:</p>
+            </td>
+            <td style="width:10%; text-align:left; border:solid;">
+                <p style="margin:0px;">Total:</p>
+            </td>
+        </tr>
+    </table>
+
+    <table style="width:100%; border:solid; margin:0px;padding:0px;">
+        <tr>
+            <td colspan="2" style="margin:0px;padding:0px; ">
+                <p style="color:blue; text-align:center; margin-bottom:0px;">Examination Instructions. Read carefully....</p>
+            </td>
+        </tr>
+        <tr style="margin:auto;">
+            <td>
+                <p style="margin:2px;font-family:'Jameel Noori Nastaleeq' !important;text-align:right">@Model.Setting.Instructions</p>
+            </td>
+        </tr>
+    </table>
+    <!-- Paper Section Starts-->
+    <!-- Question Section-->
+
+    <div style="text-align:center;margin:2px; padding:0px;">
+        <h4 style="text-align:center; color:blue; margin:0px; padding:0px;">Section 1 : Obejctive Part </h4>
+    </div>
+    <table style="font-size:large; font-weight:30; margin:0px; padding:0px; width:100%;" id="question">
+        <tr style="text-align:justify-all; width:100%; margin:0px; padding:0px;">
+            <td style="width:50%; text-align:left;">
+                <h5><strong>Question#1:</strong>Select the appropriate option from following?</h5>
+            </td>
+            <td style="width:10%; text-align:center;">
+                <p>[@Model.Setting.MCQsMarks x @Model.MCQs.Count(x => x.QuestionType == QuestionTypes.MCQ) = @(@Model.Setting.MCQsMarks * @Model.MCQs.Count(x => x.QuestionType == QuestionTypes.MCQ))]</p>
+            </td>
+            <td style="width:40%; text-align:right" dir="rtl">
+                <h5 dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important;text-align:right"><strong>سوال نمبر 1:</strong>درست جواب کا انتخاب کریں؟</h5>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Question Section-->
+    @foreach (var qitem in Model.MCQs)
+    {
+        if (qitem.QuestionType == @QuestionTypes.MCQ)
+        {
+            <table style="border:solid; border-block-width: 1px; width:100%; margin:0px; padding:0px;">
+                <!-- Objective Paper Part-->
+                <tr style=" width:100%; margin:0px;">
+                    <td colspan="2" style="width:60%; text-align:left;">
+                        @i:  @qitem.QuestionText
+                    </td>
+                    <td colspan="2" style="width:40%; text-align:right;" dir="rtl">
+                        @i: <span style="font-family:'Jameel Noori Nastaleeq' !important;">@qitem.QuestionTextL</span>
+                    </td>
+                </tr>
+                <tr style="width:100%; margin:0px; padding:0px;">
+                    <td style=" width:25%; margin-left:10px">
+                        @qitem.OptionsQnA.Choice1 &nbsp;
+                        <span dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important;">@qitem.OptionsQnA.ChoiceL1</span>
+                    </td>
+                    <td style="width:25%;">
+                        @qitem.OptionsQnA.Choice2 &nbsp;
+                        <span dir="rtl" style=" font-family:'Jameel Noori Nastaleeq' !important;">@qitem.OptionsQnA.ChoiceL2</span>
+                    </td>
+                    <td style="width:25%;">
+                        @qitem.OptionsQnA.Choice3 &nbsp;
+                        <span dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important;">@qitem.OptionsQnA.ChoiceL3</span>
+                    </td>
+                    <td style="width:25%;">
+                        @qitem.OptionsQnA.Choice4 &nbsp;
+                        <span dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important;">@qitem.OptionsQnA.ChoiceL4</span>
+                    </td>
+                </tr>
+            </table>
+        }
+        i++;
+    }
+
+</div>
+

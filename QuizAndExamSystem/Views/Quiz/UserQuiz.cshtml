@@ -1,0 +1,107 @@
+﻿@model IEnumerable<ExamSystem.Models.Quiz>
+@{
+    ViewData["Title"] = "All Attempted Quizes by " + @userManager.GetUserName(User);
+    Layout = "_DashboardLayout";
+}
+
+
+@if (Model != null)
+{
+    <div class="row">
+    </div>
+    <br />
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <a asp-controller="Quiz" asp-action="Create" class="btn btn-primary float-right"> <i class="fas fa-plus-circle"></i> Take a New Quiz</a>
+                    }
+                    <a asp-controller="Dashboard" asp-action="index" class="btn btn-secondary"> <i class="fas fa-arrow-left"></i> Back</a>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body table-responsive">
+                    <table id="tblData" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>@Html.DisplayNameFor(model => model.Grade)</th>
+                                <th>@Html.DisplayNameFor(model => model.Subject)</th>
+                                <th> @Html.DisplayNameFor(model => model.CreatedOn) </th>
+                                <th> @Html.DisplayNameFor(model => model.QuizName) </th>
+                                <th> @Html.DisplayNameFor(model => model.TotalScores) </th>
+                                <th> @Html.DisplayNameFor(model => model.ObtainedScores) </th>
+                                <th> @Html.DisplayNameFor(model => model.Result) </th>
+                                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                                {
+                                    <th>Actions</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td> @Html.DisplayFor(modelItem => item.Grade) </td>
+                                    <td> @Html.DisplayFor(modelItem => item.Subject) </td>
+                                    <td> @Html.DisplayFor(modelItem => item.CreatedOn.Date) </td>
+                                    <td>
+                                        <a class="btn btn-primary" asp-action="QuizResult" asp-route-id="@item.Id">
+                                            @Html.DisplayFor(modelItem => item.QuizName) <i class="fas fa-view"></i>
+                                        </a>
+                                    </td>
+                                    <td> @Html.DisplayFor(modelItem => item.TotalScores)</td>
+                                    <td> @Html.DisplayFor(modelItem => item.ObtainedScores)</td>
+                                    <td> @Html.DisplayFor(modelItem => item.Result)</td>
+                                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                                    {
+                                        <th>
+                                            <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i>Delete</a>
+                                        </th>
+                                    }
+                                </tr>
+                            }
+                    </table>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- /.col -->
+    </div>
+
+
+
+}
+else
+{
+    <div class="container">
+        <div class="row">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a asp-controller="Quiz" asp-action="Create" class="btn btn-primary float-right"> <i class="fas fa-list-check"></i> Take a New Quiz</a>
+            }
+        </div>
+        <div class="row">
+            <h4 class="mt-4 mb-5"><strong>No Record found</strong></h4>
+        </div>
+    </div>
+}
+
+@section Scripts{
+    <script>
+        // search bar
+        $(document).ready(function () {
+            $('#tblData').DataTable();
+            $('.dataTables_length').addClass('bs-select');
+        });
+        //change the color of Status cell
+        $('#status').each(function () {
+            if ($(this).val() == 'Active') {
+                $(this).css({ 'color': '#13e305' })
+            }
+        });
+
+    </script>
+    }

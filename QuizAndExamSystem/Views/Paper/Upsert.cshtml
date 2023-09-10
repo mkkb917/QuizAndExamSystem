@@ -1,0 +1,200 @@
+﻿@model ExamSystem.Models.PaperSetting
+
+@{
+    ViewData["Title"] = "Update Paper Setting";
+    Layout = "_DashboardLayout";
+    //int sno = 0;
+}
+
+
+
+<div class="container">
+    <h2 style="text-align:center; color:red;">Update Paper Setting</h2>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <form asp-action="Upsert" method="post">
+                <p class="form-control">Note: First Complete Your Profile and School Profile for successfully generating paper</p>
+                <div class="card-body table-responsive">
+                    <!-- Hidden Fields-->
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input asp-for="Id" type="hidden" class="form-control" />
+                    <input asp-for="CreatedOn" type="hidden" class="form-control" value="@DateTime.Now" />
+                    <input asp-for="UpdatedOn" type="hidden" class="form-control" value="@DateTime.Now" />
+                    <input asp-for="UserName" type="hidden" class="form-control" value="@User.Identity.Name" />
+                    <input asp-for="Status" type="hidden" class="form-control" value="@Status.Active" />
+                    <input asp-for="Code" type="hidden" class="form-control" value="PaperSettingCode" />
+
+                    <!-- Paper setting section-->
+                    <div id="meta" class="table  table-hover">
+                        <div class="row d-flex justify-content-center">
+                            <h2>Details of paper </h2>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <label asp-for="ExamName" class="control-label"></label>
+                                        <input asp-for="ExamName" class="form-control" placeholder="Final-Term 2022">
+                                        <span asp-validation-for=" ExamName" class="text-danger"></span>
+                                    </div>
+                                    @*<div class="col-4">
+                                    <label asp-for="PaperLayout" class="control-label"></label>
+                                    <select asp-for="PaperLayout" class="form-control" asp-items="Html.GetEnumSelectList<PaperLayout>()"><option selected>---Select Paper Layout---</option></select>
+                                    <span asp-validation-for="PaperLayout" class="text-danger"></span>
+                                    </div>*@
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                            <label asp-for="TeacherName" class="control-label"></label>
+                            <input asp-for="TeacherName" class="form-control" placeholder="Sir Khan">
+                            <span asp-validation-for="TeacherName" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <label asp-for=" Duration" class="control-label"></label>
+                                        <input type="number" asp-for=" Duration" class="form-control" max='1440' placeholder="Enter time in Minutes : 120">
+                                        <span asp-validation-for=" Duration" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-4">
+                                        <label asp-for=" Medium" class="control-label"></label>
+                                        <select asp-for=" Medium" class="form-control" asp-items="Html.GetEnumSelectList<Medium>()"><option selected>---Select medium---</option></select>
+                                        <span asp-validation-for=" Medium" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-4">
+                                        <label asp-for=" DifficultyLevel" class="control-label"></label>
+                                        <select id="DifficultyLevelDDL" asp-for=" DifficultyLevel" class="form-control" asp-items="Html.GetEnumSelectList<DifficultyLevel>()"><option selected>---Select Difficulty---</option></select>
+                                        <span asp-validation-for=" DifficultyLevel" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                                <label asp-for=" Instructions" class="control-label"></label>
+                                <textarea asp-for=" Instructions" class="form-control" rows="3" placeholder="Enter Paper Instructions"></textarea>
+                                <span asp-validation-for=" Instructions" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="background-color: white; height: 1px; border: 0;" />
+                    <!-- Marks distributions setting section-->
+                    <div id="meta" class="table  table-hover">
+                        <div class="row d-flex justify-content-center">
+                            <div class="input-group form-switch ml-4">
+                                <input class="formcontrol form-check-input" type="checkbox" id="flexSwitchCheck">
+                                <label class="form-check-label" for="flexSwitchCheck">Use Default Pairing Schemas </label>
+                            </div>
+                            <h3 class="justify-content-center"><label class="form-check-label">Questions and Marks Distribution </label></h3>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-10 col-md-10 col-sm-12 col-12">
+                                <div class="row">
+                                    <div class="col col-6 border">
+                                        <label class="text-center d-lg-flex justify-content-lg-center">Multiple Choice Questions</label>
+                                        <div class="input-group mb-2">
+                                            <span class="input-group-addon">Question:</span>&nbsp;
+                                            <input asp-for="MCQsCount" class="form-control" id="mcqCount" oninput="total()" onkeyup="total()" placeholder="20" type="number" min="0" max="1000">&nbsp;&nbsp;
+                                            <span asp-validation-for=" MCQsCount" class="text-danger"></span>
+                                            <span class="input-group-addon">Marks:</span>&nbsp;
+                                            <input asp-for="MCQsMarks" class="form-control" id="mcqMarks" oninput="total()" onkeyup="total()" placeholder="1" type="number" min="0" max="50">
+                                            <span asp-validation-for=" MCQsMarks" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col col-6 border">
+                                        <label class="text-center d-lg-flex justify-content-lg-center">Short Exam Questions</label>
+                                        <div class="input-group mb-2">
+                                            <span class="input-group-addon">Question:</span>&nbsp;
+                                            <input asp-for="SEQsCount" class="form-control" id="seqCount" oninput="total()" onkeyup="total()" placeholder="20" type="number" min="0" max="100">&nbsp;&nbsp;
+                                            <span asp-validation-for=" SEQsCount" class="text-danger"></span>
+                                            <span class="input-group-addon">Marks:</span>&nbsp;
+                                            <input asp-for="SEQsMarks" class="form-control" id="seqMarks" oninput="total()" onkeyup="total()" placeholder="2" type="number" min="0" max="100">
+                                            <span asp-validation-for=" SEQsMarks" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col col-6 border">
+                                        <label class="text-center d-lg-flex justify-content-lg-center">Long Questions</label>
+                                        <div class="input-group mb-2">
+                                            <span class="input-group-addon">Question:</span>&nbsp;
+                                            <input asp-for="LongQsCount" class="form-control" id="longCount" oninput="total()" onkeyup="total()" placeholder="5" type="number" min="0" max="100">&nbsp;&nbsp;
+                                            <span asp-validation-for=" LongQsCount" class="text-danger"></span>
+                                            <span class="input-group-addon">Marks:</span>&nbsp;
+                                            <input asp-for="LongQsMarks" class="form-control" id="longMarks" oninput="total()" onkeyup="total()" placeholder="8" type="number" min="0" max="100">
+                                            <span asp-validation-for=" LongQsMarks" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col col-6 border">
+                                        <label class="text-center  d-lg-flex justify-content-lg-center">Fill in the Blank Questions</label>
+                                        <div class="input-group mb-2">
+                                            <span class="input-group-addon">Question:</span>&nbsp;
+                                            <input asp-for="FillInBlanksCount" class="form-control" id="fillBlank" oninput="total()" onkeyup="total()" placeholder="2" type="number" min="0" max="100">&nbsp;&nbsp;
+                                            <span asp-validation-for=" FillInBlanksCount" class="text-danger"></span>
+                                            <span class="input-group-addon">Marks:</span>&nbsp;
+                                            <input asp-for="FillInBlanksMarks" class="form-control" id="fillBlankMarks" oninput="total()" onkeyup="total()" placeholder="1" type="number" min="0" max="100">
+                                            <span asp-validation-for=" FillInBlanksMarks" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-12 col-12">
+                                <div class="row">
+                                    <div class="col border mb-2">
+                                        <label asp-for="TotalMarks" class="control-label"></label>
+                                        <input asp-for="TotalMarks" class="form-control mb-2" placeholder="Total Marks: 100" id="TotalMarks" name="TotalMarks" disabled>
+                                        <label asp-for="PassingMarks" class="control-label"></label>
+                                        <input asp-for="PassingMarks" class="form-control mb-3" placeholder="Passing Marks: 40" id="PassingMarks" onkeyup="changeColor()" type="number" min="1" max="500">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="background-color: white; height: 1px; border: 0;" />
+                </div>
+                <div class="col-12">
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success float-right"><i class="fas fa-floppy-disk"></i> Save </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('#summernote').summernote({ lang: 'es-ES' });
+        });
+
+        function total() {              //not working
+            var mcqMarks = document.getElementById('mcqMarks').value;
+            var mcqCount = document.getElementById('mcqCount').value;
+            var seqMarks = document.getElementById('seqMarks').value;
+            var seqCount = document.getElementById('seqCount').value;
+            var longMarks = document.getElementById('longMarks').value;
+            var longCount = document.getElementById('longCount').value;
+            var blankMarks = document.getElementById('fillBlankMarks').value;
+            var blankCount = document.getElementById('fillBlank').value;
+
+            var totalMarks = (mcqMarks * mcqCount) + (seqMarks * seqCount) + (longMarks * longCount) + (blankMarks * blankCount);
+            //document.getElementById('TotalMarks').value = totalMarks;
+            $("#TotalMarks").val(totalMarks);
+            //TotalMarks.setAttribute("value", totalMarks);
+        }
+        function changeColor() {            //not working
+            var input = document.getElementById('PassingMarks').value;
+            var compareTo = document.getElementById('TotalMarks').value;
+            if (input >= compareTo) {
+                input.style.backgroundColor = 'Red';
+            }
+        }
+    </script>
+}
+

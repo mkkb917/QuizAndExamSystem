@@ -1,0 +1,59 @@
+﻿@model IEnumerable<ExamSystem.Models.Notification>
+@using ExamSystem
+@{
+    ViewData["Title"] = "All Notifications";
+    Layout = "_Layout";
+}
+
+<style>
+ img {
+      margin:-10,-10,-10,-10;
+      object-fit: cover; /* Do not scale the image */
+      object-position: top; /* Center the image within the element */
+      width: 100%;
+      max-height: 250px;
+      background-size:cover;
+      margin-bottom: 1rem;
+      }
+</style>
+
+@if (Model != null)
+{
+    <div class="text-center container py-5">
+        <h4 class="mt-4 mb-5"><strong>Bestsellers</strong></h4>
+        @foreach (var item in Model)
+        {
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card">
+                        <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light" data-mdb-ripple-color="light">
+                            <a href="@WC.NotificationPath@item.NotificationFile" target="_blank">
+                                <img src="@WC.NotificationPath@item.NotificationFile" class="img img-fluid" /> <!-- w-100   width="250" height="300" -->
+                                <div class="mask">
+                                    <div class="d-flex justify-content-start align-items-end h-100">
+                                        <h5><span class="badge bg-primary ms-2">@item.IssuedBy</span></h5>
+                                    </div>
+                                </div>
+                                <div class="hover-overlay">
+                                    <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <a href="@WC.NotificationPath@item.NotificationFile" target="_blank">
+                                <h5 class="card-title mb-3">@item.Description</h5>
+                            </a>
+                            <p>@item.Code</p>
+                            <h6 class="mb-3">@User.Identity.Name</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+}
+else
+{
+    <h4 class="mt-4 mb-5"><strong>No Notification found</strong></h4>
+}

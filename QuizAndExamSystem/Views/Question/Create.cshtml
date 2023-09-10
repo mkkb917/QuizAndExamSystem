@@ -1,0 +1,373 @@
+﻿@model QuestionVM
+@inject UserManager<ApplicationUser> userManager;
+@{
+    ViewData["Title"] = "New";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+
+
+<div class="container">
+    <h2 style="text-align:center; color:red;">New Question</h2>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <!-- /.card-header -->
+            <div class="card-body table-responsive">
+                <form asp-action="Create">
+                    <!-- Hidden Fields-->
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input asp-for="CreatedBy" type="hidden" value="@User.Identity.Name" />
+                    <input asp-for="CreatedOn" type="hidden" value="@DateTime.Now.Date" />
+                    <input asp-for="UpdatedBy" type="hidden" value="" />
+                    <input asp-for="UpdatedOn" type="hidden" value="@DateTime.Now.Date" />
+                    <input asp-for="Code" type="hidden" value="QCode" />
+
+                    <!-- DropDown section-->
+                    <div class="table  table-hover">
+                        <div class="row"> <h5>Please select the appropriate category</h5></div>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-12">
+                                @{
+                                    if (TempData["TopicId"] == null)
+                                    {
+                                        <select id="GradeDDL" asp-for="GradeId" class="form-control" asp-items="ViewBag.Grades">
+                                            <option selected disabled>---Select Grade---</option>
+                                        </select>
+                                    }
+                                }
+                                <span asp-validation-for="GradeId" class="text-danger"></span>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-12">
+                                @{
+                                    if (TempData["TopicId"] == null)
+                                    {
+                                        <select id="SubjectDDL" asp-for="SubjectId" class="form-control">
+                                            /*asp-items="ViewBag.Subjects"*/
+                                            <option selected disabled>---Select Subject---</option>
+                                        </select>
+                                    }
+                                }
+                                <span asp-validation-for="SubjectId" class="text-danger"></span>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-12">
+                                @{
+                                    if (TempData["TopicId"] != null)
+                                    {
+                                        <input asp-for="TopicId" value="@TempData["TopicId"]" class="form-control" readonly="readonly" />
+                                    }
+                                    else
+                                    {
+                                        <select id="TopicDDL" asp-for="TopicId" class="form-control" asp-items="ViewBag.Topics">
+                                            <option selected disabled>---Select Unit---</option>
+                                        </select>
+                                    }
+                                }
+                                <span asp-validation-for="TopicId" class="text-danger"></span>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-12">
+                                <select id="QType" asp-for="QuestionType" class="form-control" asp-items="Html.GetEnumSelectList<QuestionTypes>()">
+                                    <option selected disabled>---Select Type---</option>
+                                </select>
+                                <span asp-validation-for="QuestionType" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                @{
+                                    if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                                    {
+                                        <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()" hidden><option value="@Status.Active"></option></select>
+                                    }
+                                    else
+                                    {
+                                        <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()" hidden><option value="@Status.Inactive"></option></select>
+                                    }
+                                }
+                                <span asp-validation-for="Status" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="background-color: white; height: 1px; border: 0;" />
+                    <!-- Question Section-->
+                    <div id="question" class="table  table-hover">
+                        <div class="row"><h5>Enter the Question Statement</h5></div>
+                        <div class="row">
+                            <div class=" col-lg-2 col-md-2 col-sm-12 col-12"> Question</div>
+                            <div class="col-lg-5 col-md-5 col-sm-12 col-12 ">
+                                <input asp-for="QuestionText" class="form-control" placeholder="Question in English" />
+                                <span asp-validation-for="QuestionText" class="text-danger"></span>
+                            </div>
+                            <div class="col-lg-5 col-md-5 col-sm-12 col-12 ">
+                                <span style="font-family:'Jameel Noori Nastaleeq' !important;">
+                                    <input asp-for="QuestionTextL" class=" form-control" dir="rtl" placeholder="سوال اردو میں " />
+                                </span>
+                                <span asp-validation-for="QuestionTextL" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="background-color: white; height: 1px; border: 0;" />
+                    <!-- Choice section-->
+                    <div id="choice" class="row">
+                        <div class="table  table-hover">
+                            <div class="row">
+                                <h5>Select the Answer</h5>
+                                <h5 class="ml-5 pl-5">Enter the choices</h5>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2 col-md-2 col-sm-12 col-12">
+                                    <input asp-for="CorrectAnswer" type="radio" id="option1" name="option" value="ChoiceTitle1" />
+                                    <label for="option1">Option 1</label>
+                                </div>
+                                <div class="col-lg-5 col-md-5 col-sm-12 col-12">
+                                    <input asp-for="ChoiceTitle1" class="form-control" maxlength="100" placeholder="Option 1 in English" />
+                                    <span asp-validation-for="ChoiceTitle1" class="text-danger"></span>
+                                </div>
+                                <div class="col-lg-5 col-md-5 col-sm-12 col-12">
+                                    <span style="font-family:'Jameel Noori Nastaleeq' !important; font-size:large;">
+                                        <input asp-for="CorrectAnswerL" type="radio" id="optionL1" name="optionl" value="ChoiceTitleL1" hidden />
+                                        <input asp-for="ChoiceTitleL1" class="form-control" maxlength="100" dir="rtl" placeholder="پہلا انتخاب اردو میں " />
+                                    </span>
+                                    <span asp-validation-for="ChoiceTitleL1" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2 col-md-2 col-sm-12 col-12">
+                                    <input asp-for="CorrectAnswer" type="radio" id="option2" name="option" value="ChoiceTitle2" />
+                                    <label for="option2">Option 2</label>
+                                </div>
+                                <div class="col-lg-5 col-md-5 col-sm-12 col-12">
+                                    <input asp-for="ChoiceTitle2" class="form-control" maxlength="100" placeholder="Option 2 in English" />
+                                    <span asp-validation-for="ChoiceTitle2" class="text-danger"></span>
+                                </div>
+                                <div class="col-lg-5 col-md-5 col-sm-12 col-12">
+                                    <span style="font-family:'Jameel Noori Nastaleeq' !important;">
+                                        <input asp-for="CorrectAnswerL" type="radio" id="optionL2" name="optionl" value="ChoiceTitleL2" hidden />
+                                        <input asp-for="ChoiceTitleL2" class="form-control" maxlength="100" dir="rtl" placeholder="انتخاب 2 اردو میں " />
+                                    </span>
+                                    <span asp-validation-for="ChoiceTitleL2" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2 col-md-2 col-sm-12 col-12">
+                                    <input asp-for="CorrectAnswer" type="radio" id="option3" name="option" value="ChoiceTitle3" />
+                                    <label for="option3">Option 3</label>
+                                </div>
+                                <div class="col-lg-5 col-md-5 col-sm-12 col-12">
+                                    <input asp-for="ChoiceTitle3" class="form-control" maxlength="100" placeholder="Option 3 in English" />
+                                    <span asp-validation-for="ChoiceTitle3" class="text-danger"></span>
+                                </div>
+                                <div class="col-lg-5 col-md-5 col-sm-12 col-12">
+                                    <span style="font-family:'Jameel Noori Nastaleeq' !important;">
+                                        <input asp-for="CorrectAnswerL" type="radio" id="optionL3" name="optionl" value="ChoiceTitleL3" hidden />
+                                        <input asp-for="ChoiceTitleL3" class="form-control" maxlength="100" dir="rtl" placeholder="انتخاب 3 اردو میں " />
+                                    </span>
+                                    <span asp-validation-for="ChoiceTitleL3" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2 col-md-2 col-sm-12 col-12">
+                                    <input asp-for="CorrectAnswer" type="radio" id="option4" name="option" value="ChoiceTitle4" />
+                                    <label for="option4">Option 4</label>
+                                </div>
+                                <div class="col-lg-5 col-md-5 col-sm-12 col-12">
+                                    <input asp-for="ChoiceTitle4" class="form-control" maxlength="100" placeholder="Option 4 in English" />
+                                    <span asp-validation-for="ChoiceTitle4" class="text-danger"></span>
+                                </div>
+                                <div class="col-lg-5 col-md-5 col-sm-12 col-12">
+                                    <span style="font-family:'Jameel Noori Nastaleeq' !important;">
+                                        <input asp-for="CorrectAnswerL" type="radio" id="optionL4" name="optionl" value="ChoiceTitleL4" hidden />
+                                        <input asp-for="ChoiceTitleL4" class="form-control" maxlength="100" dir="rtl" placeholder="انتخاب 4 اردو میں " />
+                                    </span>
+                                    <span asp-validation-for="ChoiceTitleL4" class="text-danger"></span>
+                                </div>
+
+                            </div>
+                        </div>
+                        <hr style="background-color: white; height: 1px; border: 0;" />
+                    </div>
+                    <!-- Answer section-->
+                    <div id="answer" class="table  table-hover">
+                        <div class="row">
+                            <h5>Enter the answer</h5>
+                        </div>
+                        <div class="row">
+                            <div class=" col-lg-2 col-md-2 col-sm-2 col-12">Answer</div>
+                            <div class="col-lg-5 col-md-5 col-sm-5 col-12">
+                                <textarea asp-for="CorrectAnswer" class="summernote form-control" rows="3" placeholder="Answer in English"></textarea>
+                                <span asp-validation-for="CorrectAnswer" class="text-danger"></span>
+                            </div>
+                            <div dir="rtl" class="col-lg-5 col-md-5 col-sm-5 col-12">
+                                <span dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important;">
+                                    <textarea asp-for="CorrectAnswerL" class="summernote form-control" rows="3" dir="rtl" placeholder="جواب اردو میں "></textarea>
+                                </span>
+                                <span asp-validation-for="CorrectAnswerL" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                                <label asp-for="Description" class="control-label"></label>
+                                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Meta section-->
+                    @*<div>
+                    <h5>Enter details of this question (Metadata)</h5>
+                    </div>
+                    <table id="meta" class="table  table-hover table-responsive">
+                    <thead class="row">
+                    <tr>
+                    <th>Difficulty</th>
+                    <th>Appeared</th>
+                    <th>Exam</th>
+                    <th>Session</th>
+                    <th>Granularity</th>
+                    <th>Keywords</th>
+                    <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody class="row">
+                    <tr>
+                    <td>
+                    <select asp-for="DifficultyLevel" class="form-control" asp-items="Html.GetEnumSelectList<DifficultyLevel>()"></select>
+                    <span asp-validation-for="DifficultyLevel" class="text-danger"></span>
+                    </td>
+                    <td>
+                    <select asp-for="BoardName" class="form-control" asp-items="Html.GetEnumSelectList<BoardNames>()"></select>
+                    <span asp-validation-for="BoardName" class="text-danger"></span>
+                    </td>
+                    <td>
+                    <select asp-for="ExamName" class="form-control" asp-items="Html.GetEnumSelectList<Exam>()"></select>
+                    <span asp-validation-for="ExamName" class="text-danger"></span>
+                    </td>
+                    <td>
+                    <select asp-for="SessionId" class="form-control" asp-items="Html.GetEnumSelectList<Session>()"></select>
+                    <span asp-validation-for="SessionId" class="text-danger"></span>
+                    </td>
+                    <td>
+                    <select asp-for="MarkAs" class="form-control" asp-items="Html.GetEnumSelectList<MarkAs>()"></select>
+                    <span asp-validation-for="MarkAs" class="text-danger"></span>
+                    </td>
+                    <td>
+                    <input asp-for="Keywords" class="form-control" rows="3" />
+                    <span asp-validation-for="Keywords" class="text-danger"></span>
+                    </td>
+                    <td>
+                    <input asp-for="Description" class="form-control" rows="3" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                    </td>
+                    </tr>
+                    </tbody>
+                    </table>
+
+                    <hr style="background-color: white; height: 1px; border: 0;" />*@
+                    <div class="col-12">
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success float-right"><i class="fas fa-floppy-disk"></i> Save</button>
+                            <a asp-controller="Question" asp-action="index" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+</div>
+
+@section Scripts{
+    <script>
+        // script code for Question Type DDL
+        $(function () {
+            $('#QType').change(function () {
+                var value = $(this).val();
+                if (value == '0') {
+                    $('#choice').show();
+                    $('#answer').hide();
+                } else {
+                    $('#choice').hide();
+                    $('#answer').show();
+                }
+            });
+        });
+
+        // script for radio buttons answers on mcqs
+
+        $(document).ready(function () {
+            $("#option1").click(function () {
+                $("#optionL1").prop("checked", true);
+                $("#optionL2").prop("checked", false);
+                $("#optionL3").prop("checked", false);
+                $("#optionL4").prop("checked", false);
+            });
+            $("#option2").click(function () {
+                $("#optionL1").prop("checked", false);
+                $("#optionL2").prop("checked", true);
+                $("#optionL3").prop("checked", false);
+                $("#optionL4").prop("checked", false);
+            });
+            $("#option3").click(function () {
+                $("#optionL1").prop("checked", false);
+                $("#optionL2").prop("checked", false);
+                $("#optionL3").prop("checked", true);
+                $("#optionL4").prop("checked", false);
+            });
+            $("#option4").click(function () {
+                $("#optionL1").prop("checked", false);
+                $("#optionL2").prop("checked", false);
+                $("#optionL3").prop("checked", false);
+                $("#optionL4").prop("checked", true);
+            });
+        });
+
+
+        // Script Code for Grade, Subject and Topic DDL
+        $(document).ready(function () {
+
+            // on change of gradeDDL                //code ok
+            $('#GradeDDL').change(function () {
+                var id = $(this).val();
+                $('#SubjectDDL').empty();
+                $('#SubjectDDL').append("<option>--Select Subject--</option>");
+                $.ajax({
+                    url: '/question/Subject?id=' + id,
+                    success:
+                        function (responce) {
+                            $.each(responce, function (i, data) {
+                                $('#SubjectDDL').append("<option value=" + data.id + ">" + data.subjectText + "</option>");
+                            });
+                        }
+                });
+            });
+            // on change of SubjectDDL
+            $('#SubjectDDL').change(function () {
+                var id = $(this).val();
+                $('#TopicDDL').empty();
+                $('#TopicDDL').append("<option>--Select Topic--</option>");
+                $.ajax({
+                    url: '/question/Topic?id=' + id,
+                    success:
+                        function (responce) {
+                            console.log(responce.data)
+                            $.each(responce, function (i, data) {
+                                $('#TopicDDL').append("<option value=" + data.id + ">" + data.topicText + "</option>");
+                            });
+                        }
+                });
+            });
+        });
+        $(document).ready(function () {
+            $('#summernote').summernote({ lang: 'es-ES' });
+        });
+        $(document).ready(function () {
+            $('#summernote2').summernote({
+                lang: 'ur-UR',
+
+            });
+        });
+    </script>
+}

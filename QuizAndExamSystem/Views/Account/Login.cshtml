@@ -1,0 +1,95 @@
+﻿@model LoginVM;
+
+@{
+    ViewData["Title"] = "Login to your account";
+}
+
+<section class="user-login section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="block">
+
+                    <!-- Image -->
+                    <div class="image align-self-center">
+                        <img class="img-fluid" src="~/images/Login/front-desk-sign-in.jpg"
+                             alt="desk-image">
+                    </div>
+
+                    <!-- Content -->
+                    <div class="content text-center">
+                        <div class="logo">
+                            <a asp-controller="Home" asp-action="Index"><img src="~/images/logo.png" alt=""></a>
+                        </div>
+
+                        <div class="title-text">
+                            <h3>Sign in to To Your Account</h3>
+                        </div>
+                        <form  asp-controller="Account" asp-action="Login" method="post" new { returnUrl = Context.Request.QueryString["ReturnUrl"]}> @*asp-route-returnurl="@Model.ReturnUrl">*@
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <!-- Username -->
+                            <input class="form-control main" type="text" asp-for="Email" placeholder="Email Address" required>
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                            <!-- Password -->
+                            <input class="form-control main" type="password" asp-for="Password" placeholder="Password" required>
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                            <!-- Remember me -->
+                            <div class="form-group">
+                                <div class="custom-control custom-checkbox">
+                                    <input asp-for="RememberMe" type="checkbox" class="custom-control-input">
+                                    <label class="custom-control-label" asp-for="RememberMe">@Html.DisplayNameFor(m => m.RememberMe)</label>
+                                </div>
+                            </div>
+                            @if (TempData["error"] != null)
+                            {
+                                <div class="form-control alert alert-danger">
+                                    <span>
+                                        <strong>Sorry!</strong> - @TempData["error"]
+                                    </span>
+                                </div>
+                            }
+                            <!-- Submit Button -->
+                            <input class="btn btn-main-sm btn-outline-primary" type="submit" value="Login">
+                        </form>
+                        <div class="new-acount">
+                            <a asp-controller="Account" asp-action="ForgotPassword">Forget your password?</a>
+                            <p>Don't Have an account? <a asp-controller="Account" asp-action="Signup"> SIGN UP</a></p>
+                        </div>
+
+
+                        <div class="title-text">
+                            <h3>Sign In Using</h3>
+                        </div>
+
+                        <!-- External login code-->
+                    @*    @{
+                            if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                            {
+                                <div>No external logins configured</div>
+                            }
+                            else
+                            {
+                                <form method="post" asp-action="ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl">
+                                    <div>
+                                        @foreach (var provider in Model.ExternalLogins)
+                                        {
+                                            <button type="submit" class="btn btn-primary" style="width:auto"
+                                            name="provider" value="@provider.Name"
+                                            title="Login using your @provider.DisplayName account">
+                                                @provider.DisplayName
+                                            </button>
+                                        }
+                                    </div>
+                                </form>
+                            }
+                        }*@
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+  
+</section>
+

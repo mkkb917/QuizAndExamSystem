@@ -1,0 +1,123 @@
+﻿@model SchoolVM
+@using ExamSystem;
+@{
+    ViewData["Title"] = "User Profile";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+
+<div class="container">
+    <div class="main-body">
+        <form method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="@Model.Id" type="hidden" />
+            <input asp-for="@Model.SchoolEmail" type="hidden" />
+            <div class="row gutters-sm">
+                <div class="col-md-5 mb-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex flex-column align-items-center text-center">
+                                <img src="@WC.ProfileImagePath@Model.SchoolLogo" id="ProfilePreview" alt="Admin" class="rounded-circle" width="150">
+                                <input type="file" name="Logo" id="uploadBox" class="form-control" />
+                                <span asp-validation-for="@Model.SchoolLogo" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mt-3">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                <h6 class="mb-0"><svg xmlns="@Model.SchoolEmail" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-globe mr-2 icon-inline"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>Email</h6>
+                                <span class="text-secondary text-danger"><input asp-for="@Model.SchoolEmail" type="email" id="email" class="form-control" disabled /></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <h3>Department Information</h3>
+                            <hr />
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h6 class="mb-0">Institute Name:</h6>
+                                </div>
+                                <div class="col-sm-8 text-secondary">
+                                    <input asp-for="@Model.SchoolName" type="text" class="form-control" />
+                                    <span asp-validation-for="@Model.SchoolName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h6 class="mb-0">EMIS Code:</h6>
+                                </div>
+                                <div class="col-sm-8 text-secondary">
+                                    <input asp-for="@Model.SchoolCode" type="tel" placeholder="33112233" pattern="[0-9]{8}" maxlength="8" class="form-control" />
+                                    <span asp-validation-for="@Model.SchoolCode" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h6 class="mb-0">Address:</h6>
+                                </div>
+                                <div class="col-sm-8 text-secondary">
+                                    <input asp-for="@Model.SchoolAddress" type="text" class="form-control" />
+                                    <span asp-validation-for="@Model.SchoolAddress" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h6 class="mb-0">Description:</h6>
+                                </div>
+                                <div class="col-sm-8 text-secondary">
+                                    <input asp-for="@Model.SchoolDescription" type="text" class="form-control" />
+                                    <span asp-validation-for="@Model.SchoolDescription" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h6 class="mb-0">Contact Number:</h6>
+                                </div>
+                                <div class="col-sm-8 text-secondary ">
+                                    <input asp-for="@Model.SchoolContactNumber" type="tel" placeholder="0333 123 4567" pattern="[0-9]{11}" maxlength="11" class="form-control" />
+                                    <span asp-validation-for="@Model.SchoolContactNumber" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h6 class="mb-0">Type:</h6>
+                                </div>
+                                <div class="col-sm-8 text-secondary ">
+                                    <select id="SchoolType" asp-for="SchoolType" class="form-control" asp-items="Html.GetEnumSelectList<SchoolType>()"><option disabled selected>---Select type---</option></select>
+                                    <span asp-validation-for="@Model.SchoolType" class="text-danger"></span>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="row">
+                <button asp-action="EditSchoolProfile" asp-route-id="@Model.Id" class="btn btn-success float-right"><i class="fas fa-floppy-disk"></i> Update</button>
+                <a class="btn btn-outline-info" asp-action="SchoolProfile" asp-route-id="@Model.Id"> <i class="bi bi-arrow"></i> Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        <partial name="_ValidationScriptsPartial" />
+
+            $("#uploadBox").on("change", function () {
+                var output = document.getElementById('ProfilePreview');
+                output.src = $(this).val();
+            })
+    </script>
+}

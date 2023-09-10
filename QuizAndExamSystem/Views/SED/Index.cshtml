@@ -1,0 +1,75 @@
+﻿@model IEnumerable<ExamSystem.Models.SED>
+@using ExamSystem
+@{
+    ViewData["Title"] = "All SED Data";
+    Layout = "_Layout";
+
+}
+
+
+@if (Model != null)
+{
+
+    <div class="container">
+        <div class="text-center">
+            <button class="btn btn-dark filter-button" data-filter="all">All</button>
+            @foreach (var obj in Enum.GetNames(typeof(SEDCategory)))
+            {
+                <button class="btn btn-outline-primary filter-button" data-filter="@Enum.Parse(typeof(SEDCategory), obj)"> @obj </button> <!--obj.Code.Replace(' ','_')-->
+            }
+        </div>
+        <br>
+        <div class="row">
+            <div class="input-group mt-3 justify-content-end">
+                <input type="text" class="search" style="width:100%" placeholder="Search item...">
+            </div>
+        </div>
+        
+        <br>
+        <div class="row" >
+            @foreach (var item in Model)
+            {
+                // partial view of all SED files based on Code
+                <partial name="_IndividualSEDView" model="item" />
+            }
+        </div>
+    </div>
+}
+else
+{
+    <h4 class="mt-4 mb-5"><strong>No Data found</strong></h4>
+}
+
+
+@section Scripts{
+    <script>
+            //src = "~/js/SearchFunction";
+
+        $(document).ready(function() {
+            $(".filter-button").click(function() {
+                var value = $(this).attr('data-filter');
+                if (value == "all") {
+                    $('.filter').show('1000');
+                }
+                else {
+                    $('.filter').not('.' + value).hide('3000');
+                    $('.filter').filter('.' + value).show('3000');
+                }
+            });
+        });
+
+        
+            //search code for search bar    ok
+        $(".search").on("keyup", function () {
+            var input = $(this).val().toUpperCase();
+
+            $(".card").each(function () {
+                if ($(this).data("string").toUpperCase().indexOf(input) < 0) {
+                    $(this).hide();
+                } else {
+                    $(this).show();
+                }
+            })
+        });
+    </script>
+}

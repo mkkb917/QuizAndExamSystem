@@ -1,0 +1,78 @@
+﻿@using ExamSystem.Data.ViewModels;
+@model RegisterVM;
+
+@{
+    ViewData["Title"] = "Register New User";
+}
+
+
+<!--=============================
+=            Sign Up            =
+==============================-->
+
+<section class="user-login section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="block">
+                    <!-- Image -->
+                    <div class="image align-self-center">
+                        <img class="img-fluid" src="~/images/Login/sign-up.jpg" alt="desk-image">
+                    </div>
+                    <!-- Content -->
+                    <div class="content text-center">
+                        <div class="logo">
+                            <a asp-controller="Home" asp-action="Index" ><img src="~/images/logo.png" alt=""></a>
+                        </div>
+                        <div class="title-text">
+                            <h3>Sign Up for New Account</h3>
+                        </div>
+                        <form asp-action="Register">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <fieldset data-role="control-group">
+                            <span asp-validation-for="Role" class="text-danger"></span>
+                                <legend>I am a </legend>
+                                <label for="Teacher" class="float-left">Teacher</label>
+                                <input class="main float-left" asp-for="Role" type="radio" value="Teacher" id="Teacher"/>
+                                <label for="Student">Student</label>
+                                <input class="main" asp-for="Role" type="radio" value="Student" id="Student"/>
+                            </fieldset>
+                            <!-- First -->
+                            <input class="form-control main" asp-for="FirstName" type="text" placeholder="Your Full Name" required>
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                            <!-- Last Name-->
+                            <input class="form-control main" asp-for="LastName" type="text" placeholder="Your Last Name" required>
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                            <!-- Email -->
+                            <input class="form-control main" asp-for="Email" type="email" placeholder="Email Address" required>
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                            <!-- Password -->
+                            <input class="form-control main" asp-for="Password" type="password" placeholder="Password" required>
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                            <!-- Confirm Password -->
+                            <input class="form-control main" asp-for="ConfirmPassword" type="password"  placeholder="Confirm Password" required>
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                            <!-- TempData validation-->
+                            @if (TempData["error"] != null)
+                            {
+                                <div class="form-control alert alert-danger">
+                                    <span>
+                                        <strong>Sorry!</strong> - @TempData["error"]
+                                    </span>
+                                </div>
+                            }
+                            <!-- Submit Button -->
+                            <button class="btn btn-main-md btn-outline-primary" type="submit">sign up</button>
+                        </form>
+                        <div class="new-acount">
+                            <p>By clicking “Sign Up” I agree to <a asp-controller="Home" asp-action="Privacy">Terms of Conditions.</a></p>
+                            <p>Anready have an account? <a asp-action="Login">SIGN IN</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--====  End of Sign Up  ====-->

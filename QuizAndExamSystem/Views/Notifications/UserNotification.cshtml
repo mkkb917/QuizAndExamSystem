@@ -1,0 +1,61 @@
+﻿@model IEnumerable<ExamSystem.Models.Notification>
+@using ExamSystem
+@{
+    ViewData["Title"] = "All Notifications";
+    Layout = "_DashboardLayout";
+}
+
+@*@if (Model != null)
+{*@
+<div class="row">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <a asp-controller="Notifications" asp-action="Create" class="btn btn-primary float-right"> <i class="fas fa-plus-circle"></i> Add New Notification</a>
+    }
+
+</div>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-lg-4">
+                <div class="card">
+                    <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
+                     data-mdb-ripple-color="light">
+                        <a href="@WC.NotificationPath@item.NotificationFile" target="_blank">
+                            <img src="@WC.NotificationPath@item.NotificationFile"
+                             class="w-100" />
+
+                            <div class="mask">
+                                <div class="d-flex justify-content-start align-items-end h-100">
+                                    <h5><span class="badge bg-primary ms-2">@item.IssuedBy</span></h5>
+                                </div>
+                            </div>
+                            <div class="hover-overlay">
+                                <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        <a  href="@WC.NotificationPath@item.NotificationFile" target="_blank" class="text-reset">
+                            <h5 class="card-title mb-3">@item.Description</h5>
+                        </a>
+                        <p>@item.Code</p>
+                        
+                        <p>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary float-left"><i class="fas fa-pencil"></i>Edit</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger float-right"><i class="fas fa-recycle"></i>Delete</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        
+    }
+
+</div>
+@*}
+else
+{
+    <h4 class="mt-4 mb-5"><strong>No Notification found</strong></h4>
+}
+*@

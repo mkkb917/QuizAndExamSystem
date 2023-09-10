@@ -1,0 +1,60 @@
+﻿@model ExamSystem.Models.Uploads
+
+@inject UserManager<ApplicationUser> UserManager
+
+
+@{
+    string Path = "";
+    Enum.TryParse(Model.FileType.ToString(), out UploadsCategory category);
+    if (Model.FileType == UploadsCategory.Books) //books
+    {
+        Path = @WC.UploadBooksPathPDF;
+    }
+    else if (Model.FileType == UploadsCategory.PastPapers) //pastpapers
+    {
+        Path = @WC.UploadPaperPathPDF;
+    }
+    else if (Model.FileType == UploadsCategory.Notes) //Notes
+    {
+        Path = @WC.UploadNotesPathPDF;
+    }
+    else if (Model.FileType == UploadsCategory.Syllabus) //syllabus
+    {
+        Path = @WC.UploadSyllabusPathPDF;
+    }
+}
+
+@if (Model != null)
+{
+    <div class="col-lg-3 col-sm-5 col-12 filter @category">
+        <div class="card">
+            <a asp-controller="StudyMaterial" asp-action="Details" asp-route-id="@Model.Id">
+                <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light" data-mdb-ripple-color="light">
+                    <img src="@Path@Model.FileThumbnail" alt="Card image" width="100%" height="200px">
+                </div>
+                <label class="text-light">@category.ToString()</label>
+                <div class="card-block">
+                    <h4>@Model.Title</h4>
+                    <span class="text-danger">Author: @Model.Author</span>
+                    <p>@Model.Description</p>
+
+                </div>
+            </a>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <p>
+                    <a asp-controller="StudyMaterial" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary float-left"><i class="fas fa-pencil"></i>Edit</a>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-controller="StudyMaterial" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger float-right"><i class="fas fa-recycle"></i>Delete</a>
+                    }
+                </p>
+            }
+        </div>
+    </div>
+
+}
+else
+{
+    <h4 class="mt-4 mb-5"><strong>No Data found</strong></h4>
+}

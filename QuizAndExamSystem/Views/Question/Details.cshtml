@@ -1,0 +1,242 @@
+﻿@model QuestionVM
+@using ExamSystem.Data.Static;
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+
+}
+
+
+<div class="container">
+    <h2 style="text-align:center; color:red;">Question Detials</h2>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <!-- /.card-header -->
+            <div class="card-body table-responsive">
+                <form asp-action="Delete" method="POST">
+                    <div class="col-12">
+                        <a asp-controller="Question" asp-action="index" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <button type="submit" class="btn btn-success mr-2 float-right"><i class="fas fa-trash"></i> Delete</button>
+                        }
+                        <a asp-controller="Question" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary mr-2 float-right"><i class="fas fa-pencil-square"></i>   Edit  </a>
+                    </div>
+                </form>
+                <!-- Question Section-->
+                <hr style="background-color: white; height: 1px; border: 0;" />
+                <div id="question" class="table  table-hover">
+                    <div class="row"><h5>Question Statement</h5></div>
+                    <div class="row">
+                        <div class=" col-lg-2 col-md-2 col-sm-12 col-12"> Question</div>
+                        <div class="col-lg-5 col-md-5 col-sm-12 col-12 ">
+                            <textarea class="form-control">
+                                @Html.DisplayFor(model => model.QuestionText)
+                            </textarea>
+                        </div>
+                        <div style="text-align:right" class=" col-lg-5 col-md-5 col-sm-12 col-12 ">
+                            <textarea class=" form-control" dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important;">
+                                @*<span style="font-family:'Jameel Noori Nastaleeq' !important;">*@
+                                @Html.DisplayFor(model => model.QuestionTextL)
+                                @*</span>*@
+                            </textarea>
+                        </div>
+                    </div>
+                </div>
+                @if (Model.QuestionType == QuestionTypes.MCQ)
+                {
+                    <!-- Choice section-->
+                    <div id="choice" class="row">
+                        <div class="table  table-hover">
+                            <div class="row">
+                                <h5>Choices</h5>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2 col-md-2 col-sm-12 col-12">Option 1</div>
+                                <div class="col-lg-5 col-md-5 col-sm-12 col-12">
+                                    <label class="form-control" maxlength="100">
+                                        @Html.DisplayFor(model => model.ChoiceTitle1)
+                                    </label>
+                                </div>
+                                <div style="text-align:right" class="col-lg-5 col-md-5 col-sm-12 col-12">
+                                    <label class="form-control" maxlength="100" dir="rtl">
+                                        <span style="font-family:'Jameel Noori Nastaleeq' !important;">
+                                            @Html.DisplayFor(model => model.ChoiceTitleL1)
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2 col-md-2 col-sm-12 col-12">Option 2</div>
+                                <div class="col-lg-5 col-md-5 col-sm-12 col-12">
+                                    <label class="form-control" maxlength="100">
+                                        @Html.DisplayFor(model => model.ChoiceTitle2)
+                                    </label>
+                                </div>
+                                <div style="text-align:right" class="col-lg-5 col-md-5 col-sm-12 col-12">
+                                    <label class="form-control" maxlength="100" dir="rtl">
+                                        <span style="font-family:'Jameel Noori Nastaleeq' !important;">
+                                            @Html.DisplayFor(model => model.ChoiceTitleL2)
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2 col-md-2 col-sm-12 col-12">Option 3</div>
+                                <div class="col-lg-5 col-md-5 col-sm-12 col-12">
+                                    <label class="form-control" maxlength="100">
+                                        @Html.DisplayFor(model => model.ChoiceTitle3)
+                                    </label>
+                                </div>
+                                <div style="text-align:right" class="col-lg-5 col-md-5 col-sm-12 col-12">
+                                    <label class="form-control" maxlength="100" dir="rtl">
+                                        <span style="font-family:'Jameel Noori Nastaleeq' !important;">
+                                            @Html.DisplayFor(model => model.ChoiceTitleL3)
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2 col-md-2 col-sm-12 col-12">Option 4</div>
+                                <div class="col-lg-5 col-md-5 col-sm-12 col-12">
+                                    <label class="form-control" maxlength="100">
+                                        @Html.DisplayFor(model => model.ChoiceTitle4)
+                                    </label>
+                                </div>
+                                <div style="text-align:right" class="col-lg-5 col-md-5 col-sm-12 col-12">
+                                    <label class="form-control" dir="rtl">
+                                        <span style="font-family:'Jameel Noori Nastaleeq' !important;">
+                                            @Html.DisplayFor(model => model.ChoiceTitleL4)
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <hr style="background-color: white; height: 1px; border: 0;" />
+                    </div>
+                }
+                else
+                {
+                    <!-- Answer section-->
+                    <div id="answer" class="table  table-hover">
+                        <div class="row">
+                            <h5>Answer</h5>
+                        </div>
+                        <div class="row">
+                            <div class=" col-lg-2 col-md-2 col-sm-2 col-12">Answer</div>
+                            <div class=" col-lg-5 col-md-5 col-sm-5 col-12">
+                                <textarea asp-for="CorrectAnswer" class="form-control" rows="3"></textarea>
+                            </div>
+                            <div style="text-align:right" class=" col-lg-5 col-md-5 col-sm-5 col-12">
+                                <span style="font-family:'Jameel Noori Nastaleeq' !important;">
+                                    <textarea asp-for="CorrectAnswerL" class="form-control" rows="3" dir="rtl"></textarea>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div id="description" class="row mt-2">
+                    <div class=" col-lg-2 col-md-2 col-sm-2 col-12">
+                        <label asp-for="Description" class="control-label"></label>
+                    </div>
+                    <div class=" col-lg-10 col-md-10 col-sm-10 col-12">
+                        <textarea asp-for="Description" class="form-control" rows="3" placeholder=" Detail of this question."></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <hr style="background-color: white; height: 1px; border: 0;" />
+                <!-- Meta section-->
+                <div id="meta" class="table  table-hover">
+                    <div class="row">
+                        <h5>Appeared in the exams (Metadata)</h5>
+                        @if (User.IsInRole("Admin")||User.IsInRole("Teacher"))
+                        {
+                            <h5 style="float:right;" class="align-content-end"><a asp-controller="Question" asp-action="Edit" asp-route-id="@Model.Id" class="float-right"><i class="fas fa-plus-square"></i></a></h5>
+                        }
+                    </div>
+                    <table class="table table-hover table-responsive">
+                        <tr>
+                            <th>Status</th>
+                            <th>Type</th>
+                            <th>Difficulty</th>
+                            <th>Appeared in</th>
+                            <th>Exam</th>
+                            <th>Session</th>
+                            <th>Year</th>
+                            <th>Granularity</th>
+                            <th>Keywords</th>
+                        </tr>
+                        <tr>
+                            <td class="col-lg-2 col-md-2 col-sm-6 col-12">
+                                @Html.DisplayFor(model => model.Status)
+                            </td>
+                            <td class="col-lg-2 col-md-2 col-sm-6 col-12">
+                                @Html.DisplayFor(model=>model.QuestionType)
+                            </td>
+                            <td class="col-lg-2 col-md-2 col-sm-6 col-12">
+                                @Html.DisplayFor(model => model.DifficultyLevel)
+                            </td>
+                            <td class="col-lg-2 col-md-2 col-sm-6 col-12">
+                                @Html.DisplayFor(model => model.BoardName)
+                            </td>
+                            <td class="col-lg-2 col-md-2 col-sm-6 col-12">
+                                @Html.DisplayFor(model => model.ExamName)
+                            </td>
+                            <td class="col-lg-2 col-md-2 col-sm-6 col-12">
+                                @Html.DisplayFor(model => model.SessionId)
+                            </td>
+                            <td class="col-lg-2 col-md-2 col-sm-6 col-12">
+                                2023
+                            </td>
+                            <td class="col-lg-2 col-md-2 col-sm-6 col-12">
+                                @Html.DisplayFor(model => model.MarkAs)
+                            </td>
+                            <td class="col-lg-6 col-md-6 col-sm-12 col-12">
+                                @Html.DisplayFor(model => model.Keywords)
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <hr style="background-color: white; height: 1px; border: 0;" />
+                <form asp-action="Delete" method="POST">
+                    <div class="col-12">
+                        <a asp-controller="Question" asp-action="index" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <button type="submit" class="btn btn-success mr-2 float-right"><i class="fas fa-trash"></i> Delete</button>
+                        }
+                        <a asp-controller="Question" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary mr-2 float-right"><i class="fas fa-pencil-square"></i>   Edit  </a>
+                    </div>
+                </form>
+                <!--</form>-->
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+</div>
+
+@section Scripts{
+    <script>
+        // script code for Question Type DDL
+        $(document).ready(function () {
+            $('#QType').change(function () {
+                var value = $(this).val();
+                if (value == '0') {
+                    $('#choice').show();
+                    $('#answer').hide();
+                } else {
+                    $('#choice').hide();
+                    $('#answer').show();
+                }
+            });
+        });
+
+    </script>
+    }

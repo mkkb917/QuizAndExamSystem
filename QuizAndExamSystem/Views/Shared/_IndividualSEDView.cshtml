@@ -1,0 +1,41 @@
+﻿@model ExamSystem.Models.SED
+
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    Enum.TryParse(Model.Code, out SEDCategory category);
+}
+
+
+<div class="col-lg-3 col-sm-5 col-12 filter @category">
+    <div class="card" data-string="{{@Model.IssuedBy}}{{@Model.Title}}{{@Model.Date}}{{@category.ToString()}}">
+        <a href="@WC.PDF_SED_Path@Model.FileName" target="_blank">
+            <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light" data-mdb-ripple-color="light">
+                <img src="@WC.PDF_SED_Path@Model.FileFaceImage" alt="Card image cap" width="100%" height="200px">
+            </div>
+            <label class="text-light">@category.ToString()</label>
+            <label class="text-light date text-center">@Model.Date.ToShortDateString()</label>
+            <div class="card-block">
+                <h4>@Model.Title</h4>
+                <span class="text-danger">Issued by: @Model.IssuedBy</span>
+                <p>@Model.Description</p>
+
+            </div>
+        </a>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <p>
+                <a asp-controller="SED" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary float-left"><i class="fas fa-pencil"></i>Edit</a>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-controller="SED" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger float-right"><i class="fas fa-recycle"></i>Delete</a>
+                }
+            </p>
+        }
+    </div>
+</div>
+@section Scripts{
+    <script>
+
+    </script>
+}

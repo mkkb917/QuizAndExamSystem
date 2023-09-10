@@ -1,0 +1,84 @@
+﻿@{
+    ViewData["Title"] = " Quiz";
+    Layout = "_DashboardLayout";
+
+}
+
+
+<div class="container">
+    <h2 style="text-align:center; color:red;">Take Quiz</h2>
+</div>
+
+<div class="container">
+
+    <h5>Please select the appropriate category</h5>
+    <!-- DropDown section-->
+    <div class="row">
+        <div class="col">
+            <form action="QuizView" method="post">
+                <div class="row">
+                    <div class="col-3">
+                        <label class="control-label">Choose Class</label>
+                        <select id="GradeDDL" name="GradeDDL" class="form-control" asp-items="ViewBag.Grades"> <option selected disabled>---Select Grade---</option>  </select>
+                    </div>
+                    <div class="col-3">
+                        <label class="control-label">Choose Subject</label>
+                        <select id="SubjectDDL" name="SubjectDDL" onconchange="selectedText" class="form-control"> <option selected disabled>---Select Subject---</option> </select>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+
+                    <button type="submit" class="btn btn-success float-right m-2">Start Online Quiz</button>
+                        @*<a class="btn btn-primary" asp-action="GeneratePapers"> <i class="fas fa-pencil-square"></i>Generate</a>*@
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts{
+
+    <script>
+        // Script Code for Grade, Subject and Topic DDL
+        $(document).ready(function () {
+            // grades comes from ViewBag.Grades
+            // on change of gradeDDL                //code ok
+            $('#GradeDDL').change(function () {
+                var id = $(this).val();
+                $('#SubjectDDL').empty();
+                $('#SubjectDDL').append("<option>--Select Subject--</option>");
+                $.ajax({
+                    url: '/Quiz/Subject?id=' + id,
+                    success:
+                        function (responce) {
+                            $.each(responce, function (i, data) {
+                                $('#SubjectDDL').append("<option value=" + data.id + ">" + data.subjectText + "</option>");
+                            });
+                        }
+                });
+            });
+
+            // on change of SubjectDDL                      Code OK
+            $('#SubjectDDL').change(function () {
+                var id = $(this).val();
+                $('#tableUnits tr:not(:first)').remove();
+                $.ajax({
+                    type: "POST",
+                    url: '/Quiz/GetTableData?id=' + id,
+                    data: '{ }',
+                    success: function (response) {
+                        var trHTML = '';
+                        $.each(response, function (i, item) {
+                            //trHTML += '<tr><td>' + item.code + '</td><td>' + item.topicText + '</td><td><table><tr><td>MCQs</td><td>'+item.mcqCount+'</td><td><input type="number"></td></tr><tr><td>SEQs</td><td>' + item.seqCount + '</td></tr><tr><td>Long Questions</td><td>' + item.longQCount + '</td></tr><tr><td>Fill in the blanks</td><td>' + item.fillinBlankCount + '</td></tr></table></td>';
+                            trHTML += '<tr><td><input asp-for="' + item.id + '" type="checkbox"/></td><td>' + item.code + '</td><td>' + item.topicText + '</td><td>' + item.mcqCount + '</td><td>' + item.seqCount + '</td><td>' + item.longQCount + '</td><td>' + item.fillinBlankCount + '</td></tr>';
+                        });
+                        $('#tableUnits').append(trHTML);
+                    }
+                });
+            });
+
+        });
+
+    </script>
+
+}

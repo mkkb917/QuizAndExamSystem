@@ -1,0 +1,87 @@
+﻿@model ExamSystem.Data.ViewModels.QuizViewVM
+
+@{
+    ViewData["Title"] = "PaperBoardLayout";
+    //Layout = "PaperBoardLayout";
+    int i = 1;
+}
+
+<div>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @foreach (var item in Model.QuizMcqs)
+        {
+            <table style="border:solid; border-block-width: 1px; width:100%">
+                <!-- Objective Paper Part-->
+                <tr style=" width:100%; margin:0px;">
+                    <td colspan="2" style="width:60%; text-align:left;">
+                        @i:  @item.QuestionText
+                    </td>
+                    <td colspan="2" style="width:40%; text-align:right;" dir="rtl">
+                        @i: <span style="font-family:'Jameel Noori Nastaleeq' !important;">@item.QuestionTextL</span>
+                    </td>
+                </tr>
+                <tr style="width:100%; margin:0px;">
+                    <td style=" width:25%; margin-left:10px">
+                        <input type="radio" name="mcq" id="option1" value="@item.OptionsQnA.Choice1 && @item.OptionsQnA.ChoiceL1">
+                        <lable for="mcq">
+                            @item.OptionsQnA.Choice1 &nbsp;
+                            <span dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important;">@item.OptionsQnA.ChoiceL1</span>
+                        </lable>
+                    </td>
+                    <td style="width:25%;">
+
+                        @item.OptionsQnA.Choice2 &nbsp;
+                        <span dir="rtl" style=" font-family:'Jameel Noori Nastaleeq' !important;">@item.OptionsQnA.ChoiceL2</span>
+                    </td>
+                    <td style="width:25%;">
+
+                        @item.OptionsQnA.Choice3 &nbsp;
+                        <span dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important;">@item.OptionsQnA.ChoiceL3</span>
+                    </td>
+                    <td style="width:25%;">
+
+                        @item.OptionsQnA.Choice4 &nbsp;
+                        <span dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important;">@item.OptionsQnA.ChoiceL4</span>
+                    </td>
+                </tr>
+            </table>
+            i++;
+        }
+    }
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            startCountDown(250);
+        });
+
+        function startCountDown(timeleft) {
+            var interval = setInterval(countDown, 1000);
+            update();
+
+            function countDown() {
+                if (--timeleft > 0) {
+                    update();
+                }
+                else {
+                    clearInterval(interval);
+                    update();
+                    completed();
+                }
+            }
+            function update() {
+                hours = Math.floor(timeleft / 3600);
+                minutes = Math.floor((timeleft % 3600) / 60);
+                second = timeleft % 60;
+                document.getElementById('lbltimer').innerHTML = '' + hours + ':' + minutes + ':' + second;
+            }
+            function completed() {
+                // do after timers time is out
+                document.write("Time is up !!!.")
+            }
+        }
+    </script>
+    }

@@ -1,0 +1,127 @@
+﻿@model TopicsVM
+@inject UserManager<ApplicationUser> userManager;
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Create New Topic</h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive">
+                <table id="tblData" class="table table-bordered table-hover">
+                    <form asp-action="Create">
+                        <div class="form-group">
+                            <button type="submit" value="Create" class="btn btn-success float-right"><i class="fas fa-floppy-disk"></i> Create </button>
+                            <a asp-controller="Topic" asp-action="TopicsList" asp-route-id="@TempData["SubjectId"]" class="btn btn-secondary"> <i class="fas fa-arrow-back"></i> Cancel</a>
+                        </div>
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input asp-for="user" type="hidden" value="@User.Identity.Name" />
+                        <div class="form-group">
+                            <label asp-for="SubjectId" class="control-label"></label>
+                            @{
+                                if (TempData["SubjectId"] != null)
+                                {
+                                    <input asp-for="SubjectId" value="@TempData["SubjectId"]" class="form-control" readonly="readonly" />
+                                }
+                                else
+                                {
+                                    <select asp-for="SubjectId" class="form-control" asp-items="ViewBag.Grades"></select>
+                                }
+                            }
+
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Code" class="control-label"></label>
+                            <input asp-for="Code" class="form-control" placeholder="Unit-1"/>
+                            <span asp-validation-for="Code" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="TopicText" class="control-label"></label>
+                            <input asp-for="TopicText" class="form-control" placeholder=" Unit Name"/>
+                            <span asp-validation-for="TopicText" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Status" class="control-label"></label>
+                            @{
+                                if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                                {
+                                    <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()"><option value="">---Select---</option></select>
+                                }
+                                else
+                                {
+                                    <input asp-for="Status" value="1" type="number" class="form-control" disabled="disabled" />
+                                }
+                            }
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Description" class="control-label"></label>
+                            <textarea asp-for="Description" class="form-control" type="text" placeholder="Enter the Unit Description "></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Pairing Scheme Questions and Marks Distribution of this Unit.</label>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th><label asp-for="MCQCount" class="control-label"></label></th>
+                                        <th><label asp-for="MCQMarks" class="control-label"></label></th>
+                                        <th><label asp-for="SEQCount" class="control-label"></label></th>
+                                        <th><label asp-for="SEQMarks" class="control-label"></label></th>
+                                        <th><label asp-for="LongQCount" class="control-label"></label></th>
+                                        <th><label asp-for="LongQMarks" class="control-label"></label></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>
+                                            <input asp-for="MCQCount" class="form-control" />
+                                            <span asp-validation-for="MCQCount" class="text-danger"></span>
+                                        </th>
+                                        <th>
+                                            <input asp-for="MCQMarks" class="form-control" />
+                                            <span asp-validation-for="MCQMarks" class="text-danger"></span>
+                                        </th>
+                                        <th>
+                                            <input asp-for="SEQCount" class="form-control" />
+                                            <span asp-validation-for="SEQCount" class="text-danger"></span>
+                                        </th>
+                                        <th>
+                                            <input asp-for="SEQMarks" class="form-control" />
+                                            <span asp-validation-for="SEQMarks" class="text-danger"></span>
+                                        </th>
+                                        <th>
+                                            <input asp-for="LongQCount" class="form-control" />
+                                            <span asp-validation-for="LongQCount" class="text-danger"></span>
+                                        </th>
+                                        <th>
+                                            <input asp-for="LongQMarks" class="form-control" />
+                                            <span asp-validation-for="LongQMarks" class="text-danger"></span>
+                                        </th>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <hr />
+                        <div class="form-group">
+                            <button type="submit" value="Create" class="btn btn-success float-right"><i class="fas fa-floppy-disk"></i> Create </button>
+                            <a asp-controller="Topic" asp-action="TopicsList" asp-route-id="@TempData["SubjectId"]" class="btn btn-secondary"> <i class="fas fa-arrow-back"></i> Cancel</a>
+                        </div>
+                    </form>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+</div>
+
+

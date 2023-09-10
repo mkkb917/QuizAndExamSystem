@@ -1,0 +1,163 @@
+﻿@using Newtonsoft.Json;
+@model QuizViewVM
+@{
+    ViewData["Title"] = " Quiz";
+    Layout = "_DashboardLayout";
+
+}
+
+
+<div class="container">
+    <h2 style="text-align:center; color:red;">Quiz: @Model.Subject</h2>
+</div>
+<div class="container-fluid">
+    <h3 class="accent-danger">@TempData["error"]</h3>
+</div>
+<!-- Call the Partial View to display Quiz-->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col"><label class="h4">@Model.Grade</label></div>
+        <div class="col"><label class="h4">@Model.Subject</label></div>
+        <div class="col"><label class="h4">@Model.UserName</label></div>
+        <div class="col"><label class="h4" id="lbltimer"></label></div>
+    </div>
+    @*    <div class="row">
+    <partial name="_QuizPartialView" model="Model" />
+    </div>*@
+    <div class="row">
+        <form action="QuizResult" method="post">
+            <input asp-for="UserName" type="hidden" value="@User.Identity.Name" />
+            <input asp-for="Subject" type="hidden" value="@Model.Subject" />
+            <input asp-for="Grade" type="hidden" value="@Model.Grade" />
+            <input asp-for="TotalMarks" type="hidden" value="@Model.TotalMarks" />
+            <input id="timer" asp-for="Duration" type="hidden" value="@Model.Duration" />
+            @for (int q = 0; q < Model.QuizMcqs.Count; q++)
+            {
+                <div class="form-fieldset">
+                    <table class=" table table-bordered justify-content-end">
+                        <!-- Objective Paper Part-->
+                        <tr>
+                            <td colspan="2">
+                                @Html.HiddenFor(m=>m.QuizMcqs[q].QuestionID)
+                                @Html.HiddenFor(m=>m.QuizMcqs[q].OptionsQnA.Answer)
+                                @Html.HiddenFor(m=>m.QuizMcqs[q].OptionsQnA.AnswerL)
+                                @(q + 1):  @Model.QuizMcqs[q].QuestionText
+                            </td>
+                            <td colspan="2" dir="rtl" class="text-right">
+                                @(q + 1): <span dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important;">@Model.QuizMcqs[q].QuestionTextL</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="ml-3">@Html.RadioButtonFor(m=>m.QuizMcqs[q].SelectedAnswer,"1", new { @class = "form-check-input" })</span>
+                                <lable for="@Model.QuizMcqs[q].QuestionID"> @Model.QuizMcqs[q].OptionsQnA.Choice1 &nbsp;&nbsp;</lable>
+                                <lable for="@Model.QuizMcqs[q].QuestionID">
+                                    <span class="text-right" dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important; direction:rtl;">@Model.QuizMcqs[q].OptionsQnA.ChoiceL1</span>
+                                </lable>
+                            </td>
+                            <td>
+                                <span class="ml-3">
+                                    @Html.RadioButtonFor(m=>m.QuizMcqs[q].SelectedAnswer,"2",  new { @class = "form-check-input", @Id="option" })
+                                    <lable for="option">
+                                        @Model.QuizMcqs[q].OptionsQnA.Choice2 &nbsp;&nbsp;
+                                    </lable>
+                                    <lable for="option">
+                                        <span class="text-right" dir="rtl" style=" font-family:'Jameel Noori Nastaleeq' !important; direction:rtl;">@Model.QuizMcqs[q].OptionsQnA.ChoiceL2</span>
+                                    </lable>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="ml-3">@Html.RadioButtonFor(m=>m.QuizMcqs[q].SelectedAnswer, "3", new { @class = "form-check-input" })</span>
+                                <lable for="@Model.QuizMcqs[q].QuestionID">
+                                    @Model.QuizMcqs[q].OptionsQnA.Choice3 &nbsp;&nbsp;
+                                </lable>
+                                <lable for="@Model.QuizMcqs[q].QuestionID">
+                                    <span class="text-right" dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important; direction:rtl;">@Model.QuizMcqs[q].OptionsQnA.ChoiceL3</span>
+                                </lable>
+                            </td>
+                            <td>
+                                <span class="ml-3">@Html.RadioButtonFor(m=>m.QuizMcqs[q].SelectedAnswer, "4", new { @class = "form-check-input" })</span>
+                                <lable for="@Model.QuizMcqs[q].QuestionID">
+                                    @Model.QuizMcqs[q].OptionsQnA.Choice4 &nbsp;&nbsp;
+                                </lable>
+                                <lable for="@Model.QuizMcqs[q].QuestionID">
+                                    <span class="text-right" dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important; direction:rtl;">@Model.QuizMcqs[q].OptionsQnA.ChoiceL4</span>
+                                </lable>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            }
+            <br />
+            <div class="row">
+
+                <a class="btn btn-secondary" asp-action="index" asp-controller="dashboard">Cancel</a>
+
+                <button type="submit" @*id="submitButton"*@ class="btn btn-success float-right m-2">Finish</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+    @section Scripts{
+        <script>
+            // code ok
+            $(document).ready(function () {
+            var duration = document.getElementById("#timer").value;
+                startCountDown(duration);
+            });
+
+            // function for timer
+            function startCountDown(timeleft) {
+                var interval = setInterval(countDown, 1000);
+                update();
+
+                function countDown() {
+                    if (--timeleft > 0) {
+                        update();
+                    }
+                    else {
+                        clearInterval(interval);
+                        update();
+                        completed();
+                    }
+                }
+                function update() {
+                    hours = Math.floor(timeleft / 3600);
+                    minutes = Math.floor((timeleft % 3600) / 60);
+                    second = timeleft % 60;
+                    document.getElementById('lbltimer').innerHTML = '' + hours + ':' + minutes + ':' + second;
+                }
+                function completed() {
+                    // do after timers time is out
+                    document.write("Time is up !!!.")
+                }
+            }
+
+            //function for submitting radio buttons answers to controller
+            $(function () {
+                $("#submitButton").click(function () {
+                    event.preventDefault();
+                    var dataArray = $("form").serializeArray();
+                    var answers = [];
+                    $(dataArray).each(function (i, field) {
+                        if (i != dataArray.length - 1) {
+                            answers.push(field.value);
+                        }
+                    });
+                    $.ajax({
+                        type: "POST",
+                        url: $("form").attr('QuizEndAsync'),
+                        data: { id: 1, answers: SelectedAnswer },//The id value here, because you did not provide it, please get it according to your actual code.
+                        success: function (response) {
+                        },
+                        failure: function (response) {
+                            alert(response);
+                        }
+                    });
+                })
+            })
+        </script>
+    }
+
+

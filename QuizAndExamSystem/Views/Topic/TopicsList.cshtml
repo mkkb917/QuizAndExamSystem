@@ -1,0 +1,90 @@
+﻿@model TopicIndexVM
+
+@{
+    ViewData["Title"] = "All Units ";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+    int sno = 1;
+}
+
+<div class="container">
+    <h2 style="text-align:center; color:red;">All Units of @Model.SubjectName</h2>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div>
+                <a class="btn btn-primary float-right" asp-action="Create" asp-route-id="@Model.SubjectId"><i class="fas fa-pencil-square"></i> Add New Unit</a>
+                <a asp-controller="Subject" asp-action="SubjectsList" asp-route-id="@Model.GradeId" class="btn btn-secondary"> <i class="fa fa-arrow-left"></i> Back</a>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive">
+                <table id="tblData" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th> Code</th>
+                            <th> Name</th>
+                            <th> Status</th>
+                            <th> Description</th>
+                            <th> Total Questions </th>
+                            
+                                <th>Actions</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Topic)
+                        {
+                            <tr>
+                                <td>@(sno++)</td>
+                                <td>@Html.DisplayFor(Model => item.Code)</td>
+                                <td> <a asp-action="Details" asp-route-id="@item.Id"> @Html.DisplayFor(Model => item.TopicText)</a></td>
+                                <td>
+                                    @if (item.Status == Status.Active)
+                                    {
+                                        <span class="badge badge-success">
+                                            @Html.DisplayFor(modelItem => item.Status)
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-danger">
+                                            @Html.DisplayFor(modelItem => item.Status)
+                                        </span>
+                                    }
+                                </td>
+                                <td>@Html.DisplayFor(Model => item.Description)</td>
+                                <td>@Html.DisplayFor(Model => item.Question.Count)</td>
+                                    <td>
+                                    @if (item.Status == Status.Active)
+                                    {
+                                        <a asp-controller="Question" asp-action="Index" asp-route-id="@item.Id" class="btn btn-primary"><i class="fas fa-pencil-square"></i> Manage Questions</a>
+                                    }
+                                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                                    {
+                                        <a asp-controller="Topic" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary"><i class="fas fa-pencil-square"></i> Edit</a> 
+                                        <a asp-controller="Topic" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger"><i class="fas fa-trash"></i> Delete</a>
+                                    }
+                                    </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+</div>
+
+@section Scripts{
+    <script>
+        // search bar
+        $(document).ready(function() {
+            $('#tblData').DataTable();
+            $('.dataTables_length').addClass('bs-select');
+        });
+    </script>
+    }

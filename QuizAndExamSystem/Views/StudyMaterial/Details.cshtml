@@ -1,0 +1,62 @@
+﻿@model ExamSystem.Models.Uploads
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+@{
+    if (ViewBag.filetype != null)
+    {
+        <h4><strong>Error:</strong>@ViewBag.filetype</h4>
+    }
+
+    string Path = "";
+    if (Model.FileType == UploadsCategory.Books) //books
+    {
+        Path = @WC.UploadBooksPathPDF;
+    }
+    else if (Model.FileType == UploadsCategory.PastPapers) //pastpapers
+    {
+        Path = @WC.UploadPaperPathPDF;
+    }
+    else if (Model.FileType == UploadsCategory.Notes) //Notes
+    {
+        Path = @WC.UploadNotesPathPDF;
+    }
+    else if (Model.FileType == UploadsCategory.Syllabus) //syllabus
+    {
+        Path = @WC.UploadSyllabusPathPDF;
+    }
+}
+
+<div class="row">
+    <div class="col">
+        <table class="table">
+            <tr>
+                <td>
+                @if (Model.Code == "9")
+                {
+                    <a class="btn btn-secondary" asp-controller="StudyMaterial" asp-action="UserIndex9th"> <i class="fa fa-arrow-left"></i> Back</a>
+                }
+                else if (Model.Code == "10")
+                {
+                    <a class="btn btn-secondary" asp-controller="StudyMaterial" asp-action="UserIndex10th"> <i class="fa fa-arrow-left"></i> Back</a>
+                }
+                </td>
+                <td>File Name: @Model.FileName</td>
+                <td>Class: @Model.Code</td>
+                <td>Submitted by: @Model.CreatedBy</td>
+                <td>Date: @Model.CreatedOn</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <center>
+            <iframe src="@Path@Model.FileName" width="1000" height="520">
+            </iframe>
+        </center>
+    </div>
+</div>
