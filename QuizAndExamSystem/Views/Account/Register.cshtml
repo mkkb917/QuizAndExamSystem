@@ -22,7 +22,7 @@
                     <!-- Content -->
                     <div class="content text-center">
                         <div class="logo">
-                            <a asp-controller="Home" asp-action="Index" ><img src="~/images/logo.png" alt=""></a>
+                            <a asp-controller="Home" asp-action="Index"><img src="~/images/logo.png" height="150px" width="150px" alt=""></a>
                         </div>
                         <div class="title-text">
                             <h3>Sign Up for New Account</h3>
@@ -34,6 +34,7 @@
                                 <legend>I am a </legend>
                                 <label for="Teacher" class="float-left">Teacher</label>
                                 <input class="main float-left" asp-for="Role" type="radio" value="Teacher" id="Teacher"/>
+                                <br/>
                                 <label for="Student">Student</label>
                                 <input class="main" asp-for="Role" type="radio" value="Student" id="Student"/>
                             </fieldset>

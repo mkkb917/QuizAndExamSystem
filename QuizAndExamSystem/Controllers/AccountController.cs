@@ -367,8 +367,8 @@ namespace ExamSystem.Controllers
             // if new user successfully regsiter then assign a role and redirect to profile section
             if (newUserResponce.Succeeded)
             {
-                //await _userManager.AddToRoleAsync(newUser, UserRoles.Student);
-                //    return RedirectToAction(nameof(Index));
+                //send an activation link to the newly registered user
+
                 //check the selected role and assign to it
                 var role = registerVM.Role;
                 if (role == UserRoles.Teacher)

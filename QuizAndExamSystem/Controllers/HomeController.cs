@@ -53,8 +53,18 @@ namespace ExamSystem.Controllers
         {
             return View();
         }
+        public IActionResult Career()
+        {
+            return NotFound();
+        }
 
-        
-
+        public IActionResult Investor()
+        {
+            return NotFound();
+        }
+        public IActionResult Team()
+        {
+            return NotFound();
+        }
     }
 }
