@@ -9,6 +9,11 @@ using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 using ExamSystem.Models;
+using Microsoft.VisualStudio.Web.CodeGeneration;
+using QRCoder;
+using System.Drawing;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
+using System.Net;
 
 namespace ExamSystem.Data.Services
 {
@@ -213,14 +218,31 @@ namespace ExamSystem.Data.Services
             string webRootPath = _webHostEnvironment.WebRootPath;
             string QrCodePath = webRootPath + WC.QrCodes;
 
-            BarcodeGenerator gen = new BarcodeGenerator(EncodeTypes.Code39Standard, QrCodeString);
-            gen.Parameters.AutoSizeMode = AutoSizeMode.None;
-            gen.Parameters.ImageWidth.Pixels = 150;
-            gen.Parameters.ImageHeight.Pixels = 50;
-            gen.Parameters.Barcode.XDimension.Pixels = 3;
-            gen.Parameters.Barcode.CodeTextParameters.Location = CodeLocation.None;
-            //save as Jpeg
-            gen.Save(QrCodePath + guid + ".jpeg", BarCodeImageFormat.Jpeg);
+            //BarcodeGenerator gen = new BarcodeGenerator(EncodeTypes.Code39Standard, QrCodeString);
+            //gen.Parameters.AutoSizeMode = AutoSizeMode.None;
+            //gen.Parameters.ImageWidth.Pixels = 150;
+            //gen.Parameters.ImageHeight.Pixels = 50;
+            //gen.Parameters.Barcode.XDimension.Pixels = 3;
+            //gen.Parameters.Barcode.CodeTextParameters.Location = CodeLocation.None;
+            ////save as Jpeg
+            //gen.Save(QrCodePath + guid + ".jpeg", BarCodeImageFormat.Jpeg);
+
+            var url = string.Format("http://chart.apis.google.com/chart?cht=qr&chs={1}x{2}&chl={0}",
+                                    QrCodeString+guid,250,250);
+            WebResponse response = default(WebResponse);
+            Stream remoteStream = default(Stream);
+            StreamReader readStream = default(StreamReader);
+            WebRequest request = WebRequest.Create(url);
+            response = request.GetResponse();
+            remoteStream = response.GetResponseStream();
+            readStream = new StreamReader(remoteStream);
+            System.Drawing.Image img = System.Drawing.Image.FromStream(remoteStream);
+            img.Save(QrCodePath + guid + ".png");
+            response.Close();
+            remoteStream.Close();
+            readStream.Close();
+            
+
             return (QrCodeString + ".jpeg");
         }
         async Task IPdfService.DeletePaper(int id)
