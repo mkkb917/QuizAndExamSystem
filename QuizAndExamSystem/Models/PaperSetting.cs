@@ -56,6 +56,7 @@ namespace ExamSystem.Models
 
 
         //public int PaperLayout { get; set; }
+        public string? QrCode { get; set; }
 
 
 

@@ -1,6 +1,4 @@
-﻿using Aspose.Pdf;
-using Aspose.Pdf.Devices;
-using ExamSystem.Data.Base;
+﻿using ExamSystem.Data.Base;
 using ExamSystem.Data.Static;
 using ExamSystem.Models;
 

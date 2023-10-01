@@ -98,11 +98,10 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.ReCaptcha" Version="1.7.0" />
-    <PackageReference Include="Aspose.BarCode" Version="23.8.1" />
-    <PackageReference Include="Aspose.PDF" Version="23.8.0" />
     <PackageReference Include="bootstrap" Version="5.3.1" />
     <PackageReference Include="DinkToPdf" Version="1.0.8" />
     <PackageReference Include="DotNetZip" Version="1.16.0" />
+    <PackageReference Include="HiQPdf.Free" Version="15.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.10" />
@@ -113,8 +112,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.9" />
+    <PackageReference Include="PDFtoImage" Version="2.4.1" />
     <PackageReference Include="QRCoder" Version="1.4.3" />
     <PackageReference Include="RazorEngine.NetCore" Version="3.1.0" />
+    <PackageReference Include="Spire.PDF" Version="9.9.9" />
   </ItemGroup>
 
   <ItemGroup>
@@ -127,12 +128,6 @@
     <Folder Include="wwwroot\files\upload\Notes\" />
     <Folder Include="wwwroot\files\upload\Pastpapers\" />
     <Folder Include="wwwroot\images\qrcodes\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Aspose.PDF">
-      <HintPath>..\..\..\..\Media\Aspose.PDF_22_12\Bin\net6.0\Aspose.PDF.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 

@@ -1,5 +1,4 @@
-﻿using Aspose.BarCode.Generation;
-using DinkToPdf;
+﻿using DinkToPdf;
 using DinkToPdf.Contracts;
 using ExamSystem.Data.Interface;
 using ExamSystem.Data.Static;
@@ -9,11 +8,9 @@ using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 using ExamSystem.Models;
-using Microsoft.VisualStudio.Web.CodeGeneration;
+using System.Net;
 using QRCoder;
 using System.Drawing;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
-using System.Net;
 
 namespace ExamSystem.Data.Services
 {
@@ -177,7 +174,7 @@ namespace ExamSystem.Data.Services
             var htmlDoc = new StringBuilder();
             htmlDoc.AppendLine("<td>");
             //It fetches under wwwroot and include the current generating code image
-            var path = _webHostEnvironment.WebRootPath + WC.QrCodes + qrcode;
+            var path = _webHostEnvironment.WebRootPath + WC.QrCodePath + qrcode;
             htmlDoc.AppendLine($"<img style=\"margin-bottom:0px;\" src=\"{path}\" />");
             htmlDoc.AppendLine("</td>");
             var barcode = $"<img style=\"margin-bottom:0px;\" src=\"~{path}\"/>";
@@ -216,35 +213,24 @@ namespace ExamSystem.Data.Services
         {
             // Qr Code image path
             string webRootPath = _webHostEnvironment.WebRootPath;
-            string QrCodePath = webRootPath + WC.QrCodes;
+            string QrCodePath = webRootPath + WC.QrCodePath;
+      
+            //QrCode generator using QRCODER Library
+            QRCodeGenerator qrGenerator = new QRCodeGenerator();
+            QRCodeData qrCodeData = qrGenerator.CreateQrCode(QrCodeString + guid, QRCodeGenerator.ECCLevel.Q);
+            BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
+            byte[] qrCodeAsBitmapByteArr = qrCode.GetGraphic(20);
 
-            //BarcodeGenerator gen = new BarcodeGenerator(EncodeTypes.Code39Standard, QrCodeString);
-            //gen.Parameters.AutoSizeMode = AutoSizeMode.None;
-            //gen.Parameters.ImageWidth.Pixels = 150;
-            //gen.Parameters.ImageHeight.Pixels = 50;
-            //gen.Parameters.Barcode.XDimension.Pixels = 3;
-            //gen.Parameters.Barcode.CodeTextParameters.Location = CodeLocation.None;
-            ////save as Jpeg
-            //gen.Save(QrCodePath + guid + ".jpeg", BarCodeImageFormat.Jpeg);
-
-            var url = string.Format("http://chart.apis.google.com/chart?cht=qr&chs={1}x{2}&chl={0}",
-                                    QrCodeString+guid,250,250);
-            WebResponse response = default(WebResponse);
-            Stream remoteStream = default(Stream);
-            StreamReader readStream = default(StreamReader);
-            WebRequest request = WebRequest.Create(url);
-            response = request.GetResponse();
-            remoteStream = response.GetResponseStream();
-            readStream = new StreamReader(remoteStream);
-            System.Drawing.Image img = System.Drawing.Image.FromStream(remoteStream);
-            img.Save(QrCodePath + guid + ".png");
-            response.Close();
-            remoteStream.Close();
-            readStream.Close();
-            
-
-            return (QrCodeString + ".jpeg");
+            //save the byte array to image
+            using (var ms = new MemoryStream(qrCodeAsBitmapByteArr))
+            {
+                Image qrCodeImage = Image.FromStream(ms);
+                qrCodeImage.Save(QrCodePath + guid + ".png");
+            }
+            return (QrCodeString + ".png");
         }
+
+       
         async Task IPdfService.DeletePaper(int id)
         {
 
@@ -269,7 +255,7 @@ namespace ExamSystem.Data.Services
                 DeleteFile(path, fileSolution);
 
                 // delete the barcode file
-                string BarCodepath = WC.QrCodes;
+                string BarCodepath = WC.QrCodePath;
                 var fileBarCode = Obj.Barcode;
                 DeleteFile(BarCodepath, fileBarCode);
 

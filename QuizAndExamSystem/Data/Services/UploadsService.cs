@@ -1,11 +1,8 @@
-﻿using Aspose.Pdf;
-using Aspose.Pdf.Devices;
-using ExamSystem.Data.Base;
+﻿using ExamSystem.Data.Base;
 using ExamSystem.Data.Interface;
 using ExamSystem.Data.Static;
 using Microsoft.EntityFrameworkCore;
 using ExamSystem.Extensions;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using ExamSystem.Models;
 
 namespace ExamSystem.Data.Services

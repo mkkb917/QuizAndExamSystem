@@ -14,5 +14,6 @@ namespace ExamSystem.Data.ViewModels
         public List<QnAs>? SEQs { get; set; }
         public List<QnAs>? LongQs { get; set; }
 
+
     }
 }

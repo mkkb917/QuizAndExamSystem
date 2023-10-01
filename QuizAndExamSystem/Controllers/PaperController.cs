@@ -56,48 +56,41 @@ namespace ExamSystem.Controllers
             // get current user and school info 
             var usr = new ApplicationUser()
             { UserName = _userManager.GetUserName(User) };
-            //watch.Start();
+            
             // call the function to render the questions bank
             var paperViewVM = await _pdfService.RenderPaper(selectedClass, selectedSubject, PaperDate, TeacherName, usr);
-            //watch.Stop();
-            //Console.WriteLine($"Total Execution Time of RenderPaper function: {watch.ElapsedMilliseconds} ms");
+            
             if (paperViewVM.Setting == null)
             { return RedirectToAction("PaperSetting", new { @id = 0 }); }
-            //watch.Start();
-            // get the html string for dinktopdf generator
-            var paperObjectiveString = await _Renderer.RenderPartialToStringAsync("_ObjectiveBoardLayout", paperViewVM);
-            var paperSubjectiveString = await _Renderer.RenderPartialToStringAsync("_SubjectiveBoardLayout", paperViewVM);
-            var solString = await _Renderer.RenderPartialToStringAsync("_PaperSolutionView", paperViewVM);
 
-            // watch.Stop();
-            //Console.WriteLine($"Total Execution Time of htmlstring generator(3x): {watch.ElapsedMilliseconds} ms");
-            //watch.Start();
             //create the Qr Code and pass to renderpaper method
             string guid = Guid.NewGuid().ToString().Substring(0, 5);
             string qrstring = className + subjectName;
             var qrcode = _pdfService.BarCodeGenerator(qrstring, guid);
 
-            //watch.Stop();
-            //Console.WriteLine($"Total Execution Time of Barcode: {watch.ElapsedMilliseconds} ms");
+            //inject barcode in the paperViewVM
+            if (paperViewVM.Setting.QrCode == null)
+            { paperViewVM.Setting.QrCode = qrcode.ToString(); }
 
+           ;
+            // get the html string for dinktopdf generator
+            var paperObjectiveString = await _Renderer.RenderPartialToStringAsync("_ObjectiveBoardLayout", paperViewVM);
+            var paperSubjectiveString = await _Renderer.RenderPartialToStringAsync("_SubjectiveBoardLayout", paperViewVM);
+            var solString = await _Renderer.RenderPartialToStringAsync("_PaperSolutionView", paperViewVM);
+        
             // create Unique file name for Objective paper, subjective paper, and solution
             string fileObjectiveName = "Objective "+paperViewVM.Setting.SubjectName + " " + guid + ".pdf";
             string fileSubjectiveName = "Subjective "+paperViewVM.Setting.SubjectName + " " + guid + ".pdf";
             string fileSolutionName = "Solution " + paperViewVM.Setting.SubjectName + " " + guid + ".pdf";
-            //watch.Start();
+            
             // create the pdf paper  with BarCodes
             var FilePaper = await _pdfService.RenderPdf(paperObjectiveString, fileObjectiveName, qrcode);
             var FileSubjectivePaper = await _pdfService.RenderPdf(paperSubjectiveString, fileSubjectiveName, qrcode);
             var FileSolution = await _pdfService.RenderPdf(solString, fileSolutionName, qrcode);
-            //watch.Stop();
-            //Console.WriteLine($"Total Execution Time of  3 Render pdf function: {watch.ElapsedMilliseconds} ms");
-
-            //watch.Start();
+            
             // save into database
             var responce = await _pdfService.SavePdfAsync(className, subjectName, fileObjectiveName, fileSubjectiveName, fileSolutionName, usr, guid);
-            //watch.Stop();
-            //Console.WriteLine($"Total Execution Time of database saving files: {watch.ElapsedMilliseconds} ms");
-
+            
             //if(responce.Equals(true))     total execution time is more than 3.63 minutes 
             return View(paperViewVM);
             //return RedirectToAction(nameof(UserPapers));

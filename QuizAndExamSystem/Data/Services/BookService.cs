@@ -1,10 +1,9 @@
-﻿using Aspose.Pdf;
-using Aspose.Pdf.Devices;
-using ExamSystem.Data.Base;
+﻿using ExamSystem.Data.Base;
 using ExamSystem.Data.Interface;
 using ExamSystem.Data.Static;
 using Microsoft.EntityFrameworkCore;
 using ExamSystem.Models;
+using ExamSystem.Extensions;
 
 namespace ExamSystem.Data.Services
 {
@@ -21,49 +20,15 @@ namespace ExamSystem.Data.Services
 
         }
 
-        public string UploadFileAndConvertToImage(IFormFileCollection files)
-        {
-            if (files != null)
-            {
-                // create the parameters
-
-                string webRootPath = _webHostEnvironment.WebRootPath;
-                string fileUpload = webRootPath + WC.PDF_Book_Path;
-                string fileName = Guid.NewGuid().ToString();
-                string fileExtension = Path.GetExtension(files[0].FileName);
-
-                // copy the file in directory   i.e    wwwroot/files/Book
-                using (var fileStream = new FileStream(Path.Combine(fileUpload, fileName + fileExtension), FileMode.Create))
-                {
-                    files[0].CopyTo(fileStream);
-                }
-
-                /// convert pdf to image section
-                string imageExtension = ".jpeg";
-                Resolution resolution = new Resolution(300);
-                PngDevice pngDevice = new PngDevice(resolution);
-                Document pdfDocument = new Document(fileUpload + fileName + fileExtension);
-
-                // create image and copy it to system folder   wwwroot/files/Books
-                using (var imageStream = new FileStream(Path.Combine(fileUpload, fileName + imageExtension), FileMode.Create))
-                {
-                    pngDevice.Process(pdfDocument.Pages[1], imageStream);
-                    imageStream.Close();
-                }
-                return fileName;
-            }
-            else
-            {
-                return null;
-            }
-        }
         public async Task AddNewBook(Books data, IFormFileCollection files)
         {
             // upload the file
             if (files != null && data != null)
             {
+                //File path
+                string fileUpload = _webHostEnvironment.WebRootPath + WC.PDF_Book_Path;
                 // pass the files object to method to save and create files in directory
-                var fileName = UploadFileAndConvertToImage(files);
+                var fileName = FileUploadAndConvert.UploadFileAndConvertToImage(files,fileUpload);
 
                 var obj = new Books()
                 {
@@ -145,8 +110,7 @@ namespace ExamSystem.Data.Services
             var Obj = await _context.Books.FirstOrDefaultAsync(n => n.Id == Id);
 
             //grab the file
-            string webRootPath = _webHostEnvironment.WebRootPath;
-            string Upload = webRootPath + WC.PDF_Book_Path;
+            string Upload = _webHostEnvironment.WebRootPath + WC.PDF_Book_Path;
             var oldfile = Path.Combine(Upload, data.FileName);
             var oldImage = Path.Combine(Upload, data.FileThumbnail);
 
@@ -159,7 +123,8 @@ namespace ExamSystem.Data.Services
                     File.Delete(oldImage);
                 }
                 //call the method to upload new file and create image in directory
-                var fileName = UploadFileAndConvertToImage(files);
+                
+                var fileName = FileUploadAndConvert.UploadFileAndConvertToImage(files, Upload);
                 if (fileName != null)
                 {
                     if (fileName != null)

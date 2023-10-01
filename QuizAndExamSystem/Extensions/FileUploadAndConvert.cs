@@ -1,6 +1,6 @@
-﻿using Aspose.Pdf;
-using Aspose.Pdf.Devices;
-using ExamSystem.Data;
+﻿using Spire.Pdf.Graphics;
+using Spire.Pdf;
+using System.Drawing;
 
 namespace ExamSystem.Extensions
 {
@@ -13,28 +13,33 @@ namespace ExamSystem.Extensions
             if (files != null)
             {
                 // create the parameters
-                string fileUpload =  path;
                 string fileName = Guid.NewGuid().ToString()[..5];
                 string fileExtension = Path.GetExtension(files[0].FileName);
 
                 // copy the file in directory   i.e    wwwroot/files/Book
-                using (var fileStream = new FileStream(Path.Combine(fileUpload, fileName + fileExtension), FileMode.Create))
+                using (var fileStream = new FileStream(Path.Combine(path, fileName + fileExtension), FileMode.Create))
                 {
                     files[0].CopyTo(fileStream);
                 }
 
-                /// convert pdf to image section
-                string imageExtension = ".jpeg";
-                Resolution resolution = new Resolution(300);
-                PngDevice pngDevice = new PngDevice(resolution);
-                Document pdfDocument = new Document(fileUpload + fileName + fileExtension);
 
-                // create image and copy it to system folder   wwwroot/files/Books
-                using (var imageStream = new FileStream(Path.Combine(fileUpload, fileName + imageExtension), FileMode.Create))
+                //code ok and working with FreeSpire library
+                //Create a PdfDocument instance
+                PdfDocument pdf = new PdfDocument();
+
+                //Load a sample PDF document
+                using(var stream = files[0].OpenReadStream())
                 {
-                    pngDevice.Process(pdfDocument.Pages[1], imageStream);
-                    imageStream.Close();
+                    pdf.LoadFromStream(stream);
                 }
+
+                //Convert the first page to an image and set the image Dpi
+                Image image = pdf.SaveAsImage(0, PdfImageType.Bitmap, 250, 250);
+
+                //Save the image as a JPG file
+                image.Save(Path.Combine(path, string.Format("{0}.jpeg", fileName)));
+
+
                 return fileName;
             }
             else
@@ -42,5 +47,6 @@ namespace ExamSystem.Extensions
                 return null;
             }
         }
+
     }
 }

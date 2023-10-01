@@ -6,7 +6,7 @@
         public static string ProfileImagePath = @"\images\profile\";
         public static string LogoPath = $"/images/logo.png";
         public static string NotificationPath = @"\images\notification\";
-        public static string QrCodes = @"\images\qrcodes\";
+        public static string QrCodePath = @"\images\qrcodes\";
 
         // pdf file paths
         public static string PaperPathPDF = @"\files\Paper\";
