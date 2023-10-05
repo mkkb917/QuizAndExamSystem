@@ -8,9 +8,11 @@ using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 using ExamSystem.Models;
-using System.Net;
 using QRCoder;
 using System.Drawing;
+using Microsoft.AspNetCore.Mvc;
+//using Spire.Pdf.Graphics;
+
 
 namespace ExamSystem.Data.Services
 {
@@ -78,7 +80,7 @@ namespace ExamSystem.Data.Services
                 setting.TeacherName = TeacherName;
                 if (PaperDate > DateTime.Today) { setting.ConductDate = PaperDate; } else { setting.ConductDate = DateTime.Today; }
             }
-           
+
             // get the questions
             List<QnAs>? objQnA = new();
             List<QnAs>? seqQnA = new();
@@ -89,7 +91,7 @@ namespace ExamSystem.Data.Services
 
             int mcqCount = Convert.ToInt32(setting.MCQsCount);
             if (mcqCount == 0)
-                mcqCount = 10; 
+                mcqCount = 10;
 
             var topics = await _context.Topics.Where(t => t.SubjectId == selectedSubject).ToListAsync();
             // traverse to each Unit for questions
@@ -118,7 +120,7 @@ namespace ExamSystem.Data.Services
             foreach (var Sitem in topics)
             {
                 // obejctive qustions
-                var questions = await _context.Questions.Where(q => q.TopicId == Sitem.Id && q.QuestionType == QuestionTypes.SEQ && q.DifficultyLevel==setting.DifficultyLevel).OrderBy(o => Guid.NewGuid()).Take(Sitem.SEQCount).ToListAsync();
+                var questions = await _context.Questions.Where(q => q.TopicId == Sitem.Id && q.QuestionType == QuestionTypes.SEQ && q.DifficultyLevel == setting.DifficultyLevel).OrderBy(o => Guid.NewGuid()).Take(Sitem.SEQCount).ToListAsync();
                 foreach (var Qitem in questions)
                 {
                     QnAs? varQnA = new();
@@ -137,7 +139,7 @@ namespace ExamSystem.Data.Services
             // for Long Exam Questions
             foreach (var Litem in topics)
             {
-                
+
                 // obejctive qustions
                 var questions = await _context.Questions.Where(q => q.TopicId == Litem.Id && q.QuestionType == QuestionTypes.Long_Question && q.DifficultyLevel == setting.DifficultyLevel).OrderBy(o => Guid.NewGuid()).Take(Litem.LongQCount).ToListAsync();
                 foreach (var Qitem in questions)
@@ -177,7 +179,7 @@ namespace ExamSystem.Data.Services
             var path = _webHostEnvironment.WebRootPath + WC.QrCodePath + qrcode;
             htmlDoc.AppendLine($"<img style=\"margin-bottom:0px;\" src=\"{path}\" />");
             htmlDoc.AppendLine("</td>");
-            var barcode = $"<img style=\"margin-bottom:0px;\" src=\"~{path}\"/>";
+            //var barcode = $"<img style=\"margin-bottom:0px;\" src=\"~{path}\" length=50/>";
 
             var globalSettings = new GlobalSettings
             {
@@ -186,15 +188,15 @@ namespace ExamSystem.Data.Services
                 PaperSize = PaperKind.A4,
                 DPI = 300,
                 ImageDPI = 900,
-                Margins = new MarginSettings() { Top = 10, Bottom = 5, Left = 5, Right = 5 },
-                Out = PaperPath + fileName,
+                Margins = new MarginSettings() { Top = 5, Bottom = 5, Left = 5, Right = 5 },
+                //Out = PaperPath + fileName,
             };
             var objectSettings = new ObjectSettings
             {
                 PagesCount = true,
                 HtmlContent = htmlDoc + paperView,
                 WebSettings = { DefaultEncoding = "utf-8", UserStyleSheet = @"https://localhost:7278/wwwroot/css/paperStyle.css", LoadImages = true, Background = true },   //UserStyleSheet =  Path.Combine(Directory.GetCurrentDirectory(), "assets", "styles.css")
-                HeaderSettings = { FontName = "Arial", FontSize = 12, Line = true, Center = "Pdf Paper by ExamSystem.com" , Right = barcode },
+                HeaderSettings = { FontName = "Arial", FontSize = 12, Line = true, Center = "Pdf Paper by ExamSystem.com", Right = qrcode },
                 FooterSettings = { FontName = "Arial", FontSize = 12, Line = true, Left = "Generated on: www.examsystem.com", Right = "Page [page] of [toPage]" }
             };
             var pdf = new HtmlToPdfDocument()
@@ -203,23 +205,25 @@ namespace ExamSystem.Data.Services
                 Objects = { objectSettings }
             };
 
-            byte[] file = _pdfConverter.Convert(pdf);
-            //byte[] file = converter.Convert(pdf);
-            
+            //byte[] file = _pdfConverter.Convert(pdf);
+            var file = _pdfConverter.Convert(pdf);
+
 
             return Task.FromResult(file);
+
         }
+
         public string BarCodeGenerator(string QrCodeString, string guid)
         {
             // Qr Code image path
             string webRootPath = _webHostEnvironment.WebRootPath;
             string QrCodePath = webRootPath + WC.QrCodePath;
-      
+
             //QrCode generator using QRCODER Library
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
             QRCodeData qrCodeData = qrGenerator.CreateQrCode(QrCodeString + guid, QRCodeGenerator.ECCLevel.Q);
             BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
-            byte[] qrCodeAsBitmapByteArr = qrCode.GetGraphic(20);
+            byte[] qrCodeAsBitmapByteArr = qrCode.GetGraphic(3);
 
             //save the byte array to image
             using (var ms = new MemoryStream(qrCodeAsBitmapByteArr))
@@ -230,7 +234,7 @@ namespace ExamSystem.Data.Services
             return (QrCodeString + ".png");
         }
 
-       
+
         async Task IPdfService.DeletePaper(int id)
         {
 
@@ -286,7 +290,7 @@ namespace ExamSystem.Data.Services
                 PaperFile = fileObjectivePaper,
                 PaperSubjetiveFile = fileSubjectivePaper,
                 SolutionFile = fileSolution,
-                Barcode = qrcode + ".jpeg",
+                Barcode = qrcode + ".png",
                 IsAstive = true,
             };
 

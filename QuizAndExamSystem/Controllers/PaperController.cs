@@ -8,6 +8,7 @@ using ExamSystem.Data.Static;
 using ExamSystem.Filters;
 using System;
 using ExamSystem.Models;
+using System.Drawing.Printing;
 
 namespace ExamSystem.Controllers
 {
@@ -39,63 +40,7 @@ namespace ExamSystem.Controllers
             return View(Obj);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> PaperView(string? GradeDDL, string? SubjectDDL, DateTime PaperDate, string? TeacherName)
-        {
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            // get the class and subject DDL selected value
-            int selectedClass = Convert.ToInt32(GradeDDL);
-            int selectedSubject = Convert.ToInt32(SubjectDDL);
-            //var selectedTopics = Convert.ToInt32(form["TopicsDDL"]);
-
-            var grade = await _SubjectService.GetGradeById(selectedClass);
-            string className = grade.GradeText;
-            var subject = await _SubjectService.GetSubjectById(selectedSubject);
-            string subjectName = subject.SubjectText;
-
-            // get current user and school info 
-            var usr = new ApplicationUser()
-            { UserName = _userManager.GetUserName(User) };
-            
-            // call the function to render the questions bank
-            var paperViewVM = await _pdfService.RenderPaper(selectedClass, selectedSubject, PaperDate, TeacherName, usr);
-            
-            if (paperViewVM.Setting == null)
-            { return RedirectToAction("PaperSetting", new { @id = 0 }); }
-
-            //create the Qr Code and pass to renderpaper method
-            string guid = Guid.NewGuid().ToString().Substring(0, 5);
-            string qrstring = className + subjectName;
-            var qrcode = _pdfService.BarCodeGenerator(qrstring, guid);
-
-            //inject barcode in the paperViewVM
-            if (paperViewVM.Setting.QrCode == null)
-            { paperViewVM.Setting.QrCode = qrcode.ToString(); }
-
-           ;
-            // get the html string for dinktopdf generator
-            var paperObjectiveString = await _Renderer.RenderPartialToStringAsync("_ObjectiveBoardLayout", paperViewVM);
-            var paperSubjectiveString = await _Renderer.RenderPartialToStringAsync("_SubjectiveBoardLayout", paperViewVM);
-            var solString = await _Renderer.RenderPartialToStringAsync("_PaperSolutionView", paperViewVM);
         
-            // create Unique file name for Objective paper, subjective paper, and solution
-            string fileObjectiveName = "Objective "+paperViewVM.Setting.SubjectName + " " + guid + ".pdf";
-            string fileSubjectiveName = "Subjective "+paperViewVM.Setting.SubjectName + " " + guid + ".pdf";
-            string fileSolutionName = "Solution " + paperViewVM.Setting.SubjectName + " " + guid + ".pdf";
-            
-            // create the pdf paper  with BarCodes
-            var FilePaper = await _pdfService.RenderPdf(paperObjectiveString, fileObjectiveName, qrcode);
-            var FileSubjectivePaper = await _pdfService.RenderPdf(paperSubjectiveString, fileSubjectiveName, qrcode);
-            var FileSolution = await _pdfService.RenderPdf(solString, fileSolutionName, qrcode);
-            
-            // save into database
-            var responce = await _pdfService.SavePdfAsync(className, subjectName, fileObjectiveName, fileSubjectiveName, fileSolutionName, usr, guid);
-            
-            //if(responce.Equals(true))     total execution time is more than 3.63 minutes 
-            return View(paperViewVM);
-            //return RedirectToAction(nameof(UserPapers));
-        }
-
         // JSON method for dropdownlists        code OK
         public JsonResult Subject(int id)
         {
@@ -373,51 +318,143 @@ namespace ExamSystem.Controllers
             }
         }
 
-        // Download PAPER pdf from table
-        public async Task<FileResult> GetObjectivePaper(int id)
+        [HttpPost]
+        public async Task<IActionResult> GeneratePaper(string? GradeDDL, string? SubjectDDL, DateTime PaperDate, string? TeacherName)
         {
-            var Obj = await _pdfService.GetPaperById(id);
-            var paperName = Obj.PaperFile;
-            var path = _webHostEnvironment.WebRootPath + WC.PaperPathPDF;
-            // call the function to downlaod
-            var memory = DownloadFile(paperName, path);
-            return File(memory.ToArray(), "application/pdf", paperName);
-        }
-        // Download PAPER pdf from table
-        public async Task<FileResult> GetSubjectivePaper(int id)
-        {
-            var Obj = await _pdfService.GetPaperById(id);
-            var paperName = Obj.PaperSubjetiveFile;
-            var path = _webHostEnvironment.WebRootPath + WC.PaperPathPDF;
-            // call the function to downlaod
-            var memory = DownloadFile(paperName, path);
-            return File(memory.ToArray(), "application/pdf", paperName);
+
+            // get the class and subject DDL selected value
+            int selectedClass = Convert.ToInt32(GradeDDL);
+            int selectedSubject = Convert.ToInt32(SubjectDDL);
+            //var selectedTopics = Convert.ToInt32(form["TopicsDDL"]);
+
+            var grade = await _SubjectService.GetGradeById(selectedClass);
+            string className = grade.GradeText;
+            var subject = await _SubjectService.GetSubjectById(selectedSubject);
+            string subjectName = subject.SubjectText;
+
+            // get current user and school info 
+            var usr = new ApplicationUser()
+            { UserName = _userManager.GetUserName(User) };
+
+            // call the function to render the questions bank for generating paper object
+            var paperViewVM = await _pdfService.RenderPaper(selectedClass, selectedSubject, PaperDate, TeacherName, usr);
+
+            if (paperViewVM.Setting == null)
+            { return RedirectToAction("PaperSetting", new { @id = 0 }); }
+
+            //create the Qr Code and pass to renderpaper method
+            string guid = Guid.NewGuid().ToString().Substring(0, 5);
+            string qrstring = className + subjectName;
+            var qrcode = _pdfService.BarCodeGenerator(qrstring, guid);
+
+            //inject barcode in the paperViewVM
+            //if (paperViewVM.Setting.QrCode == null)
+            //{ paperViewVM.Setting.QrCode = qrcode.ToString(); }
+
+            // get the html string for dinktopdf generator
+            var paperObjectiveString = await _Renderer.RenderPartialToStringAsync("_ObjectiveBoardLayout", paperViewVM);
+            var paperSubjectiveString = await _Renderer.RenderPartialToStringAsync("_SubjectiveBoardLayout", paperViewVM);
+            var solString = await _Renderer.RenderPartialToStringAsync("_PaperSolutionView", paperViewVM);
+
+            //// create Unique file name for Objective paper, subjective paper, and solution
+            //string fileObjectiveName = "Objective " + paperViewVM.Setting.SubjectName + " " + guid + ".pdf";
+            //string fileSubjectiveName = "Subjective " + paperViewVM.Setting.SubjectName + " " + guid + ".pdf";
+            //string fileSolutionName = "Solution " + paperViewVM.Setting.SubjectName + " " + guid + ".pdf";
+
+            //// create the pdf paper  with BarCodes
+            //var FilePaper = await _pdfService.RenderPdf(paperObjectiveString, fileObjectiveName, qrcode);
+            //var FileSubjectivePaper = await _pdfService.RenderPdf(paperSubjectiveString, fileSubjectiveName, qrcode);
+            //var FileSolution = await _pdfService.RenderPdf(solString, fileSolutionName, qrcode);
+
+            // save into database
+            var responce = await _pdfService.SavePdfAsync(className, subjectName, paperObjectiveString, paperSubjectiveString, solString, usr, guid);
+            //var responce = await _pdfService.SavePdfAsync(className, subjectName, fileObjectiveName, fileSubjectiveName, fileSolutionName, usr, guid);
+
+            //if(responce.Equals(true))     total execution time is more than 3.63 minutes 
+            //return View(paperViewVM);
+            return RedirectToAction(nameof(UserPapers));
         }
 
-        // Download Solution pdf from table
-        public async Task<FileResult> GetSolution(int id)
+        // Download PAPER pdf from table
+        public async Task<IActionResult> PaperView(int id, string type)
         {
             var Obj = await _pdfService.GetPaperById(id);
-            var solutionName = Obj.SolutionFile;
-            var path = _webHostEnvironment.WebRootPath + WC.PaperPathPDF;
-            // call the function to downlaod
-            var memory = DownloadFile(solutionName, path);
-            return File(memory.ToArray(), "application/pdf", solutionName);
-        }
-        private static MemoryStream DownloadFile(string filename, string uploadPath)
-        {
-            //var path = Path.Combine(Directory.GetCurrentDirectory(), uploadPath, filename);
-            var path = uploadPath + filename;
-            var memory = new MemoryStream();
-            if (System.IO.File.Exists(path))
+
+            //get the barcode file name and address of file
+            var QrCodePath = _webHostEnvironment.WebRootPath + WC.QrCodePath;
+            //var qrCodeName = Path.GetFileName(QrCodePath + Obj.Barcode);
+
+            var fileName = Obj.Subject + " " + Path.GetFileNameWithoutExtension(QrCodePath + Obj.Barcode);
+            
+            string? paperObj;
+            //var paperFile;
+
+            if(type == "objective")
             {
-                var client = new System.Net.WebClient();
-                var data =  client.DownloadData(path);
-                memory = new MemoryStream(data);
+                paperObj = Obj.PaperFile;
+                var paperFile = await _pdfService.RenderPdf(paperObj, fileName, Obj.Barcode.ToString());
+                Response.Headers.Add("Content-Disposition", $"inline; filename={fileName}");
+                return new FileContentResult(paperFile, "application/pdf");
             }
-            memory.Position = 0;
-            return memory;
+            else if (type == "subjective")
+            {
+                paperObj = Obj.PaperSubjetiveFile;
+                var paperFile = await _pdfService.RenderPdf(paperObj, fileName, Obj.Barcode.ToString());
+                Response.Headers.Add("Content-Disposition", $"inline; filename={fileName}");
+                return new FileContentResult(paperFile, "application/pdf");
+            }
+            else if (type == "solution")
+            {
+                paperObj = Obj.SolutionFile;
+                var paperFile = await _pdfService.RenderPdf(paperObj, fileName, Obj.Barcode.ToString());
+                Response.Headers.Add("Content-Disposition", $"inline; filename={fileName}");
+                return new FileContentResult(paperFile, "application/pdf");
+            }
+
+            //Response.Headers.Add("Content-Disposition", $"inline; filename={fileName}");
+
+
+            return View();
         }
+
+
+        // Download PAPER pdf from table
+        //public async Task<FileResult> GetSubjectivePaper(int id)
+        //{
+        //    var Obj = await _pdfService.GetPaperById(id);
+        //    var paperName = Obj.PaperSubjetiveFile;
+        //    var path = _webHostEnvironment.WebRootPath + WC.PaperPathPDF;
+        //    // call the function to downlaod
+        //    //var memory = DownloadFile(paperName, path);
+        //    byte[] memory = DownloadFile(paperName);
+        //    return File(memory.ToArray(), "application/pdf", paperName);
+        //}
+
+        // Download Solution pdf from table
+        //public async Task<FileResult> GetSolution(int id)
+        //{
+        //    var Obj = await _pdfService.GetPaperById(id);
+        //    var solutionName = Obj.SolutionFile;
+        //    var path = _webHostEnvironment.WebRootPath + WC.PaperPathPDF;
+        //    // call the function to downlaod
+        //    //var memory = DownloadFile(solutionName, path);
+        //    var memory;// = DownloadFile(solutionName);
+        //    return File(memory.ToArray(), "application/pdf", solutionName);
+        //}
+        //private static MemoryStream DownloadFile(Task<byte[]> filePaper)//, string uploadPath)
+        //{
+        //    //var path = Path.Combine(Directory.GetCurrentDirectory(), uploadPath, filename);
+        //    //var path = uploadPath + filePaper;
+        //    var memory = new MemoryStream();
+        //    //if (System.IO.File.Exists(path))
+        //    //{
+        //    var client = new System.Net.WebClient();
+        //    var data = client.DownloadData(filePaper);
+        //    memory = new MemoryStream(data);
+
+        //    memory.Position = 0;
+        //    return memory;
+        //}
 
         // POST: PdfController/Delete/5
         public async Task<ActionResult> Delete(int id)
@@ -428,7 +465,7 @@ namespace ExamSystem.Controllers
             await _pdfService.DeletePaper(id);
             return RedirectToAction("UserPapers", new { @id = User.Identity.Name });
         }
-          
+
 
 
     }

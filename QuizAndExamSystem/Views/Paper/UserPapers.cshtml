@@ -16,7 +16,7 @@
             <div class="col-12">
                 @if (User.Identity.IsAuthenticated)
                 {
-                    <form action="PaperView" method="post">
+                    <form action="GeneratePaper" method="post">
                         <div class="row">
                             <div class="col-lg-3 col-md-6 col-sm-12 col-12">
                                 <label class="control-label">Choose Class</label>
@@ -67,6 +67,7 @@
                             </tr>
                         </thead>
                         <tbody>
+
                             @foreach (var item in Model)
                             {
                                 <tr>
@@ -74,32 +75,36 @@
                                     <td> @Html.DisplayFor(modelItem => item.Subject) </td>
                                     <td> @Html.DisplayFor(modelItem => item.CreatedOn) </td>
                                     <td>
-                                        <a class="btn btn-primary" asp-action="GetObjectivePaper" asp-route-id="@item.Id">
-                                            @Html.DisplayFor(modelItem => item.PaperFile) <i class="fas fa-download"></i>
+                                        <a class="btn btn-primary" asp-action="PaperView" asp-route-id="@item.Id" asp-route-type="objective" target="_blank">
+                                                @*@Html.DisplayFor(modelItem => item.PaperFile) <i class="fas fa-download"></i>*@
+                                            View Objective paper
                                         </a>
                                     </td>
                                     <td>
-                                        <a class="btn btn-primary" asp-action="GetSubjectivePaper" asp-route-id="@item.Id">
-                                            @Html.DisplayFor(modelItem => item.PaperSubjetiveFile) <i class="fas fa-download"></i>
+                                        <a class="btn btn-primary" asp-action="PaperView" asp-route-id="@item.Id" asp-route-type="subjective" target="_blank">
+                                                @*@Html.DisplayFor(modelItem => item.PaperSubjetiveFile) <i class="fas fa-download"></i>*@
+                                            View Subjective Paper
                                         </a>
                                     </td>
                                     <td>
-                                        <a class="btn btn-primary" asp-action="GetSolution" asp-route-id="@item.Id">
-                                            @Html.DisplayFor(modelItem => item.SolutionFile)<i class="fas fa-download"></i>
+                                        <a class="btn btn-primary" asp-action="PaperView" asp-route-id="@item.Id" asp-route-type="solution" target="_blank">
+                                                @*@Html.DisplayFor(modelItem => item.SolutionFile)<i class="fas fa-download"></i>*@
+                                            View Rubrics and Solution
                                         </a>
                                     </td>
                                     <td> <img src="@WC.QrCodePath@item.Barcode" alt="QrCode" class="rounded-square" width="150"></td>
-                                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-                                    {
+                                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                                        {
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.CreatedBy)
+                                                @Html.DisplayFor(modelItem => item.CreatedBy)
                                         </td>
                                         <td>
                                             <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id" onclick="ValidateDelete()"> <i class="fas fa-trash"></i></a>
                                         </td>
-                                    }
+                                        }
                                 </tr>
                             }
+
                     </table>
                 </div>
                 <!-- /.card-body -->
