@@ -95,7 +95,7 @@
                         <div class="row">
                             <div class=" col-lg-2 col-md-2 col-sm-12 col-12"> Question</div>
                             <div class="col-lg-5 col-md-5 col-sm-12 col-12 ">
-                                <input asp-for="QuestionText" class="form-control" placeholder="Question in English" />
+                                <input id="textSearchField" asp-for="QuestionText" class="form-control" placeholder="Question in English" />
                                 <span asp-validation-for="QuestionText" class="text-danger"></span>
                             </div>
                             <div class="col-lg-5 col-md-5 col-sm-12 col-12 ">
@@ -281,6 +281,18 @@
 
 @section Scripts{
     <script>
+        // serach for duplicate questions on the lost focus of textbox during the new entry.
+        $("#textSearchField").on("blur", function () {
+            var textFieldValue = $(this).val();
+            $.post("/QuestionController/CheckForDuplicate", { textFieldValue: textFieldValue }, function (data) {
+                if (data.IsDuplicate) {
+                    $("#QuestionText").text("Sorry! This Question already exists.");
+                } else {
+                    $("#QuestionText").text("");
+                }
+            });
+        });
+    
         // script code for Question Type DDL
         $(function () {
             $('#QType').change(function () {

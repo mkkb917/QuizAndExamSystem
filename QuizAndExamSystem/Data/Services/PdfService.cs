@@ -6,11 +6,9 @@ using ExamSystem.Data.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.EntityFrameworkCore;
-using System.Text;
 using ExamSystem.Models;
 using QRCoder;
 using System.Drawing;
-using Microsoft.AspNetCore.Mvc;
 //using Spire.Pdf.Graphics;
 
 
@@ -64,7 +62,7 @@ namespace ExamSystem.Data.Services
             return responce;
         }
 
-        public async Task<PaperViewVM> RenderPaper(int selectedClass, int selectedSubject, DateTime PaperDate, string? TeacherName, ApplicationUser usr)
+        public async Task<PaperViewVM> RenderPaper(int selectedClass, int selectedSubject, DateTime PaperDate, string? TeacherName,string? qrCode, ApplicationUser usr)
         {
             // get the current user question setting     
             var setting = new PaperSetting();
@@ -78,6 +76,7 @@ namespace ExamSystem.Data.Services
                 setting.SubjectName = await _context.Subjects.Where(e => e.Id == selectedSubject).Select(o => o.SubjectText).SingleOrDefaultAsync();
                 setting.TotalMarks = Convert.ToInt32((setting.MCQsMarks * setting.MCQsCount) + (setting.SEQsCount * setting.SEQsMarks) + (setting.LongQsMarks * setting.LongQsCount) + (setting.FillInBlanksMarks * setting.FillInBlanksCount));
                 setting.TeacherName = TeacherName;
+                setting.QrCode = qrCode;
                 if (PaperDate > DateTime.Today) { setting.ConductDate = PaperDate; } else { setting.ConductDate = DateTime.Today; }
             }
 
@@ -167,18 +166,18 @@ namespace ExamSystem.Data.Services
             return paperview;
         }
 
-        public Task<byte[]> RenderPdf(string paperView, string fileName, string qrcode)
+        public Task<byte[]> RenderPdf(string paperView, string fileName)
         {
             var converter = new BasicConverter(new PdfTools());
             string webRootPath = _webHostEnvironment.WebRootPath;
             string PaperPath = webRootPath + WC.PaperPathPDF;
-
-            var htmlDoc = new StringBuilder();
-            htmlDoc.AppendLine("<td>");
+            //var PageOptions = new PageSettings();
+            //var htmlDoc = new StringBuilder();
+            //htmlDoc.AppendLine($"<div id = \"QrCodeArea\">");
             //It fetches under wwwroot and include the current generating code image
-            var path = _webHostEnvironment.WebRootPath + WC.QrCodePath + qrcode;
-            htmlDoc.AppendLine($"<img style=\"margin-bottom:0px;\" src=\"{path}\" />");
-            htmlDoc.AppendLine("</td>");
+            //var path = _webHostEnvironment.WebRootPath + WC.QrCodePath + qrcode;
+            //htmlDoc.AppendLine($"<img style=\"margin-bottom:0px; width: 100px; height: 100px\" src=\"{path}\" />");
+            //htmlDoc.AppendLine("</div>");
             //var barcode = $"<img style=\"margin-bottom:0px;\" src=\"~{path}\" length=50/>";
 
             var globalSettings = new GlobalSettings
@@ -194,10 +193,13 @@ namespace ExamSystem.Data.Services
             var objectSettings = new ObjectSettings
             {
                 PagesCount = true,
-                HtmlContent = htmlDoc + paperView,
+                HtmlContent = paperView,
+                UseExternalLinks = true,
                 WebSettings = { DefaultEncoding = "utf-8", UserStyleSheet = @"https://localhost:7278/wwwroot/css/paperStyle.css", LoadImages = true, Background = true },   //UserStyleSheet =  Path.Combine(Directory.GetCurrentDirectory(), "assets", "styles.css")
-                HeaderSettings = { FontName = "Arial", FontSize = 12, Line = true, Center = "Pdf Paper by ExamSystem.com", Right = qrcode },
-                FooterSettings = { FontName = "Arial", FontSize = 12, Line = true, Left = "Generated on: www.examsystem.com", Right = "Page [page] of [toPage]" }
+                HeaderSettings = { FontName = "Arial", FontSize = 12, Line = true, Center = "Pdf Paper by ExamSystem", /*Right = barcode*/ },
+                //HeaderSettings = { FontName = "Arial", FontSize = 12, Line = true, Center = "Pdf Paper by ExamSystem.com" },
+                FooterSettings = { FontName = "Arial", FontSize = 12, Line = true, Center = "Generated on: ExamSystem", Right = "Page [page] of [toPage]" }
+                //FooterSettings = { HtmUrl=FooterPath}
             };
             var pdf = new HtmlToPdfDocument()
             {
@@ -223,7 +225,7 @@ namespace ExamSystem.Data.Services
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
             QRCodeData qrCodeData = qrGenerator.CreateQrCode(QrCodeString + guid, QRCodeGenerator.ECCLevel.Q);
             BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
-            byte[] qrCodeAsBitmapByteArr = qrCode.GetGraphic(3);
+            byte[] qrCodeAsBitmapByteArr = qrCode.GetGraphic(5);
 
             //save the byte array to image
             using (var ms = new MemoryStream(qrCodeAsBitmapByteArr))
@@ -231,7 +233,7 @@ namespace ExamSystem.Data.Services
                 Image qrCodeImage = Image.FromStream(ms);
                 qrCodeImage.Save(QrCodePath + guid + ".png");
             }
-            return (QrCodeString + ".png");
+            return (QrCodePath + guid + ".png");
         }
 
 

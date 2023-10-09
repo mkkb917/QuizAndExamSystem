@@ -100,7 +100,7 @@ namespace ExamSystem.Data.Services
             return responce;
         }
 
-        public async Task<System.Collections.Generic.List<Question>> GetAllQuestionsById(int Id)
+        public async Task<List<Question>> GetAllQuestionsById(int Id)
         {
             var responce = await _context.Questions.Where(s => s.TopicId == Id).ToListAsync();
             return responce;
@@ -265,6 +265,13 @@ namespace ExamSystem.Data.Services
             return objQnA;
         }
 
-     
+        public async Task<bool> SearchQuestionByString(string questionString)
+        {
+            var responce = await _context.Questions
+                .Where(e => e.QuestionText == questionString).FirstOrDefaultAsync();
+            if(responce==null)
+                return false;
+            return true;
+        }
     }
 }

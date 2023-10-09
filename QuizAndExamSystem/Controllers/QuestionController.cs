@@ -251,6 +251,16 @@ namespace ExamSystem.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CheckForDuplicate(string InputStringValue)
+        {
+            // Check if an entry with the same text field value exists
+            bool isDuplicate = await _service.SearchQuestionByString(InputStringValue);
+
+            // Return a JSON response indicating whether it's a duplicate or not
+            return Json(new { IsDuplicate = isDuplicate });
+        }
+
         // GET: Question/Delete/5
         public async Task<IActionResult> Delete(int id)
         {

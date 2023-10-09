@@ -8,6 +8,7 @@ namespace ExamSystem.Data.Interface
     {
         Task<List<QnAs>> GetQuestionBank(int? SubjectId, List<Topic>? Topics);
         Task<Question> GetQuesDetailById(int id);
+        Task<bool> SearchQuestionByString(string questionString);
         Task<List<Question>> GetAllQuestionsById(int Id);
         Task<DropDownsListsVM> GetDDLObject();
         Task AddNewQuestion(QuestionVM data);

@@ -1,10 +1,14 @@
-﻿namespace ExamSystem
+﻿using Microsoft.AspNetCore.Hosting;
+
+namespace ExamSystem
 {
     public static class WC
     {
+        
+
         // images path
         public static string ProfileImagePath = @"\images\profile\";
-        public static string LogoPath = $"/images/logo.png";
+        public static string LogoPath =  @"\images\school\";
         public static string NotificationPath = @"\images\notification\";
         public static string QrCodePath = @"\images\qrcodes\";
 

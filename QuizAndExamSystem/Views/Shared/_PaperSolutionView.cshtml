@@ -1,7 +1,9 @@
 ﻿@model ExamSystem.Data.ViewModels.PaperViewVM
-
+@inject IWebHostEnvironment webHostEnvironment
 @{
     ViewData["Title"] = "PaperBoardLayout";
+    string imagePath = webHostEnvironment.WebRootPath + WC.LogoPath;
+    string qrCodePath = webHostEnvironment.WebRootPath + WC.QrCodePath;
     //Layout = "PaperBoardLayout";
     int i = 1;
     int j = 1;
@@ -14,14 +16,14 @@
         <tr style="border:solid;">
             <td style="border:solid">
                 <div style="align-items:center">
-                    <img src="https://localhost:7278/images/school/@Model.Setting.SchoolLogo" style="width: 100px; height: 100px">
+                    <img src="@imagePath@Model.Setting.SchoolLogo" style="width: 100px; height: 100px">
                 </div>
             </td>
             <td colspan="2" style="width:100%;">
                 <table style="width:100%; text-align:center; margin:0px; ">
                     <tr style="margin:0px;">
                         <td colspan="4" >
-                            <h1 style="font-family:serif;font-weight: bold; color:aqua;">@Model.Setting.SchoolName</h1>
+                            <h1 style="font-family:serif;font-weight: bold; color:darkblue;">@Model.Setting.SchoolName</h1>
                         </td>
                     </tr>
                     <tr style="margin:0px;">
@@ -35,10 +37,16 @@
                             <h4> @Model.Setting.ClassName </h4>
                         </td>
                         <td style="width:25%;">
-                            <h4> @Model.Setting.TeacherName</h4>
+                            <h4> @Model.Setting.TeacherName </h4>
                         </td>
                     </tr>
                 </table>
+            </td>
+            <td style="border:solid">
+                <div id="QrCodeArea">
+                    <!-- Image is inserted here dynamically by pdf generator-->
+                    <img src="@Model.Setting.QrCode" style="width: 100px; height: 100px; margin:0px;">
+                </div>
             </td>
         </tr>
     </table>

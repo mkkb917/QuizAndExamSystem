@@ -222,6 +222,7 @@ namespace ExamSystem.Controllers
                         Duration = model.Duration,
                         DifficultyLevel = model.DifficultyLevel,
                         Medium = model.Medium,
+                        QrCode = model.QrCode,
                         Instructions = model.Instructions,
                         TotalMarks = model.TotalMarks,
                         PassingMarks = model.PassingMarks,
@@ -263,6 +264,7 @@ namespace ExamSystem.Controllers
                         paperSetting.Duration = model.Duration;
                         paperSetting.DifficultyLevel = model.DifficultyLevel;
                         paperSetting.Medium = model.Medium;
+                        paperSetting.QrCode = model.QrCode;
                         paperSetting.Instructions = model.Instructions;
                         paperSetting.TotalMarks = model.TotalMarks;
                         paperSetting.PassingMarks = model.PassingMarks;
@@ -335,17 +337,17 @@ namespace ExamSystem.Controllers
             // get current user and school info 
             var usr = new ApplicationUser()
             { UserName = _userManager.GetUserName(User) };
-
-            // call the function to render the questions bank for generating paper object
-            var paperViewVM = await _pdfService.RenderPaper(selectedClass, selectedSubject, PaperDate, TeacherName, usr);
-
-            if (paperViewVM.Setting == null)
-            { return RedirectToAction("PaperSetting", new { @id = 0 }); }
-
+            
             //create the Qr Code and pass to renderpaper method
             string guid = Guid.NewGuid().ToString().Substring(0, 5);
             string qrstring = className + subjectName;
             var qrcode = _pdfService.BarCodeGenerator(qrstring, guid);
+
+            // call the function to render the questions bank for generating paper object
+            var paperViewVM = await _pdfService.RenderPaper(selectedClass, selectedSubject, PaperDate,TeacherName,qrcode, usr);
+
+            if (paperViewVM.Setting == null)
+            { return RedirectToAction("PaperSetting", new { @id = 0 }); }
 
             //inject barcode in the paperViewVM
             //if (paperViewVM.Setting.QrCode == null)
@@ -392,21 +394,21 @@ namespace ExamSystem.Controllers
             if(type == "objective")
             {
                 paperObj = Obj.PaperFile;
-                var paperFile = await _pdfService.RenderPdf(paperObj, fileName, Obj.Barcode.ToString());
+                var paperFile = await _pdfService.RenderPdf(paperObj, fileName);
                 Response.Headers.Add("Content-Disposition", $"inline; filename={fileName}");
                 return new FileContentResult(paperFile, "application/pdf");
             }
             else if (type == "subjective")
             {
                 paperObj = Obj.PaperSubjetiveFile;
-                var paperFile = await _pdfService.RenderPdf(paperObj, fileName, Obj.Barcode.ToString());
+                var paperFile = await _pdfService.RenderPdf(paperObj, fileName);
                 Response.Headers.Add("Content-Disposition", $"inline; filename={fileName}");
                 return new FileContentResult(paperFile, "application/pdf");
             }
             else if (type == "solution")
             {
                 paperObj = Obj.SolutionFile;
-                var paperFile = await _pdfService.RenderPdf(paperObj, fileName, Obj.Barcode.ToString());
+                var paperFile = await _pdfService.RenderPdf(paperObj, fileName);
                 Response.Headers.Add("Content-Disposition", $"inline; filename={fileName}");
                 return new FileContentResult(paperFile, "application/pdf");
             }

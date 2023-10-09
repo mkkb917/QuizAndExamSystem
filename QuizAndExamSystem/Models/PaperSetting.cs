@@ -53,10 +53,7 @@ namespace ExamSystem.Models
         public float? FillInBlanksMarks { get; set; }
         [Display(Name = "Fill in the Blanks Count")]
         public int FillInBlanksCount { get; set; }
-
-
-        //public int PaperLayout { get; set; }
-        //public string? QrCode { get; set; }
+        public string? QrCode { get; set; }
 
 
 

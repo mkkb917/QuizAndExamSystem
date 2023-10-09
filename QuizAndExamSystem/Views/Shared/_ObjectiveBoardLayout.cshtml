@@ -1,8 +1,10 @@
 ﻿@model ExamSystem.Data.ViewModels.PaperViewVM
-
+@inject IWebHostEnvironment webHostEnvironment
 @{
     ViewData["Title"] = "PaperBoardLayout";
     //Layout = "PaperBoardLayout";
+    string imagePath = webHostEnvironment.WebRootPath + WC.LogoPath;
+    string qrCodePath = webHostEnvironment.WebRootPath + WC.QrCodePath;
     int i = 1;
     TimeSpan t = TimeSpan.FromMinutes(Convert.ToInt32(Model.Setting.Duration));
 }
@@ -13,14 +15,14 @@
         <tr style="border:solid;">
             <td style="border:solid">
                 <div style="align-items:center">
-                    <img src="https://localhost:7278/images/school/@Model.Setting.SchoolLogo" style="width: 100px; height: 100px">
+                    <img src="@imagePath@Model.Setting.SchoolLogo" style="width: 100px; height: 100px">
                 </div>
             </td>
             <td colspan="2" style="width:100%;">
                 <table style="width:100%; text-align:center; margin:0px; ">
                     <tr style="margin:0px;">
                         <td colspan="4" style="width:80%;">
-                            <h1 style="font-family:'Century Schoolbook'; color:aqua;"><strong> @Model.Setting.SchoolName </strong></h1>
+                            <h1 style="font-family:'Century Schoolbook'; color:darkblue;"><strong> @Model.Setting.SchoolName </strong></h1>
                         </td>
                     </tr>
                     <tr style="margin:0px;">
@@ -31,13 +33,19 @@
                             <h4 style="align-items:center; margin:0px;"> @Model.Setting.SubjectName </h4>
                         </td>
                         <td style="width:22%;margin:0px;">
-                            <h4 style="align-items:center; margin:0px;"> @Model.Setting.TeacherName</h4>
+                            <h4 style="align-items:center; margin:0px;"> @Model.Setting.TeacherName </h4>
                         </td>
                         <td style="width:26%;margin:0px;">
                             <h4 style="align-items:center; margin:0px;"> @Model.Setting.ExamName </h4>
                         </td>
                     </tr>
                 </table>
+            </td>
+            <td style="border:solid">
+                <div id="QrCodeArea">
+                    <!-- Image is inserted here dynamically by pdf generator-->
+                    <img src="@Model.Setting.QrCode" style="width: 100px; height: 100px;margin:0px;">
+                </div>
             </td>
         </tr>
     </table>

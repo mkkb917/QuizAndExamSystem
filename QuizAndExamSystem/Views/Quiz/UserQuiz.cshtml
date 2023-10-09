@@ -29,7 +29,7 @@
                                 <th>@Html.DisplayNameFor(model => model.Grade)</th>
                                 <th>@Html.DisplayNameFor(model => model.Subject)</th>
                                 <th> @Html.DisplayNameFor(model => model.CreatedOn) </th>
-                                <th> @Html.DisplayNameFor(model => model.QuizName) </th>
+                                <th> @*@Html.DisplayNameFor(model => model.QuizName)*@ Quiz </th>
                                 <th> @Html.DisplayNameFor(model => model.TotalScores) </th>
                                 <th> @Html.DisplayNameFor(model => model.ObtainedScores) </th>
                                 <th> @Html.DisplayNameFor(model => model.Result) </th>
@@ -48,7 +48,8 @@
                                     <td> @Html.DisplayFor(modelItem => item.CreatedOn.Date) </td>
                                     <td>
                                         <a class="btn btn-primary" asp-action="QuizResult" asp-route-id="@item.Id">
-                                            @Html.DisplayFor(modelItem => item.QuizName) <i class="fas fa-view"></i>
+                                            @*@Html.DisplayFor(modelItem => item.QuizName) <i class="fas fa-view"></i>*@
+                                            View Certificate <i class="fas fa-view"></i>
                                         </a>
                                     </td>
                                     <td> @Html.DisplayFor(modelItem => item.TotalScores)</td>
