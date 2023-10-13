@@ -8,13 +8,13 @@
             <span class="ti-menu"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
+            <ul class="navbar-nav ms-auto">
                 <li class="nav-item @@home">
                     <a class="nav-link" asp-controller="Home" asp-action="Index">
                         <span><i class="ti-home"></i></span>Home
                     </a>
                 </li>
-                <li class="nav-item">
+                @*<li class="nav-item">
                     <a class="nav-link" href="#">Decoration</a>
                 </li>
                 <li class="nav-item">
@@ -25,25 +25,33 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="StudyMaterial" asp-action="Index10">10th</a>
+                </li>*@
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle">School Corner</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" asp-controller="StudyMaterial" asp-action="Notes9th">Decoration</a></li>
+                        <li><a class="dropdown-item" asp-controller="StudyMaterial" asp-action="Pastpapers9th">Events</a></li>
+                        <li><a class="dropdown-item" asp-controller="StudyMaterial" asp-action="Books9th">Management</a></li>
+                    </ul>
                 </li>
-                @*<li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle">Class 9</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle">Teacher Corner</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" asp-controller="StudyMaterial" asp-action="Notes9th">Notes</a></li>
-                        <li><a class="dropdown-item" asp-controller="StudyMaterial" asp-action="Pastpapers9th">Past Papers</a></li>
-                        <li><a class="dropdown-item" asp-controller="StudyMaterial" asp-action="Books9th">Books</a></li>
-                        <li><a class="dropdown-item" asp-controller="StudyMaterial" asp-action="Syllabus9th">Syllabus</a></li>
+                        <li><a class="dropdown-item" asp-controller="StudyMaterial" asp-action="Notes10th">Teachers Diary</a></li>
+                        <li><a class="dropdown-item" asp-controller="StudyMaterial" asp-action="Pastpapers10th">Helping Books</a></li>
+                        <li><a class="dropdown-item" asp-controller="SED" asp-action="Index">Orders and Notifications</a></li>
+                        <li><a class="dropdown-item" asp-controller="StudyMaterial" asp-action="Syllabus10th">Syllabus and Calanders</a></li>
                     </ul>
-                </li>*@
-                @*<li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle">Class 10</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle">Student Corner</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" asp-controller="StudyMaterial" asp-action="Notes10th">Notes</a></li>
+                        <li><a class="dropdown-item" asp-controller="StudyMaterial" asp-action="Notes10th">Helping Books</a></li>
                         <li><a class="dropdown-item" asp-controller="StudyMaterial" asp-action="Pastpapers10th">Past Papers</a></li>
-                        <li><a class="dropdown-item" asp-controller="StudyMaterial" asp-action="Books10th">Books</a></li>
-                        <li><a class="dropdown-item" asp-controller="StudyMaterial" asp-action="Syllabus10th">Syllabus</a></li>
+                        <li><a class="dropdown-item" asp-controller="StudyMaterial" asp-action="Books10th">Speaches</a></li>
+                        <li><a class="dropdown-item" asp-controller="StudyMaterial" asp-action="Syllabus10th">Results</a></li>
                     </ul>
-                </li>*@
+                </li>
                 <li class="nav-item">
                     <a class="nav-link " asp-controller="Books" asp-action="Index">Books</a>
                     @*<ul class="dropdown-menu">
@@ -55,20 +63,8 @@
                 <!-- Render the partial View based on the authentication and authorization-->
                 <!-- If User is not registered-->
                 
-                @if (!User.Identity.IsAuthenticated)
+                @if (User.Identity.IsAuthenticated)
                 {
-                    <li class="nav-item ">
-                        <a class="nav-link" asp-controller="Account" asp-action="Login">Sign in</a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link" asp-controller="Account" asp-action="Register">Register</a>
-                    </li>
-                }
-                else
-                {
-                    <li class="nav-item ">
-                        <a class="nav-link" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
-                    </li>
                     <li class="nav-item dropdown ">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown">
                             Hello! @userManager.GetUserName(User)
@@ -86,6 +82,20 @@
                             </li>
                         </ul>
                     </li>
+                }
+                else
+                {
+                    <li class="nav-item ">
+                        <a class="nav-link" asp-controller="Account" asp-action="Login">Sign in</a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" asp-controller="Account" asp-action="Register">Register</a>
+                    </li>
+               
+                    <li class="nav-item ">
+                        <a class="nav-link" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                    </li>
+                    
                 }
             </ul>
 
