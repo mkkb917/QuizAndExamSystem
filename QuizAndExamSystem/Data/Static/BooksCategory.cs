@@ -6,15 +6,15 @@ namespace ExamSystem.Data.Static
     {
         [Display(Name = "AIOU")]
         AIOU,
-        [Display(Name = "Syllabus")]
-        Syllabus,
+        [Display(Name = "Linguistics")]
+        Linguistics,
         [Display(Name = "Stories")]
         Stories,
         [Display(Name = "Islamic")]
-        Islamic,
+        Religious,
         [Display(Name ="General Knowledge")]
         General_Knowledge,
         [Display(Name = "Public Service Commission")]
-        PPSC,
+        Public_Service,
     }
 }

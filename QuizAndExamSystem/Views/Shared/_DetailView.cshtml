@@ -1,0 +1,58 @@
+﻿@model ExamSystem.Models.Books
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <a class="btn btn-secondary" asp-controller="Books" asp-action="Index"> <i class="fa fa-arrow-left"></i> Back</a>
+            <div class="row">
+                <div class="col-sm-12 col-md-5 col-lg-5 ml-3">
+
+                    <h1>@Model.Title</h1>
+                    <p>Author: @Model.Author</p>
+                    @*<p>Publisher: @Model.Publisher</p>*@
+                    <p>ISBN: 1234567890</p>
+                    <p>Description: @Model.Description</p>
+                    <div class="text-center mt-3">
+                        <button id="togglePdfButton">Read Book Now</button>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-7 col-lg-7">
+                    <div id="imgContainer" style="display: block;">
+                        <img src="@WC.PDF_Book_Path@Model.FileThumbnail" alt="Book Cover" class="img-fluid" width="100%" height="100px">
+                    </div>
+                    <div id="pdfContainer" style="display: none;">
+                        <center class="m-2">
+                            <iframe id="pdfDoc" src="@WC.PDF_Book_Path@Model.FileName?page=hsn#toolbar=0" width="100%" height="500">
+                            </iframe>
+                        </center>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Get a reference to the button and the PDF container
+        const togglePdfButton = document.getElementById('togglePdfButton');
+        const pdfContainer = document.getElementById('pdfContainer');
+        const imgContainer = document.getElementById('imgContainer');
+
+        // Add a click event listener to the button
+        togglePdfButton.addEventListener('click', function () {
+            if (pdfContainer.style.display === 'none') {
+                // Show the PDF container and hide the image
+                pdfContainer.style.display = 'block';
+                imgContainer.style.display = 'none';
+            } else {
+                // Hide the PDF container and display image
+                pdfContainer.style.display = 'none';
+                imgContainer.style.display = 'block';
+            }
+        });
+    </script>
+}

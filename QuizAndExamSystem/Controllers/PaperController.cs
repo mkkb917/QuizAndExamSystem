@@ -39,14 +39,14 @@ namespace ExamSystem.Controllers
             var Obj = await _pdfService.GetAllPapers();
             return View(Obj);
         }
-
-        
+                
         // JSON method for dropdownlists        code OK
         public JsonResult Subject(int id)
         {
             var sl = _context.Subjects.Where(s => s.GradeId == id && s.Status == Status.Active).ToList();
             return new JsonResult(sl);
         }
+
         public JsonResult GetTableData(int id)
         {
 
@@ -73,6 +73,7 @@ namespace ExamSystem.Controllers
             }
             return new JsonResult(objtopiclist);
         }
+
         // GET: Pairing scheme dropdown fetch data
         public JsonResult GetPairingData(int id)
         {

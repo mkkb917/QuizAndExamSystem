@@ -7,8 +7,8 @@ namespace ExamSystem.Data.Interface
     public interface IUploadsService : IEntityBaseRepository<Uploads>
     {
         // General Signatures
-        Task<Uploads> GetFileById(int id, string code);
-        Task<List<Uploads>> GetAllFilesByUser(string user, string code);
+        Task<Uploads> GetFileById(int id, UploadsCategory category);
+        Task<List<Uploads>> GetAllFilesByUser(string user, UploadsCategory category);
         Task<List<Uploads>> GetAllFilesByStatus(Status status, string code);
         Task<List<Uploads>> GetAllFiles(string code);
         Task AddNewFile(Uploads data, IFormFileCollection files);

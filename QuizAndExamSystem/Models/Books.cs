@@ -10,6 +10,9 @@ namespace ExamSystem.Models
         public string? FileName { get; set; }
         public string? FileThumbnail { get; set; }
         public string? BookType { get; set; }
+        //public string? Publisher { get; set; }
+        //public string? ISBN { get; set; }
+
 
     }
 }

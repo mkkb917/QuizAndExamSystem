@@ -23,14 +23,13 @@
 
 </head>
 
+@{
+    var user = await userManager.GetUserAsync(User);
+    var profilepicName = user.ProfileImage;
+    var profilePicPath = WC.ProfileImagePath + profilepicName ?? "avatar.png";
+}
 <body class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
     <div class="wrapper">
-
-
-        @*<-----Main Menu----> *@
-
-        <!-- Render the Main Menu with authentication and authorization-->
-        @*<partial name="_NavMenu" />*@
 
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-dark">
@@ -93,10 +92,10 @@
                         <a href="#" class="dropdown-item">
                             <!-- Message Start -->
                             <div class="media">
-                                <img src="~/admin/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                                <img src="@profilePicPath" alt="User Avatar" class="img-size-50 img-circle mr-3">
                                 <div class="media-body">
                                     <h3 class="dropdown-item-title">
-                                        John Pierce
+                                           @user.UserName
                                         <span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
                                     </h3>
                                     <p class="text-sm">I got your message bro</p>
@@ -160,8 +159,8 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
             <a asp-controller="Home" asp-action="Index" class="brand-link">
-                <img src="~/admin/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-                <span class="brand-text font-weight-light">Exam System </span>
+                <img src="~/images/logo.png" alt="logo" class="brand-image img-circle elevation-3" width="100%" height="150px" style="opacity: .8">
+                <span class="brand-text font-weight-light">Home </span>
             </a>
             <!-- Sidebar -->
             <div class="sidebar">
@@ -172,7 +171,8 @@
                             <li class="nav-item ">
                                 <a src="#" class="nav-link">
                                     <i class="nav-icon">
-                                        <img src="~/images/avatar/avatar.png" class="img-circle elevation-2" width="30" alt="User Image">
+                                        @*<img src="~/images/avatar/avatar.png" class="img-circle elevation-2" width="30" alt="User Image">*@
+                                        <img src="@profilePicPath" class="img-circle elevation-2" width="30" alt="User Image">
                                     </i>
                                     <p class="info">
                                         @User.Identity.Name
@@ -294,15 +294,39 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a asp-controller="StudyMaterial" asp-action="UserIndex9th" class="nav-link">
+                                    <a asp-controller="Corner" asp-action="UserDecorate" class="nav-link">
                                         <i class="fa fa-upload nav-icon"></i>
-                                        <p>9th</p>
+                                        <p>Decorate</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a asp-controller="StudyMaterial" asp-action="UserIndex10th" class="nav-link">
+                                    <a asp-controller="Corner" asp-action="UserSyllabus" class="nav-link">
+                                        <i class="fa fa-upload nav-icon"></i>
+                                        <p>Syllabus</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-controller="Corner" asp-action="UserEvents" class="nav-link">
+                                        <i class="fa fa-upload nav-icon"></i>
+                                        <p>School Events</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-controller="Corner" asp-action="UserManage" class="nav-link">
+                                        <i class="fa fa-upload nav-icon"></i>
+                                        <p>School Management</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-controller="Corner" asp-action="UserIndex10th" class="nav-link">
                                         <i class="fa fa-upload nav-icon"></i>
                                         <p>10th</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-controller="Corner" asp-action="UserIndex9th" class="nav-link">
+                                        <i class="fa fa-upload nav-icon"></i>
+                                        <p>9th</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -492,7 +516,7 @@
 
     <!-- DataTable for bootstrap tables -->
     <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.js"></script>
-
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>   <!-- SweetAlerts-->
     <!-- Include the summerNote library for RichTextEditor -->
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 

@@ -22,13 +22,14 @@ namespace ExamSystem.Data.Services
        
         public async Task AddNewFile(SED data, IFormFileCollection files)
         {
+            string NameofFile = Path.GetFileName(files[0].FileName);
             // upload the file
             if (files != null && data != null)
             {
                 string fileUpload = _webHostEnvironment.WebRootPath + WC.PDF_SED_Path;
                 // pass the files object to method to save and create files in directory
 
-                var fileName = FileUploadAndConvert.UploadFileAndConvertToImage(files, fileUpload);
+                var fileName = FileUploadAndConvert.UploadFileAndConvertToImage(files, fileUpload,NameofFile);
 
                 var obj = new SED()
                 {
@@ -109,7 +110,7 @@ namespace ExamSystem.Data.Services
         public async Task UpdateFile(int Id, SED data, IFormFileCollection files)
         {
             var Obj = await _context.SED.FirstOrDefaultAsync(n => n.Id == Id);
-
+            string NameofFile = Path.GetFileName(files[0].FileName);
             //grab the file
             string Upload = _webHostEnvironment.WebRootPath + WC.PDF_SED_Path;
             var oldfile = Path.Combine(Upload, data.FileName);
@@ -124,7 +125,7 @@ namespace ExamSystem.Data.Services
                     File.Delete(oldImage);
                 }
                 //call the method to upload new file and create image in directory
-                var fileName = FileUploadAndConvert.UploadFileAndConvertToImage(files,Upload);
+                var fileName = FileUploadAndConvert.UploadFileAndConvertToImage(files,Upload, NameofFile);
                 if (fileName != null)
                 {
                     if (fileName != null)

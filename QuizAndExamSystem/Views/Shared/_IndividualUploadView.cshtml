@@ -4,49 +4,72 @@
 
 
 @{
+
     string Path = "";
+    string typeName = "";
     Enum.TryParse(Model.FileType.ToString(), out UploadsCategory category);
-    if (Model.FileType == UploadsCategory.Books) //books
-    {
-        Path = @WC.UploadBooksPathPDF;
-    }
-    else if (Model.FileType == UploadsCategory.PastPapers) //pastpapers
+    if (Model.FileType == UploadsCategory.PastPapers) //pastpapers
     {
         Path = @WC.UploadPaperPathPDF;
+        //Enum.TryParse(Model.Code.ToString(), out DecorateCode codeValue);
+        //typeName = codeValue.ToString();
     }
     else if (Model.FileType == UploadsCategory.Notes) //Notes
     {
         Path = @WC.UploadNotesPathPDF;
+        //Enum.TryParse(Model.Code.ToString(), out DecorateCode codeValue);
+        //typeName = codeValue.ToString();
     }
     else if (Model.FileType == UploadsCategory.Syllabus) //syllabus
     {
         Path = @WC.UploadSyllabusPathPDF;
+        Enum.TryParse(Model.Code.ToString(), out SyllabusEnum codeValue);
+        typeName = codeValue.ToString();
+    }
+    else if (Model.FileType == UploadsCategory.Decorate) //Decorate
+    {
+        Path = @WC.UploadDecorate;
+        Enum.TryParse(Model.Code.ToString(), out DecorateEnum codeValue);
+        typeName = codeValue.ToString();
+    }
+    else if (Model.FileType == UploadsCategory.Events) //School Events and Functions
+    {
+        Path = @WC.UploadEvents;
+        Enum.TryParse(Model.Code.ToString(), out EventsEnum codeValue);
+        typeName = codeValue.ToString();
+    }
+    else if (Model.FileType == UploadsCategory.Manage) //School Management
+    {
+        Path = @WC.UploadEvents;
+        Enum.TryParse(Model.Code.ToString(), out ManageEnum codeValue);
+        typeName = codeValue.ToString();
     }
 }
 
 @if (Model != null)
 {
     <div class="col-lg-3 col-sm-5 col-12 filter @category">
-        <div class="card">
-            <a asp-controller="StudyMaterial" asp-action="Details" asp-route-id="@Model.Id">
+        <div class="card" data-string="{{@Model.Code}}{{@Model.Title}}{{@Model.FileType}}{{@category.ToString()}}">
+            <a asp-controller="Corner" asp-action="Details" asp-route-id="@Model.Id">
                 <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light" data-mdb-ripple-color="light">
                     <img src="@Path@Model.FileThumbnail" alt="Card image" width="100%" height="200px">
                 </div>
-                <label class="text-light">@category.ToString()</label>
+                <label class="text-light">
+                    @typeName
+                </label>
                 <div class="card-block">
                     <h4>@Model.Title</h4>
                     <span class="text-danger">Author: @Model.Author</span>
                     <p>@Model.Description</p>
-
                 </div>
             </a>
             @if (User.Identity.IsAuthenticated)
             {
                 <p>
-                    <a asp-controller="StudyMaterial" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary float-left"><i class="fas fa-pencil"></i>Edit</a>
+                    <a asp-controller="Corner" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary float-left"><i class="fas fa-pencil"></i>Edit</a>
                     @if (User.IsInRole("Admin"))
                     {
-                        <a asp-controller="StudyMaterial" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger float-right"><i class="fas fa-recycle"></i>Delete</a>
+                        <a asp-controller="Corner" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger float-right"><i class="fas fa-recycle"></i>Delete</a>
                     }
                 </p>
             }

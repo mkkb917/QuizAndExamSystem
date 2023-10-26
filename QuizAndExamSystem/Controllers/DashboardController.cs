@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using ExamSystem.Data.ViewModels;
 using ExamSystem.Filters;
 using ExamSystem.Models;
+using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 
 namespace ExamSystem.Controllers
 {
@@ -39,6 +40,11 @@ namespace ExamSystem.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
+            //if (message != null)
+            //{
+            //    //display the sweet alert message
+            //    TempData["Message"] = "Data has been saved successfully";
+            //}
             var usr = new ApplicationUser()
             { UserName = _userManager.GetUserName(User) };
             var obj = new DashboardVM

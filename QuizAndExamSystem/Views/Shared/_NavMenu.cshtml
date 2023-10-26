@@ -29,18 +29,19 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle">School Corner</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" asp-controller="StudyMaterial" asp-action="Notes9th">Decoration</a></li>
-                        <li><a class="dropdown-item" asp-controller="StudyMaterial" asp-action="Pastpapers9th">Events</a></li>
-                        <li><a class="dropdown-item" asp-controller="StudyMaterial" asp-action="Books9th">Management</a></li>
+                        <li><a class="dropdown-item" asp-controller="Corner" asp-action="Decorate">Decoration</a></li>
+                        <li><a class="dropdown-item" asp-controller="Corner" asp-action="Events">Events</a></li>
+                        <li><a class="dropdown-item" asp-controller="Corner" asp-action="Manage">Management</a></li>
+                        <li><a class="dropdown-item" asp-controller="Corner" asp-action="Syllabus">Syllabus Books</a></li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle">Teacher Corner</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" asp-controller="StudyMaterial" asp-action="Notes10th">Teachers Diary</a></li>
-                        <li><a class="dropdown-item" asp-controller="StudyMaterial" asp-action="Pastpapers10th">Helping Books</a></li>
+                        <li><a class="dropdown-item" asp-controller="Corner" asp-action="Diary">Teachers Diary</a></li>
+                        <li><a class="dropdown-item" asp-controller="Corner" asp-action="HelpingBooks">Helping Books</a></li>
                         <li><a class="dropdown-item" asp-controller="SED" asp-action="Index">Orders and Notifications</a></li>
-                        <li><a class="dropdown-item" asp-controller="StudyMaterial" asp-action="Syllabus10th">Syllabus and Calanders</a></li>
+                        <li><a class="dropdown-item" asp-controller="Corner" asp-action="Syllabus">Syllabus and Calanders</a></li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
@@ -72,6 +73,9 @@
                         </a>
                         <!-- Account Dropdown list -->
                         <ul class="dropdown-menu">
+                            <li class="nav-item ">
+                                <a class="nav-link" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                            </li>
                             <li><a class="dropdown-item" asp-controller="Account" asp-action="Profile" asp-route-id="@userManager.GetUserId(User)">Profile</a></li>
                             <li>
                                 <form class="dropdown-item " asp-controller="Account" asp-action="Logout">
@@ -91,16 +95,9 @@
                     <li class="nav-item ">
                         <a class="nav-link" asp-controller="Account" asp-action="Register">Register</a>
                     </li>
-               
-                    <li class="nav-item ">
-                        <a class="nav-link" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
-                    </li>
-                    
                 }
             </ul>
-
         </div>
-        
     </div>
 </nav>
 

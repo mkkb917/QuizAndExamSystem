@@ -12,5 +12,7 @@ namespace ExamSystem.Models
         public string? FileThumbnail { get; set; }
         public UploadsCategory? FileType { get; set; }
 
+        
+
     }
 }

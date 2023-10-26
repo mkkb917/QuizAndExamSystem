@@ -22,13 +22,14 @@ namespace ExamSystem.Data.Services
 
         public async Task AddNewBook(Books data, IFormFileCollection files)
         {
+            string bookName = Path.GetFileName(files[0].FileName);
             // upload the file
             if (files != null && data != null)
             {
                 //File path
                 string fileUpload = _webHostEnvironment.WebRootPath + WC.PDF_Book_Path;
                 // pass the files object to method to save and create files in directory
-                var fileName = FileUploadAndConvert.UploadFileAndConvertToImage(files,fileUpload);
+                var fileName = FileUploadAndConvert.UploadFileAndConvertToImage(files,fileUpload,bookName);
 
                 var obj = new Books()
                 {
@@ -108,6 +109,7 @@ namespace ExamSystem.Data.Services
         public async Task UpdateBook(int Id, Books data, IFormFileCollection files)
         {
             var Obj = await _context.Books.FirstOrDefaultAsync(n => n.Id == Id);
+            string NameofFile = Path.GetFileName(files[0].FileName);
 
             //grab the file
             string Upload = _webHostEnvironment.WebRootPath + WC.PDF_Book_Path;
@@ -124,7 +126,7 @@ namespace ExamSystem.Data.Services
                 }
                 //call the method to upload new file and create image in directory
                 
-                var fileName = FileUploadAndConvert.UploadFileAndConvertToImage(files, Upload);
+                var fileName = FileUploadAndConvert.UploadFileAndConvertToImage(files, Upload, NameofFile);
                 if (fileName != null)
                 {
                     if (fileName != null)

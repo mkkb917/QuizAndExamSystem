@@ -38,30 +38,40 @@ namespace ExamSystem.Data.Services
             {
                 Upload = webRootPath + WC.UploadNotesPathPDF;
             }
-            else if (data.FileType == UploadsCategory.Books)     //Books =4
+            else if (data.FileType == UploadsCategory.Decorate)     //Decorate = 5
             {
-                Upload = webRootPath + WC.UploadBooksPathPDF;
+                Upload = webRootPath + WC.UploadDecorate;
             }
 
             // upload the file
             if (files != null && data != null)
             {
-                // pass the files object to method to save and create files in directory
-                var fileName = FileUploadAndConvert.UploadFileAndConvertToImage(files, Upload);
+                string fileExtension = Path.GetExtension(files[0].FileName);
+                string fileName = Path.GetFileName(files[0].FileName);
 
-                var obj = new Uploads()
+                //create new randon name for file
+                string GuidName = Guid.NewGuid().ToString()[..5];
+
+                // pass the files object to funtion to save file and create thumbnail in directory
+                fileName = FileUploadAndConvert.UploadFileAndConvertToImage(files, Upload, GuidName);
+                if (fileExtension == ".pdf")
                 {
-                    Title = data.Title,
-                    Code = data.Code,
-                    Status = data.Status,
-                    Author = data.Author,
-                    FileName = fileName + ".pdf",
-                    FileThumbnail = fileName + ".jpeg",
-                    Description = data.Description,
-                    FileType = data.FileType,
-                    CreatedOn = DateTime.Now,
-                    CreatedBy = data.CreatedBy,
-                };
+                    fileExtension = "jpeg";
+                }
+
+                var obj = new Uploads();
+
+                obj.Title = data.Title;
+                obj.Code = data.Code;
+                obj.Status = data.Status;
+                obj.Author = data.Author;
+                obj.FileName = GuidName + fileExtension;
+                obj.FileThumbnail = GuidName + fileExtension;
+                obj.Description = data.Description;
+                obj.FileType = data.FileType;
+                obj.CreatedOn = DateTime.Now;
+                obj.CreatedBy = data.CreatedBy;
+
 
                 //sve the data to the database
                 await _context.Uploads.AddAsync(obj);
@@ -89,9 +99,9 @@ namespace ExamSystem.Data.Services
             {
                 fileUpload = webRootPath + WC.UploadNotesPathPDF;
             }
-            else if (Obj.FileType == UploadsCategory.Books)     //Books =4
+            else if (Obj.FileType == UploadsCategory.Decorate)     //decoration =4
             {
-                fileUpload = webRootPath + WC.UploadBooksPathPDF;
+                fileUpload = webRootPath + WC.UploadDecorate;
             }
             if (Obj != null)
             {
@@ -120,7 +130,7 @@ namespace ExamSystem.Data.Services
 
         public async Task<List<Uploads>> GetAllFiles(string code)
         {
-            var responce = await _context.Uploads.Where(n => n.Status == Status.Active).Where(c=>c.Code == code).ToListAsync();
+            var responce = await _context.Uploads.Where(n => n.Status == Status.Active).Where(c => c.Code == code).ToListAsync();
             return responce;
         }
 
@@ -130,22 +140,22 @@ namespace ExamSystem.Data.Services
             return responce;
         }
 
-        public async Task<List<Uploads>> GetAllFilesByUser(string Id, string code)
+        public async Task<List<Uploads>> GetAllFilesByUser(string Id, UploadsCategory category)
         {
-            var responce = await _context.Uploads.Where(n => n.CreatedBy == Id).Where(c => c.Code == code).ToListAsync();
+            var responce = await _context.Uploads.Where(n => n.CreatedBy == Id).Where(c => c.FileType == category).ToListAsync();
             return responce;
         }
 
-        public async Task<Uploads> GetFileById(int id, string code)
+        public async Task<Uploads> GetFileById(int id, UploadsCategory category)
         {
-            var responce = await _context.Uploads.Where(n => n.Id == id).Where(c => c.Code == code).FirstOrDefaultAsync();
+            var responce = await _context.Uploads.Where(n => n.Id == id).Where(c => c.FileType == category).FirstOrDefaultAsync();
             return responce;
         }
 
         public async Task UpdateFile(int Id, Uploads data, IFormFileCollection files)
         {
             var Obj = await _context.Uploads.FirstOrDefaultAsync(n => n.Id == Id);
-
+            string NameofFile = Path.GetFileName(files[0].FileName);
             //grab the file
             string webRootPath = _webHostEnvironment.WebRootPath;
             string Upload = "";
@@ -165,10 +175,7 @@ namespace ExamSystem.Data.Services
             {
                 Upload = webRootPath + WC.UploadNotesPathPDF;
             }
-            else if (data.FileType == UploadsCategory.Books)     //Books =4
-            {
-                Upload = webRootPath + WC.UploadBooksPathPDF;
-            }
+            
 
             if (files.Count > 0)
             {
@@ -179,7 +186,7 @@ namespace ExamSystem.Data.Services
                     File.Delete(oldImage);
                 }
                 //call the method to upload new file and create image in directory
-                var fileName = FileUploadAndConvert.UploadFileAndConvertToImage(files, Upload);
+                var fileName = FileUploadAndConvert.UploadFileAndConvertToImage(files, Upload, NameofFile);
                 if (fileName != null)
                 {
                     if (fileName != null)

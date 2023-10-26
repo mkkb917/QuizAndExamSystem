@@ -1,0 +1,70 @@
+﻿@model ExamSystem.Models.Uploads
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "_Layout";
+    //Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+@{
+    if (ViewBag.filetype != null)
+    {
+        <h4><strong>Error:</strong>@ViewBag.filetype</h4>
+    }
+
+}
+<div class="row">
+    <div class="col">
+        <table class="table">
+            <tr>
+                <td>
+                    @{
+                        string Path = "";
+                        string typeName = "";
+                        if (Model.FileType == UploadsCategory.PastPapers) //pastpapers
+                        {
+                            Path = @WC.UploadPaperPathPDF;
+                            Enum.TryParse(Model.Code.ToString(), out BoardNames codeValue);
+                            typeName = codeValue.ToString();
+                            <a class="btn btn-secondary" asp-controller="Corner" asp-action="UserIndex9th"> <i class="fa fa-arrow-left"></i> Back</a>
+                        }
+                        else if (Model.FileType == UploadsCategory.Notes) //Notes
+                        {
+                            Path = @WC.UploadNotesPathPDF;
+                            Enum.TryParse(Model.Code.ToString(), out BoardNames codeValue);
+                            typeName = codeValue.ToString();
+                            <a class="btn btn-secondary" asp-controller="Corner" asp-action="UserIndex9th"> <i class="fa fa-arrow-left"></i> Back</a>
+                        }
+                        else if (Model.FileType == UploadsCategory.Syllabus) //syllabus
+                        {
+                            Path = @WC.UploadSyllabusPathPDF;
+                            Enum.TryParse(Model.Code.ToString(), out DecorateEnum codeValue);
+                            typeName = codeValue.ToString();
+                            <a class="btn btn-secondary" asp-controller="Corner" asp-action="UserIndex9th"> <i class="fa fa-arrow-left"></i> Back</a>
+                        }
+                        else if (Model.FileType == UploadsCategory.Decorate) //syllabus
+                        {
+                            Path = @WC.UploadDecorate;
+                            Enum.TryParse(Model.Code.ToString(), out DecorateEnum codeValue);
+                            typeName = codeValue.ToString();
+                            <a class="btn btn-secondary" asp-controller="Corner" asp-action="UserDecorate"> <i class="fa fa-arrow-left"></i> Back</a>
+                        }
+                    }
+                </td>
+                <td>File Name: @Model.FileName</td>
+                <td>Category: @typeName</td>
+                <td>Submitted by: @Model.CreatedBy</td>
+                <td>Date: @Model.CreatedOn</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <center>
+            <iframe src="@Path@Model.FileName" width="1000" height="520">
+            </iframe>
+            <p>@Model.Description</p>
+        </center>
+    </div>
+</div>
