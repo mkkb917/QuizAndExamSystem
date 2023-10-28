@@ -1,13 +1,10 @@
-﻿using AspNetCore.ReCaptcha;
-using ExamSystem.Data.Interface;
+﻿using ExamSystem.Data.Interface;
 using ExamSystem.Data.Static;
 using ExamSystem.Filters;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ExamSystem.Models;
-using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 
 namespace ExamSystem.Controllers
 {
@@ -23,6 +20,40 @@ namespace ExamSystem.Controllers
             _uploadsService = uploadsService;
             _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
+        }
+
+
+        public string ReturnRedirectActionName(UploadsCategory? fileType)
+        {
+            string actionName;
+            switch (fileType)
+            {
+                case UploadsCategory.Calender:
+                    actionName = "UserCalender";
+                    break;
+                case UploadsCategory.Decorate:
+                    actionName = "UserDecorate";
+                    break;
+                case UploadsCategory.Events:
+                    actionName = "UserEvents";
+                    break;
+                case UploadsCategory.Manage:
+                    actionName = "UserManage";
+                    break;
+                case UploadsCategory.Notes:
+                    actionName = "UserNotes";
+                    break;
+                case UploadsCategory.PastPapers:
+                    actionName = "UserPastPapers";
+                    break;
+                case UploadsCategory.Syllabus:
+                    actionName = "UserSyllabus";
+                    break;
+                default:
+                    actionName = "Index";
+                    break;
+            }
+            return actionName;
         }
 
 
@@ -48,14 +79,19 @@ namespace ExamSystem.Controllers
                     // pass the model and files to Uploads service
                     await _uploadsService.AddNewFile(model, files);
 
-                    //return to dashbaord
-                    return RedirectToAction("Index", "Dashboard", new { @id = User.Identity.Name });
+                    // return to page of category
+                    string actionName;
+                    actionName = ReturnRedirectActionName(model.FileType);
+                    //return RedirectToAction(actionName, "Corner", new { @id = User.Identity.Name });
+                    return RedirectToAction(actionName, "Corner");
+
                 }
                 ViewBag.filetype = "Please Select a valid file";
                 return View(model);
             }
             return View("NotFound");
         }
+
 
 
         // GET: CornerController/Edit/5
@@ -101,7 +137,10 @@ namespace ExamSystem.Controllers
                     if ((extension.Equals(".jpeg")) || (extension.Equals(".jpg")) || (extension.Equals(".pdf")))
                     {
                         await _uploadsService.UpdateFile(id, model, files);
-                        return RedirectToAction("Index", "Dashboard", new { @id = User.Identity.Name });
+                        // return to page of category
+                        string actionName;
+                        actionName = ReturnRedirectActionName(model.FileType);
+                        return RedirectToAction(actionName, "Corner");
                     }
                 }
 
@@ -130,26 +169,14 @@ namespace ExamSystem.Controllers
             if (Obj == null) return View("NotFound");
             await _uploadsService.DeleteFile(id);
 
-            if (Obj.FileType == UploadsCategory.Decorate)
-            {
-                return RedirectToAction("UserDecorate", new { @id = User.Identity.Name });
-            }
-            else if (Obj.FileType == UploadsCategory.PastPapers)
-            {
-                return RedirectToAction("UserPapers", new { @id = User.Identity.Name });
-            }
-            else if (Obj.FileType == UploadsCategory.Notes)
-            {
-                return RedirectToAction("UserNotes", new { @id = User.Identity.Name });
-            }
-            else
-            {
-                return View("NotFound");
-            }
+            // return to page of category
+            string actionName;
+            actionName = ReturnRedirectActionName(Obj.FileType);
+            return RedirectToAction(actionName, "Corner");
+
         }
 
         public IActionResult GetEnums(int id)
-        //public JsonResult GetEnums(string category)
         {
             try
             {
@@ -182,40 +209,26 @@ namespace ExamSystem.Controllers
 
         //[Authorize(Roles = "Admin-user")]
         // GET: CornerController/Approve
-        public async Task<ActionResult> Approve(int id)
+        public async Task<ActionResult> Approve()
         {
             Status _status = Status.Inactive;
-            //string code = "9";
-            var obj = await _uploadsService.GetAllFilesByStatus(_status, id.ToString());
-
+            var obj = await _uploadsService.GetAllFilesByStatus(_status);
+            ViewBag.CurrentAction = "Approve";
             return View(obj);
         }
 
         // POST: CornerController/Approve
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin-user")]
-        public async Task<ActionResult> Approve(int id, Uploads model)
+        //[Authorize(Roles = "Admin-user")]
+        public async Task<ActionResult> Approve(int id)
         {
-
-            var Obj = await _uploadsService.GetByIdAsync(id);
-            if (ModelState.IsValid)
+            if (id == 0)
             {
-                var files = Request.Form.Files;
-                if (files.Count > 0)
-                {
-                    string extension = Path.GetExtension(files[0].FileName);
-                    //check the extension for image files only
-                    if (!(extension.Equals(".pdf")))
-                    {
-                        ViewBag.filetype = "Please Select a valid file";
-                        return View(model);
-                    }
-                }
-                await _uploadsService.UpdateFile(id, model, files);
-                return RedirectToAction("UserIndex", new { @id = User.Identity.Name });
+                return View(nameof(NotFound));
             }
-            return View(nameof(NotFound));
+            await _uploadsService.ApproveFile(id);
+            return RedirectToAction("Approve");
         }
 
 
@@ -225,7 +238,7 @@ namespace ExamSystem.Controllers
         public async Task<IActionResult> Decorate()
         {
             //pass the staus and upload category as Code 
-            var obj = await _uploadsService.GetAllFilesByStatus(Status.Active, ((int)UploadsCategory.Decorate).ToString());
+            var obj = await _uploadsService.GetAllFilesByCategory(Status.Active, UploadsCategory.Decorate);
             return View(obj);
         }
 
@@ -245,7 +258,7 @@ namespace ExamSystem.Controllers
         public async Task<IActionResult> Syllabus()
         {
             //pass the staus and upload category as Code 
-            var obj = await _uploadsService.GetAllFilesByStatus(Status.Active, ((int)UploadsCategory.Syllabus).ToString());
+            var obj = await _uploadsService.GetAllFilesByCategory(Status.Active, UploadsCategory.Syllabus);
             return View(obj);
         }
 
@@ -264,7 +277,7 @@ namespace ExamSystem.Controllers
         public async Task<IActionResult> Events()
         {
             //pass the staus and upload category as Code 
-            var obj = await _uploadsService.GetAllFilesByStatus(Status.Active, ((int)UploadsCategory.Events).ToString());
+            var obj = await _uploadsService.GetAllFilesByCategory(Status.Active, UploadsCategory.Events);
             return View(obj);
         }
 
@@ -284,7 +297,7 @@ namespace ExamSystem.Controllers
         public async Task<IActionResult> Manage()
         {
             //pass the staus and upload category as Code 
-            var obj = await _uploadsService.GetAllFilesByStatus(Status.Active, ((int)UploadsCategory.Events).ToString());
+            var obj = await _uploadsService.GetAllFilesByCategory(Status.Active, UploadsCategory.Events);
             return View(obj);
         }
 
@@ -304,7 +317,7 @@ namespace ExamSystem.Controllers
         public async Task<IActionResult> Calender()
         {
             //pass the staus and upload category as Code 
-            var obj = await _uploadsService.GetAllFilesByStatus(Status.Active, ((int)UploadsCategory.Calender).ToString());
+            var obj = await _uploadsService.GetAllFilesByCategory(Status.Active, UploadsCategory.Calender);
             return View(obj);
         }
 
@@ -318,120 +331,41 @@ namespace ExamSystem.Controllers
         }
         #endregion
 
-        #region 9th class methods
+        #region  Notes for Students 
         [AllowAnonymous]
-        //Get: CornerController/9th
-        public async Task<ActionResult> Index9()
+        public async Task<IActionResult> Notes()
         {
-            string code = "9";
-            //var type = UploadsCategory.Notes;
-            var Obj = await _uploadsService.GetAllFilesByStatus(Status.Active, code);
-            return View(Obj);
+            //pass the staus and upload category as Code 
+            var obj = await _uploadsService.GetAllFilesByCategory(Status.Active, UploadsCategory.Notes);
+            return View(obj);
         }
 
-
-        // GET: CornerController/UserIndex9th
-        public async Task<IActionResult> UserIndex9th()
+        // GET: CornerController/UserNotes
+        public async Task<IActionResult> UserNotes()
         {
-            string code = "9";
+
+            var user = _userManager.GetUserName(User);
+            var obj = await _uploadsService.GetAllFilesByUser(user, UploadsCategory.Notes);
+            return View(obj);
+        }
+        #endregion
+
+        #region  PastPapers for Students 
+        [AllowAnonymous]
+        public async Task<IActionResult> PastPapers()
+        {
+            //pass the staus and upload category as Code 
+            var obj = await _uploadsService.GetAllFilesByCategory(Status.Active, UploadsCategory.PastPapers);
+            return View(obj);
+        }
+
+        // GET: CornerController/UserNotes
+        public async Task<IActionResult> UserPastPapers()
+        {
             var user = _userManager.GetUserName(User);
             var obj = await _uploadsService.GetAllFilesByUser(user, UploadsCategory.PastPapers);
             return View(obj);
         }
-
-        public ActionResult Create9th()
-        {
-            var obj = new Uploads();
-            return View(obj);
-        }
-
-        // POST: UploadsController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        //[ValidateReCaptcha(Action = "submit")]
-        public async Task<ActionResult> Create9th(Uploads model)
-        {
-            if (ModelState.IsValid)
-            {
-                var files = HttpContext.Request.Form.Files;
-                //check the extension for image files only
-                string extension = Path.GetExtension(files[0].FileName);
-                if (!(extension.Equals(".pdf")))
-                {
-                    ViewBag.filetype = "Please Select a valid file";
-                    return View(model);
-                }
-
-                // pass the model and files to Uploads service
-                await _uploadsService.AddNewFile(model, files);
-
-
-                return RedirectToAction("UserIndex9th", new { @id = User.Identity.Name });
-            }
-            return View("NotFound");
-        }
-
-
-
         #endregion
-
-        #region 10th class methods
-
-        [AllowAnonymous]
-        //Get: StudyMaterial/10th
-        public async Task<ActionResult> Index10()
-        {
-            string code = "10";
-            //var type = UploadsCategory.Notes;
-            var Obj = await _uploadsService.GetAllFilesByStatus(Status.Active, code);
-            return View(Obj);
-        }
-
-        // GET: StudyMaterial/UserIndex9th
-        //public async Task<IActionResult> UserIndex10th()
-        //{
-        //    var code = "10";
-        //    var user = _userManager.GetUserName(User);
-        //    var obj = await _uploadsService.GetAllFilesByUser(user, UploadsCategory.Books);
-        //    return View(obj);
-        //}
-
-        public ActionResult Create10th()
-        {
-            var obj = new Uploads();
-            return View(obj);
-        }
-
-        // POST: UploadsController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        //[ValidateReCaptcha(Action = "submit")]
-        public async Task<ActionResult> Create10th(Uploads model)
-        {
-            if (ModelState.IsValid)
-            {
-                var files = HttpContext.Request.Form.Files;
-                //check the extension for image files only
-                string extension = Path.GetExtension(files[0].FileName);
-                if (!(extension.Equals(".pdf")))
-                {
-                    ViewBag.filetype = "Please Select a valid file";
-                    return View(model);
-                }
-
-                // pass the model and files to Uploads service
-                await _uploadsService.AddNewFile(model, files);
-
-
-                return RedirectToAction("UserIndex9th", new { @id = User.Identity.Name });
-            }
-            return View("NotFound");
-        }
-
-
-
-        #endregion
-
-
     }
 }

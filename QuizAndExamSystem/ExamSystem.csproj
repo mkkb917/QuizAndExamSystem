@@ -127,8 +127,9 @@
     <Folder Include="wwwroot\files\upload\decorate\" />
     <Folder Include="wwwroot\files\upload\events\" />
     <Folder Include="wwwroot\files\upload\manage\" />
+    <Folder Include="wwwroot\files\upload\calender\" />
     <Folder Include="wwwroot\files\upload\syllabus\" />
-    <Folder Include="wwwroot\files\upload\TextBooks\" />
+    <Folder Include="wwwroot\files\upload\books\" />
     <Folder Include="wwwroot\files\upload\notes\" />
     <Folder Include="wwwroot\files\upload\pastpapers\" />
     <Folder Include="wwwroot\images\qrcodes\" />

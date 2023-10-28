@@ -4,25 +4,28 @@
 
 
 @{
+    // copy the action name for approove function call
+    string currentAction = ViewBag.CurrentAction;
 
     string Path = "";
     string typeName = "";
     Enum.TryParse(Model.FileType.ToString(), out UploadsCategory category);
+    //filter the each category to its relevant names
     if (Model.FileType == UploadsCategory.PastPapers) //pastpapers
     {
-        Path = @WC.UploadPaperPathPDF;
-        //Enum.TryParse(Model.Code.ToString(), out DecorateCode codeValue);
-        //typeName = codeValue.ToString();
+        Path = @WC.UploadPastPaper;
+        Enum.TryParse(Model.Code.ToString(), out PastPapersEnum codeValue);
+        typeName = codeValue.ToString();
     }
     else if (Model.FileType == UploadsCategory.Notes) //Notes
     {
-        Path = @WC.UploadNotesPathPDF;
-        //Enum.TryParse(Model.Code.ToString(), out DecorateCode codeValue);
-        //typeName = codeValue.ToString();
+        Path = @WC.UploadNotes;
+        Enum.TryParse(Model.Code.ToString(), out NotesEnum codeValue);
+        typeName = codeValue.ToString();
     }
     else if (Model.FileType == UploadsCategory.Syllabus) //syllabus
     {
-        Path = @WC.UploadSyllabusPathPDF;
+        Path = @WC.UploadSyllabus;
         Enum.TryParse(Model.Code.ToString(), out SyllabusEnum codeValue);
         typeName = codeValue.ToString();
     }
@@ -48,14 +51,14 @@
 
 @if (Model != null)
 {
-    <div class="col-lg-3 col-sm-5 col-12 filter @category">
-        <div class="card" data-string="{{@Model.Code}}{{@Model.Title}}{{@Model.FileType}}{{@category.ToString()}}">
+    <div class="col-lg-3 col-sm-5 col-12 filter @typeName">
+        <div class="card" data-string="{{@Model.Code}}{{@Model.Title}}{{@Model.FileType}}{{@typeName.ToString()}}">
             <a asp-controller="Corner" asp-action="Details" asp-route-id="@Model.Id">
                 <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light" data-mdb-ripple-color="light">
                     <img src="@Path@Model.FileThumbnail" alt="Card image" width="100%" height="200px">
                 </div>
                 <label class="text-light">
-                    @typeName
+                    @typeName.ToString()
                 </label>
                 <div class="card-block">
                     <h4>@Model.Title</h4>
@@ -70,6 +73,13 @@
                     @if (User.IsInRole("Admin"))
                     {
                         <a asp-controller="Corner" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger float-right"><i class="fas fa-recycle"></i>Delete</a>
+                    }
+                    @if (currentAction == "Approve")
+                    {
+                        <form asp-controller="Corner" asp-action="Approve" method="post">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <button type="submit" class="btn btn-warning float-center"><i class="fas fa-check-circle"></i>Approve</button>
+                        </form>
                     }
                 </p>
             }

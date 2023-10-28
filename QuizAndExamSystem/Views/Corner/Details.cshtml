@@ -23,31 +23,31 @@
                         string typeName = "";
                         if (Model.FileType == UploadsCategory.PastPapers) //pastpapers
                         {
-                            Path = @WC.UploadPaperPathPDF;
-                            Enum.TryParse(Model.Code.ToString(), out BoardNames codeValue);
+                            Path = @WC.UploadPastPaper;
+                            Enum.TryParse(Model.Code.ToString(), out PastPapersEnum codeValue);
                             typeName = codeValue.ToString();
-                            <a class="btn btn-secondary" asp-controller="Corner" asp-action="UserIndex9th"> <i class="fa fa-arrow-left"></i> Back</a>
+                            <a class="btn btn-secondary" asp-controller="Corner" asp-action="PastPaper"> <i class="fa fa-arrow-left"></i> Back</a>
                         }
                         else if (Model.FileType == UploadsCategory.Notes) //Notes
                         {
-                            Path = @WC.UploadNotesPathPDF;
-                            Enum.TryParse(Model.Code.ToString(), out BoardNames codeValue);
+                            Path = @WC.UploadNotes;
+                            Enum.TryParse(Model.Code.ToString(), out NotesEnum codeValue);
                             typeName = codeValue.ToString();
-                            <a class="btn btn-secondary" asp-controller="Corner" asp-action="UserIndex9th"> <i class="fa fa-arrow-left"></i> Back</a>
+                            <a class="btn btn-secondary" asp-controller="Corner" asp-action="Notes"> <i class="fa fa-arrow-left"></i> Back</a>
                         }
                         else if (Model.FileType == UploadsCategory.Syllabus) //syllabus
                         {
-                            Path = @WC.UploadSyllabusPathPDF;
-                            Enum.TryParse(Model.Code.ToString(), out DecorateEnum codeValue);
+                            Path = @WC.UploadSyllabus;
+                            Enum.TryParse(Model.Code.ToString(), out SyllabusEnum codeValue);
                             typeName = codeValue.ToString();
-                            <a class="btn btn-secondary" asp-controller="Corner" asp-action="UserIndex9th"> <i class="fa fa-arrow-left"></i> Back</a>
+                            <a class="btn btn-secondary" asp-controller="Corner" asp-action="Syllabus"> <i class="fa fa-arrow-left"></i> Back</a>
                         }
                         else if (Model.FileType == UploadsCategory.Decorate) //syllabus
                         {
                             Path = @WC.UploadDecorate;
                             Enum.TryParse(Model.Code.ToString(), out DecorateEnum codeValue);
                             typeName = codeValue.ToString();
-                            <a class="btn btn-secondary" asp-controller="Corner" asp-action="UserDecorate"> <i class="fa fa-arrow-left"></i> Back</a>
+                            <a class="btn btn-secondary" asp-controller="Corner" asp-action="Decorate"> <i class="fa fa-arrow-left"></i> Back</a>
                         }
                     }
                 </td>

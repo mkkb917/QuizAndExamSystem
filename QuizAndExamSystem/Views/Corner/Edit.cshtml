@@ -8,15 +8,15 @@
     string Path = "";
     if (Model.FileType == UploadsCategory.PastPapers) //pastpapers
     {
-        Path = @WC.UploadPaperPathPDF;
+        Path = @WC.UploadPastPaper;
     }
     else if (Model.FileType == UploadsCategory.Notes) //Notes
     {
-        Path = @WC.UploadNotesPathPDF;
+        Path = @WC.UploadNotes;
     }
     else if (Model.FileType == UploadsCategory.Syllabus) //syllabus
     {
-        Path = @WC.UploadSyllabusPathPDF;
+        Path = @WC.UploadSyllabus;
     }
 }
 
@@ -30,7 +30,6 @@
                     <table id="tblData" class="table table-bordered table-hover m-3">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <input type="hidden" asp-for="Id" />
-                        <input type="hidden" asp-for="Code" />
                         <input type="hidden" asp-for="CreatedBy" />
                         <input type="hidden" asp-for="CreatedOn" />
                         <input type="hidden" asp-for="UpdatedBy" value="@userManager.GetUserName(User)" />
@@ -48,7 +47,16 @@
                             <input asp-for="Title" class="form-control" />
                             <span asp-validation-for="Title" class="text-danger"></span>
                         </div>
-
+                        <div class="form-group">
+                            <label class="control-label">Category:</label>
+                            <select id="categoryDropdown" asp-for="FileType" class="form-control" asp-items="Html.GetEnumSelectList<UploadsCategory>()"><option value="">---Select---</option></select>
+                            <span asp-validation-for="FileType" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Sub Category:</label>
+                            <select id="subcategoryDropdown" asp-for="Code" class="form-control"><option value="">Select a Subcategory</option></select>
+                            <span asp-validation-for="Code" class="text-danger"></span>
+                        </div>
                         <div class="form-group">
                             <label asp-for="Author" class="control-label"></label>
                             <input asp-for="Author" class="form-control" />
@@ -136,6 +144,26 @@
             }
         }
 
+        //code for displaying dropdown of sub category
+        $(document).ready(function () {
+            // Initially, hide the subcategory dropdown
+            $("#subcategoryDropdown").hide();
+            $('#categoryDropdown').change(function () {
+                var id = $(this).val();
+                $('#subcategoryDropdown').empty();
+                $('#subcategoryDropdown').append("<option>--Select Sub Category--</option>");
+                $.ajax({
+                    url: '/Corner/GetEnums?id=' + id,
+                    success:
+                        function (responce) {
+                            $.each(responce, function (i, data) {
+                                $('#subcategoryDropdown').append("<option value=" + data.id + ">" + data + "</option>");
+                            });
+                        }
+                });
+                $("#subcategoryDropdown").show();
+            });
+        });
 
     </script>
 }

@@ -14,16 +14,19 @@ namespace ExamSystem
         public static string QrCodePath = @"\images\qrcodes\";
 
         // pdf file paths
+        public static string PDF_SED_Path = @"\files\SED\";
+        public static string PDF_Book_Path = @"\files\Books\";
         public static string PaperPathPDF = @"\files\Paper\";
-        public static string UploadPaperPathPDF = @"\files\upload\pastpapers\";
-        public static string UploadNotesPathPDF = @"\files\upload\notes\";
-        public static string UploadBooksPathPDF = @"\files\upload\Books\";
-        public static string UploadSyllabusPathPDF = @"\files\upload\syllabus\";
+        // upload folders for Corner Controller
+        public static string UploadPastPaper = @"\files\upload\pastpapers\";
+        public static string UploadNotes = @"\files\upload\notes\";
+        public static string UploadBooks = @"\files\upload\books\";
+        public static string UploadSyllabus = @"\files\upload\syllabus\";
         public static string UploadDecorate = @"\files\upload\decorate\";
         public static string UploadEvents = @"\files\upload\events\";
         public static string UploadManage = @"\files\upload\manage\";
-        public static string PDF_SED_Path = @"\files\SED\";
-        public static string PDF_Book_Path = @"\files\Books\";
+        public static string UploadCalender = @"\files\upload\calender\";
+        
         public static string PdfUploads = @"\files\uploads\";
 
         //paths for font style file

@@ -37,7 +37,7 @@ namespace ExamSystem.Extensions
                     //Convert the first page to an image and set the image Dpi
                     Image image = pdf.SaveAsImage(0, PdfImageType.Bitmap, 250, 250);
 
-                    //Save the image as a JPG file
+                    //Save the image as a JPEG file
                     image.Save(Path.Combine(path, string.Format("{0}.jpeg", name)));
                 }
                 else

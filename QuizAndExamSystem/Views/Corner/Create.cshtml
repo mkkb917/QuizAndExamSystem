@@ -48,7 +48,7 @@
                         </div>
                         <div class="form-group">
                             <label class="control-label">Sub Category:</label>
-                            <select id="subcategoryDropdown" asp-for="Code" class="form-control"><option value="">Select a Subcategory</option></select>
+                            <select id="subcategoryDropdown" asp-for="Code" name="Code" class="form-control"></select>
                             <span asp-validation-for="Code" class="text-danger"></span>
                         </div>
                         <div class="form-group">
@@ -93,7 +93,7 @@
     </div>
     <div class="col-4">
         <div class="d-flex flex-column align-items-center text-center">
-            <img src="@WC.UploadNotesPathPDF@Model.FileThumbnail" id="NotificationPreview" alt="Notification" class="img">
+            <img src="@WC.UploadNotes@Model.FileThumbnail" id="NotificationPreview" alt="Notification" class="img">
         </div>
     </div>
     <!-- /.col -->
@@ -131,7 +131,8 @@
                     success:
                         function (responce) {
                             $.each(responce, function (i, data) {
-                                $('#subcategoryDropdown').append("<option value=" + data.id + ">" + data + "</option>");
+                                var index = i+1;   // to display the index start from 1 
+                                $('#subcategoryDropdown').append("<option value=" + index + ">" + data + "</option>");
                             });
                         }
                 });

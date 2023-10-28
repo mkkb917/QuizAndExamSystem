@@ -9,10 +9,11 @@ namespace ExamSystem.Data.Interface
         // General Signatures
         Task<Uploads> GetFileById(int id, UploadsCategory category);
         Task<List<Uploads>> GetAllFilesByUser(string user, UploadsCategory category);
-        Task<List<Uploads>> GetAllFilesByStatus(Status status, string code);
-        Task<List<Uploads>> GetAllFiles(string code);
+        Task<List<Uploads>> GetAllFilesByCategory(Status status, UploadsCategory code);
+        Task<List<Uploads>> GetAllFilesByStatus(Status status);
         Task AddNewFile(Uploads data, IFormFileCollection files);
         Task UpdateFile(int Id, Uploads data, IFormFileCollection files);
+        Task ApproveFile(int id);
         Task DeleteFile(int id);
         
 
