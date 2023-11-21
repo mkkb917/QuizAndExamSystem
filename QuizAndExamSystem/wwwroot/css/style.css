@@ -2039,3 +2039,14 @@ hr {
     width: 100px;
     right: 10px;
 }
+.detailsView {
+    @media print {
+        * {
+            display: none;
+        }
+
+        .no-print {
+            display: none;
+        }
+    }
+}

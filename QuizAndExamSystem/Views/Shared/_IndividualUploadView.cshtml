@@ -63,6 +63,7 @@
                 <div class="card-block">
                     <h4>@Model.Title</h4>
                     <span class="text-danger">Author: @Model.Author</span>
+                    <p> Category: @category.ToString()</p>
                     <p>@Model.Description</p>
                 </div>
             </a>
@@ -73,13 +74,14 @@
                     @if (User.IsInRole("Admin"))
                     {
                         <a asp-controller="Corner" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger float-right"><i class="fas fa-recycle"></i>Delete</a>
-                    }
-                    @if (currentAction == "Approve")
-                    {
-                        <form asp-controller="Corner" asp-action="Approve" method="post">
-                            <input type="hidden" name="id" value="@Model.Id" />
-                            <button type="submit" class="btn btn-warning float-center"><i class="fas fa-check-circle"></i>Approve</button>
-                        </form>
+                        @if (currentAction == "Approve")
+                        {
+                            <form asp-controller="Corner" asp-action="Approve" method="post">
+                                <input type="hidden" name="id" value="@Model.Id" />
+                                <input type="hidden" asp-for="Id" value="@Model.Id" />
+                                <button type="submit" class="btn btn-warning float-center"><i class="fas fa-check-circle"></i>Approve</button>
+                            </form>
+                        }
                     }
                 </p>
             }

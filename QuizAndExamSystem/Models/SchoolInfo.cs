@@ -24,6 +24,7 @@ namespace ExamSystem.Models
         public string? SchoolDescription { get; set; } = string.Empty;
         [Display(Name = "School complete postal address")]
         public string? SchoolAddress { get; set; } = string.Empty;
+        //public string? SchoolMedium { get; set; } = string.Empty;
 
 
         // one to one relation with ApplicationUser class

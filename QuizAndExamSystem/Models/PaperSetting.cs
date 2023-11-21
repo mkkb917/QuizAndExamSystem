@@ -37,6 +37,8 @@ namespace ExamSystem.Models
         public float? TotalMarks { get; set; }
         [Display(Name = "Passing Marks")]
         public int PassingMarks { get; set; }
+        [Display(Name = "Default Pairing Scheme of each paper")]
+        public bool PairingScheme { get; set; } = false;
         [Display(Name = "Multiple Choice Question")]
         public float? MCQsMarks { get; set; }
         [Display(Name = "Multiple Choice Question Count")]

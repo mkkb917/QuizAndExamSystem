@@ -13,8 +13,8 @@
     }
 }
 <div class="container">
-    <partial name="_DetailView" model="@Model" />
-    @*<div class="row">
+    @*<partial name="_DetailView" model="@Model" />*@
+    <div class="row">
         <div class="col">
             <a class="btn btn-secondary" asp-controller="Books" asp-action="Index"> <i class="fa fa-arrow-left"></i> Back</a>
             <div class="row">
@@ -22,7 +22,7 @@
 
                     <h1>@Model.Title</h1>
                     <p>Author: @Model.Author</p>
-                    <p>Publisher: @Model.Publisher</p>
+                    @*<p>Publisher: @Model.Publisher</p>*@
                     <p>ISBN: 1234567890</p>
                     <p>Description: @Model.Description</p>
                     <div class="text-center mt-3">
@@ -43,9 +43,9 @@
             </div>
 
         </div>
-    </div>*@
+    </div>
 </div>
-@*@section Scripts {
+@section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
@@ -68,4 +68,4 @@
             }
         });
     </script>
-}*@
+}

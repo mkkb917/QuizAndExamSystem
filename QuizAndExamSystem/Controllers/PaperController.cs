@@ -9,6 +9,8 @@ using ExamSystem.Filters;
 using System;
 using ExamSystem.Models;
 using System.Drawing.Printing;
+using System.Text.Json.Nodes;
+using Newtonsoft.Json.Linq;
 
 namespace ExamSystem.Controllers
 {
@@ -22,7 +24,12 @@ namespace ExamSystem.Controllers
         private readonly ISubjectService _SubjectService;
         private readonly IRazorPartialToStringRenderer _Renderer;
 
-        public PaperController(IRazorPartialToStringRenderer Renderer, ISubjectService SubjectService, Data.AppDbContext context, IPdfService pdfService, IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> userManager)
+        public PaperController(IRazorPartialToStringRenderer Renderer,
+                                ISubjectService SubjectService,
+                                Data.AppDbContext context,
+                                IPdfService pdfService,
+                                IWebHostEnvironment webHostEnvironment,
+                                UserManager<ApplicationUser> userManager)
         {
             _webHostEnvironment = webHostEnvironment;
             _pdfService = pdfService;
@@ -39,7 +46,7 @@ namespace ExamSystem.Controllers
             var Obj = await _pdfService.GetAllPapers();
             return View(Obj);
         }
-                
+
         // JSON method for dropdownlists        code OK
         public JsonResult Subject(int id)
         {
@@ -82,8 +89,83 @@ namespace ExamSystem.Controllers
             {
                 return new JsonResult(responce);
             }
-
             return new JsonResult(false);
+        }
+        
+        
+
+        [HttpPost]
+        public async Task<IActionResult> SavePairingData([FromBody] List<Dictionary<string, string>> entities)
+        {
+            try
+            {
+                // data sample of entity
+                //[{0: "1005", 1: "Problem Solving", 2: "2", 3: "1", 4: "2", 5: "0", 6: "3", 7: "5"},…]
+                int defaultValue = 0;
+                if(entities==null) return StatusCode(500, new { status = "Error", message = "the data array is empty." });
+
+                foreach (var entity in entities)
+                {
+                    var obj = new TopicsWithQCountsVM();
+                    // Loop through each dictionary
+                    foreach (var kvp in entity)
+                    {
+                        // Extract values based on the index and assign them to respective variables
+                        if (kvp.Key == "0")
+                        {
+                            obj.Id = int.TryParse(kvp.Value, out int parsedValue) ? parsedValue : defaultValue;
+                        }
+                        else if (kvp.Key == "1")
+                        {
+                            obj.TopicText = kvp.Value;
+                        }
+                        else if (kvp.Key == "2")
+                        {
+                            obj.McqMarks = int.TryParse(kvp.Value, out int parsedValue) ? parsedValue : defaultValue;
+                        }
+                        else if (kvp.Key == "3")
+                        {
+                            obj.McqCount = int.TryParse(kvp.Value, out int parsedValue) ? parsedValue : defaultValue;
+                        }
+                        else if (kvp.Key == "4")
+                        {
+                            obj.SeqMarks = int.TryParse(kvp.Value, out int parsedValue) ? parsedValue : defaultValue;
+                        }
+                        else if (kvp.Key == "5")
+                        {
+                            obj.SeqCount = int.TryParse(kvp.Value, out int parsedValue) ? parsedValue : defaultValue;
+                        }
+                        else if (kvp.Key == "6")
+                        {
+                            obj.LongQMarks = int.TryParse(kvp.Value, out int parsedValue) ? parsedValue : defaultValue;
+                        }
+                        else if (kvp.Key == "7")
+                        {
+                            obj.LongQCount = int.TryParse(kvp.Value, out int parsedValue) ? parsedValue : defaultValue;
+                        }
+                    }
+                    //save each iteration data to database 
+                    var objscheme = await _context.Topics.FirstOrDefaultAsync(s => s.Id == obj.Id);
+                    if (objscheme != null)
+                    {
+                        objscheme.MCQMarks = obj.McqMarks;
+                        objscheme.MCQCount = obj.McqCount;
+                        objscheme.SEQMarks = obj.SeqMarks;
+                        objscheme.MCQCount = obj.McqCount;
+                        objscheme.LongQMarks = obj.LongQMarks;
+                        objscheme.LongQCount = obj.LongQCount;
+                    }
+                    await _context.SaveChangesAsync();
+                }
+                
+
+                return Ok(new { status = "Success", message = "Data saved successfully!" });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception here
+                return StatusCode(500, new { status = "Error", message = "An error occurred while saving the data.",ex.Message });
+            }
         }
 
         [HttpGet]
@@ -338,14 +420,14 @@ namespace ExamSystem.Controllers
             // get current user and school info 
             var usr = new ApplicationUser()
             { UserName = _userManager.GetUserName(User) };
-            
+
             //create the Qr Code and pass to renderpaper method
             string guid = Guid.NewGuid().ToString().Substring(0, 5);
             string qrstring = className + subjectName;
             var qrcode = _pdfService.BarCodeGenerator(qrstring, guid);
 
             // call the function to render the questions bank for generating paper object
-            var paperViewVM = await _pdfService.RenderPaper(selectedClass, selectedSubject, PaperDate,TeacherName,qrcode, usr);
+            var paperViewVM = await _pdfService.RenderPaper(selectedClass, selectedSubject, PaperDate, TeacherName, qrcode, usr);
 
             if (paperViewVM.Setting == null)
             { return RedirectToAction("PaperSetting", new { @id = 0 }); }
@@ -388,11 +470,11 @@ namespace ExamSystem.Controllers
             //var qrCodeName = Path.GetFileName(QrCodePath + Obj.Barcode);
 
             var fileName = Obj.Subject + " " + Path.GetFileNameWithoutExtension(QrCodePath + Obj.Barcode);
-            
+
             string? paperObj;
             //var paperFile;
 
-            if(type == "objective")
+            if (type == "objective")
             {
                 paperObj = Obj.PaperFile;
                 var paperFile = await _pdfService.RenderPdf(paperObj, fileName);

@@ -1,4 +1,5 @@
-﻿@{
+﻿@using ExamSystem.Models;
+@{
     ViewData["Title"] = "Pairing Scheme";
     Layout = "_DashboardLayout";
     //int sno = 0;
@@ -18,13 +19,12 @@
                 @*<a asp-controller="Paper" asp-action="EditPairingScheme" asp-route-id="@Model.Id" class="btn btn-success float-right"><i class="fas fa-pencil"></i> Edit</a>*@
                 <hr style="background-color: white; height: 1px; border: 0;" />
 
-
-                <div class="row">
-                    <div class="col-lg-4 col-md-6 col-sm-12 col-12 m-2">
+                <div class="row m-2">
+                    <div class="col-lg-4 col-md-6 col-sm-12 col-12">
                         <label class="control-label">Choose Class</label>
                         <select id="GradeDDL" name="GradeDDL" class="form-control" asp-items="ViewBag.Grades"> <option selected disabled>---Select Grade---</option>  </select>
                     </div>
-                    <div class="col-lg-4 col-md-6 col-sm-12 col-12 m-2">
+                    <div class="col-lg-4 col-md-6 col-sm-12 col-12">
                         <label class="control-label">Choose Subject</label>
                         <select id="SubjectDDL" name="SubjectDDL" onconchange="selectedText" class="form-control"> <option selected disabled>---Select Subject---</option> </select>
                     </div>
@@ -32,7 +32,7 @@
 
 
                 <!-- Pairing Scheme-->
-                <div class="table  table-hover">
+                <div class="table table-hover mt-3">
                     <div class="row d-flex justify-content-center">
                         <h3 class="h3">Pairing Scheme </h3>
                     </div>
@@ -48,15 +48,19 @@
                                 <th>SEQs Marks</th>
                                 <th>LongQuestions Count</th>
                                 <th>LongQuestion Marks</th>
+                                <!-- data fetching from the topics of each units of each grade -->
                             </tr>
                         </tbody>
                     </table>
-                </div>
-                <hr style="background-color: white; height: 1px; border: 0;" />
-
-                <div class="col-12">
-                    <div class="form-group">
-                        @*<a asp-controller="Paper" asp-action="Upsert" asp-route-id="@Model.Id" class="btn btn-success float-right"><i class="fas fa-pencil"></i> Edit</a>*@
+                    <div class="col-12">
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <div class="form-group">
+                                <p>Make changes according to official Pairing Scheme of the subject and hit save button</p>
+                                <!--onclick="saveData()"-->
+                                <button id="saveButton" class="btn btn-success float-right"><i class="fas fa-floppy-disk"></i> Save</button>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -68,12 +72,14 @@
     <script>
         // Script Code for Grade, Subject and Topic DDL
         $(document).ready(function () {
+
             // grades comes from ViewBag.Grades
             // on change of gradeDDL                //code ok
             $('#GradeDDL').change(function () {
+                console.log('gradeDDL is called');
                 var id = $(this).val();
                 $('#SubjectDDL').empty();
-                $('#SubjectDDL').append("<option>--Select Subject--</option>");
+                $('#SubjectDDL').append("<option>---Select Subject---</option>");
                 $.ajax({
                     url: '/Paper/Subject?id=' + id,
                     success:
@@ -82,7 +88,8 @@
                                 $('#SubjectDDL').append("<option value=" + data.id + ">" + data.subjectText + "</option>");
                             });
                         }
-                });
+
+                }); console.log('GradeDDL post complete');
             });
 
             // on change of SubjectDDL                      Code OK
@@ -98,12 +105,59 @@
                         //trHTML += '<tr><th>Unit Name </th><th>MCQs Count</th><th>MCQs Marks</th><th>SEQs Count</th><th>SEQs Marks</th><th>LongQuestions Count</th><th>LongQuestion Marks</th></tr>;
                         $.each(response, function (i, item) {
                             //trHTML += '<tr><td>' + item.code + '</td><td>' + item.topicText + '</td><td><table><tr><td>MCQs</td><td>'+item.mcqCount+'</td><td><input type="number"></td></tr><tr><td>SEQs</td><td>' + item.seqCount + '</td></tr><tr><td>Long Questions</td><td>' + item.longQCount + '</td></tr><tr><td>Fill in the blanks</td><td>' + item.fillinBlankCount + '</td></tr></table></td>';
-                            trHTML += '<tr><td>' + item.code + '</td><td>' + item.topicText + '</td><td>' + item.mcqCount + '</td><td>' + item.mcqMarks + '</td><td>' + item.seqCount + '</td><td>' + item.seqMarks + '</td><td>' + item.longQCount + '</td><td>' + item.longQMarks + '</td></tr>';
+                            //trHTML += '<tr><td>' + item.code + '</td><td>' + item.topicText + '</td><td>' + item.mcqCount + '</td><td>' + item.mcqMarks + '</td><td>' + item.seqCount + '</td><td>' + item.seqMarks + '</td><td>' + item.longQCount + '</td><td>' + item.longQMarks + '</td></tr>';
+                            trHTML += '<tr><td>' + item.id + '</td><td>' + item.topicText + '</td><td><input class="form-control" value="' + item.mcqCount + '" type="number" min="0" max="99"/></td><td><input class="form-control" value="' + item.mcqMarks + '" type="number" min="0" max="99"/></td><td><input class="form-control" value="' + item.seqCount + '" type="number" min="0" max="99"/></td><td><input class="form-control" value="' + item.seqMarks + '" type="number" min="0" max="99"/></td><td><input class="form-control" value="' + item.longQCount + '" type="number" min="0" max="99"/></td><td><input class="form-control" value="' + item.longQMarks + '" type="number" min="0" max="99"/></td></tr>';
                         });
                         $('#tableUnits').append(trHTML);
+
                     }
                 });
+
+
             });
+
+            //save the updated pairing scheme to database
+            //function saveData() {
+            $('#saveButton').click(function () {
+                var data = [];
+                console.log('array calculating');
+                $('#tableUnits tr:not(:first)').each(function () {
+                    var row = {};
+                    $(this).find('td').each(function (index) {
+                        var input = $(this).find('input');
+                        if (input.length) {
+                            row[index] = input.val();
+                        } else {
+                            row[index] = $(this).text();
+                        }
+                    });
+                    data.push(row);
+                    console.log('displaying data', data);
+                });
+
+                $.ajax({
+
+                    type: "POST",
+                    url: '/Paper/SavePairingData',
+                    data: JSON.stringify(data),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        // handle success
+                        console.log('Data saved successfully:', response);
+                    },
+                    error: function (response) {
+                        // handle failure
+                        console.error('Error occurred while saving data:', error);
+                        alert('Error occurred while saving data. Please try again.');
+                    }
+                });
+            }
+            );
+
+
+
+
 
         });
 

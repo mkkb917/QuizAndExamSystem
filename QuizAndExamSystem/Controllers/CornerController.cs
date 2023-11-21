@@ -209,6 +209,7 @@ namespace ExamSystem.Controllers
 
         //[Authorize(Roles = "Admin-user")]
         // GET: CornerController/Approve
+        [HttpGet]
         public async Task<ActionResult> Approve()
         {
             Status _status = Status.Inactive;

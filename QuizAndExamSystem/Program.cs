@@ -74,6 +74,11 @@ builder.Services.AddAuthentication();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie();   //q=> q.LoginPath="/Auth/Login");   for custom login path, default is account/login
 
+//services cors
+builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
+{
+    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+}));
 // external logins setting using Google
 //builder.Services.AddAuthentication().AddGoogle(option =>
 //{
@@ -122,6 +127,7 @@ app.UseStaticFiles();
 app.UseRouting();
 //app.UseSession();
 
+app.UseCors("corsapp");
 //Authentication and Authorization
 app.UseAuthentication();
 app.UseAuthorization();

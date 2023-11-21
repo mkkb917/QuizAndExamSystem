@@ -13,58 +13,92 @@
     }
 
 }
-<div class="row">
-    <div class="col">
-        <table class="table">
-            <tr>
-                <td>
-                    @{
-                        string Path = "";
-                        string typeName = "";
-                        if (Model.FileType == UploadsCategory.PastPapers) //pastpapers
-                        {
-                            Path = @WC.UploadPastPaper;
-                            Enum.TryParse(Model.Code.ToString(), out PastPapersEnum codeValue);
-                            typeName = codeValue.ToString();
-                            <a class="btn btn-secondary" asp-controller="Corner" asp-action="PastPaper"> <i class="fa fa-arrow-left"></i> Back</a>
-                        }
-                        else if (Model.FileType == UploadsCategory.Notes) //Notes
-                        {
-                            Path = @WC.UploadNotes;
-                            Enum.TryParse(Model.Code.ToString(), out NotesEnum codeValue);
-                            typeName = codeValue.ToString();
-                            <a class="btn btn-secondary" asp-controller="Corner" asp-action="Notes"> <i class="fa fa-arrow-left"></i> Back</a>
-                        }
-                        else if (Model.FileType == UploadsCategory.Syllabus) //syllabus
-                        {
-                            Path = @WC.UploadSyllabus;
-                            Enum.TryParse(Model.Code.ToString(), out SyllabusEnum codeValue);
-                            typeName = codeValue.ToString();
-                            <a class="btn btn-secondary" asp-controller="Corner" asp-action="Syllabus"> <i class="fa fa-arrow-left"></i> Back</a>
-                        }
-                        else if (Model.FileType == UploadsCategory.Decorate) //syllabus
-                        {
-                            Path = @WC.UploadDecorate;
-                            Enum.TryParse(Model.Code.ToString(), out DecorateEnum codeValue);
-                            typeName = codeValue.ToString();
-                            <a class="btn btn-secondary" asp-controller="Corner" asp-action="Decorate"> <i class="fa fa-arrow-left"></i> Back</a>
-                        }
-                    }
-                </td>
-                <td>File Name: @Model.FileName</td>
-                <td>Category: @typeName</td>
-                <td>Submitted by: @Model.CreatedBy</td>
-                <td>Date: @Model.CreatedOn</td>
-            </tr>
-        </table>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            @{
+                string Path = "";
+                string typeName = "";
+                if (Model.FileType == UploadsCategory.PastPapers) //pastpapers
+                {
+                    Path = @WC.UploadPastPaper;
+                    Enum.TryParse(Model.Code.ToString(), out PastPapersEnum codeValue);
+                    typeName = codeValue.ToString();
+                    <a class="btn btn-secondary" asp-controller="Corner" asp-action="PastPaper"> <i class="fa fa-arrow-left"></i> Back</a>
+                }
+                else if (Model.FileType == UploadsCategory.Notes) //Notes
+                {
+                    Path = @WC.UploadNotes;
+                    Enum.TryParse(Model.Code.ToString(), out NotesEnum codeValue);
+                    typeName = codeValue.ToString();
+                    <a class="btn btn-secondary" asp-controller="Corner" asp-action="Notes"> <i class="fa fa-arrow-left"></i> Back</a>
+                }
+                else if (Model.FileType == UploadsCategory.Syllabus) //syllabus
+                {
+                    Path = @WC.UploadSyllabus;
+                    Enum.TryParse(Model.Code.ToString(), out SyllabusEnum codeValue);
+                    typeName = codeValue.ToString();
+                    <a class="btn btn-secondary" asp-controller="Corner" asp-action="Syllabus"> <i class="fa fa-arrow-left"></i> Back</a>
+                }
+                else if (Model.FileType == UploadsCategory.Decorate) //syllabus
+                {
+                    Path = @WC.UploadDecorate;
+                    Enum.TryParse(Model.Code.ToString(), out DecorateEnum codeValue);
+                    typeName = codeValue.ToString();
+                    <a class="btn btn-secondary" asp-controller="Corner" asp-action="Decorate"> <i class="fa fa-arrow-left"></i> Back</a>
+                }
+            }
+            <div class="row">
+                <div class="col-sm-12 col-md-5 col-lg-5 ml-3">
+
+                    <h1>@Model.Title</h1>
+                    <p>Author: @Model.Author</p>
+                    @*<p>Publisher: @Model.Publisher</p>*@
+                    <p>Category: @typeName</p>
+                    <p>Date: @Model.CreatedOn</p>
+                    <p>Description: @Model.Description</p>
+                    <div class="text-center mt-3">
+                        <button id="togglePdfButton">Read Now</button>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-7 col-lg-7">
+                    <div id="imgContainer" style="display: block;">
+                        <img src=@Path@Model.FileName" alt="Book Cover" class="img-fluid" width="100%" height="100px">
+                    </div>
+                    <div id="pdfContainer" style="display: none;">
+                        <center class="m-2">
+                            <iframe id="pdfDoc" src="@Path@Model.FileName?page=hsn#toolbar=0" width="100%" height="500">
+                            </iframe>
+                        </center>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>
-<div class="row">
-    <div class="col">
-        <center>
-            <iframe src="@Path@Model.FileName" width="1000" height="520">
-            </iframe>
-            <p>@Model.Description</p>
-        </center>
-    </div>
-</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Get a reference to the button and the PDF container
+        const togglePdfButton = document.getElementById('togglePdfButton');
+        const pdfContainer = document.getElementById('pdfContainer');
+        const imgContainer = document.getElementById('imgContainer');
+
+        // Add a click event listener to the button
+        togglePdfButton.addEventListener('click', function () {
+            if (pdfContainer.style.display === 'none') {
+                // Show the PDF container and hide the image
+                pdfContainer.style.display = 'block';
+                imgContainer.style.display = 'none';
+            } else {
+                // Hide the PDF container and display image
+                pdfContainer.style.display = 'none';
+                imgContainer.style.display = 'block';
+            }
+        });
+    </script>
+}

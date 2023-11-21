@@ -491,6 +491,9 @@ namespace ExamSystem.Migrations
                     b.Property<int>("Medium")
                         .HasColumnType("int");
 
+                    b.Property<bool>("PairingScheme")
+                        .HasColumnType("bit");
+
                     b.Property<int>("PassingMarks")
                         .HasColumnType("int");
 

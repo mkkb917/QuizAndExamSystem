@@ -2,7 +2,7 @@
 
 <nav class="navbar main-nav navbar-expand-lg px-2 px-sm-0 py-2 py-lg-0">
     <div class="container-fluid">
-        <a class="navbar-brand" asp-controller="Home" asp-action="Index"><img src="~/images/logo.png" alt="logo" width="100%" height="150px" ></a>
+        <a class="navbar-brand" asp-controller="Home" asp-action="Index"><img src="~/images/logo.png" alt="logo" width="100%" height="150px"></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="ti-menu"></span>
@@ -15,16 +15,16 @@
                     </a>
                 </li>
                 @*<li class="nav-item">
-                    <a class="nav-link" href="#">Decoration</a>
+                <a class="nav-link" href="#">Decoration</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" asp-controller="SED" asp-action="Index">SED</a>
+                <a class="nav-link" asp-controller="SED" asp-action="Index">SED</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" asp-controller="StudyMaterial" asp-action="Index9">9th</a>
+                <a class="nav-link" asp-controller="StudyMaterial" asp-action="Index9">9th</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" asp-controller="StudyMaterial" asp-action="Index10">10th</a>
+                <a class="nav-link" asp-controller="StudyMaterial" asp-action="Index10">10th</a>
                 </li>*@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle">School Corner</a>
@@ -49,21 +49,21 @@
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" asp-controller="Corner" asp-action="Notes">Helping Books</a></li>
                         <li><a class="dropdown-item" asp-controller="Corner" asp-action="Pastpapers">Past Papers</a></li>
-                        <li><a class="dropdown-item" asp-controller="Corner" asp-action="Activites">Speaches</a></li>
+                        @*<li><a class="dropdown-item" asp-controller="Corner" asp-action="Activites">Speaches</a></li>
                         <li><a class="dropdown-item" asp-controller="Corner" asp-action="Results">Results</a></li>
+                        *@
                     </ul>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link " asp-controller="Books" asp-action="Index">Books</a>
                     @*<ul class="dropdown-menu">
-                        <li><a class="dropdown-item" asp-controller="Books" asp-action="aiou">AIOU</a></li>
-                        <li><a class="dropdown-item" asp-controller="Books" asp-action="GN">General Knowledge</a></li>
-                        <li><a class="dropdown-item" asp-controller="Books" asp-action="Syllabus">Syllabus Books</a></li>
+                    <li><a class="dropdown-item" asp-controller="Books" asp-action="aiou">AIOU</a></li>
+                    <li><a class="dropdown-item" asp-controller="Books" asp-action="GN">General Knowledge</a></li>
+                    <li><a class="dropdown-item" asp-controller="Books" asp-action="Syllabus">Syllabus Books</a></li>
                     </ul>*@
                 </li>
                 <!-- Render the partial View based on the authentication and authorization-->
                 <!-- If User is not registered-->
-                
                 @if (User.Identity.IsAuthenticated)
                 {
                     <li class="nav-item dropdown ">
