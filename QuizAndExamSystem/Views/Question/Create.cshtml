@@ -116,7 +116,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-lg-2 col-md-2 col-sm-12 col-12">
-                                    <input asp-for="CorrectAnswer" type="radio" id="option1" name="option" value="ChoiceTitle1" />
+                                    <input asp-for="CorrectAnswer" type="radio" id="option1" name="option" value="1" />      <!-- value="ChoiceTitle1" -->
                                     <label for="option1">Option 1</label>
                                 </div>
                                 <div class="col-lg-5 col-md-5 col-sm-12 col-12">
@@ -125,7 +125,7 @@
                                 </div>
                                 <div class="col-lg-5 col-md-5 col-sm-12 col-12">
                                     <span style="font-family:'Jameel Noori Nastaleeq' !important; font-size:large;">
-                                        <input asp-for="CorrectAnswerL" type="radio" id="optionL1" name="optionl" value="ChoiceTitleL1" hidden />
+                                        <input asp-for="CorrectAnswerL" type="radio" id="optionL1" name="optionl" hidden value="1" />   <!-- value="ChoiceTitleL1" -->
                                         <input asp-for="ChoiceTitleL1" class="form-control" maxlength="100" dir="rtl" placeholder="پہلا انتخاب اردو میں " />
                                     </span>
                                     <span asp-validation-for="ChoiceTitleL1" class="text-danger"></span>
@@ -133,7 +133,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-lg-2 col-md-2 col-sm-12 col-12">
-                                    <input asp-for="CorrectAnswer" type="radio" id="option2" name="option" value="ChoiceTitle2" />
+                                    <input asp-for="CorrectAnswer" type="radio" id="option2" name="option" value="2" />
                                     <label for="option2">Option 2</label>
                                 </div>
                                 <div class="col-lg-5 col-md-5 col-sm-12 col-12">
@@ -142,7 +142,7 @@
                                 </div>
                                 <div class="col-lg-5 col-md-5 col-sm-12 col-12">
                                     <span style="font-family:'Jameel Noori Nastaleeq' !important;">
-                                        <input asp-for="CorrectAnswerL" type="radio" id="optionL2" name="optionl" value="ChoiceTitleL2" hidden />
+                                        <input asp-for="CorrectAnswerL" type="radio" id="optionL2" name="optionl" hidden value="2" />
                                         <input asp-for="ChoiceTitleL2" class="form-control" maxlength="100" dir="rtl" placeholder="انتخاب 2 اردو میں " />
                                     </span>
                                     <span asp-validation-for="ChoiceTitleL2" class="text-danger"></span>
@@ -150,7 +150,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-lg-2 col-md-2 col-sm-12 col-12">
-                                    <input asp-for="CorrectAnswer" type="radio" id="option3" name="option" value="ChoiceTitle3" />
+                                    <input asp-for="CorrectAnswer" type="radio" id="option3" name="option" value="3" />
                                     <label for="option3">Option 3</label>
                                 </div>
                                 <div class="col-lg-5 col-md-5 col-sm-12 col-12">
@@ -159,7 +159,7 @@
                                 </div>
                                 <div class="col-lg-5 col-md-5 col-sm-12 col-12">
                                     <span style="font-family:'Jameel Noori Nastaleeq' !important;">
-                                        <input asp-for="CorrectAnswerL" type="radio" id="optionL3" name="optionl" value="ChoiceTitleL3" hidden />
+                                        <input asp-for="CorrectAnswerL" type="radio" id="optionL3" name="optionl" hidden value="3" />
                                         <input asp-for="ChoiceTitleL3" class="form-control" maxlength="100" dir="rtl" placeholder="انتخاب 3 اردو میں " />
                                     </span>
                                     <span asp-validation-for="ChoiceTitleL3" class="text-danger"></span>
@@ -167,7 +167,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-lg-2 col-md-2 col-sm-12 col-12">
-                                    <input asp-for="CorrectAnswer" type="radio" id="option4" name="option" value="ChoiceTitle4" />
+                                    <input asp-for="CorrectAnswer" type="radio" id="option4" name="option" value="4" />
                                     <label for="option4">Option 4</label>
                                 </div>
                                 <div class="col-lg-5 col-md-5 col-sm-12 col-12">
@@ -176,7 +176,7 @@
                                 </div>
                                 <div class="col-lg-5 col-md-5 col-sm-12 col-12">
                                     <span style="font-family:'Jameel Noori Nastaleeq' !important;">
-                                        <input asp-for="CorrectAnswerL" type="radio" id="optionL4" name="optionl" value="ChoiceTitleL4" hidden />
+                                        <input asp-for="CorrectAnswerL" type="radio" id="optionL4" name="optionl" hidden value="4" />
                                         <input asp-for="ChoiceTitleL4" class="form-control" maxlength="100" dir="rtl" placeholder="انتخاب 4 اردو میں " />
                                     </span>
                                     <span asp-validation-for="ChoiceTitleL4" class="text-danger"></span>
@@ -281,6 +281,8 @@
 
 @section Scripts{
     <script>
+
+        
         // serach for duplicate questions on the lost focus of textbox during the new entry.
         $("#textSearchField").on("blur", function () {
             var textFieldValue = $(this).val();
@@ -292,7 +294,7 @@
                 }
             });
         });
-    
+
         // script code for Question Type DDL
         $(function () {
             $('#QType').change(function () {

@@ -194,6 +194,7 @@ namespace ExamSystem.Controllers
                     DifficultyLevel = result.DifficultyLevel,
                     Medium = result.Medium,
                     Instructions = result.Instructions,
+                    PairingScheme = result.PairingScheme,
                     TotalMarks = (result.MCQsMarks * result.MCQsCount) + (result.SEQsMarks * result.SEQsCount) + (result.LongQsCount * result.LongQsMarks) + (result.FillInBlanksMarks * result.FillInBlanksCount),
                     PassingMarks = result.PassingMarks,
                     MCQsMarks = result.MCQsMarks,
@@ -306,6 +307,7 @@ namespace ExamSystem.Controllers
                         DifficultyLevel = model.DifficultyLevel,
                         Medium = model.Medium,
                         QrCode = model.QrCode,
+                        PairingScheme = model.PairingScheme,
                         Instructions = model.Instructions,
                         TotalMarks = model.TotalMarks,
                         PassingMarks = model.PassingMarks,
@@ -348,6 +350,7 @@ namespace ExamSystem.Controllers
                         paperSetting.DifficultyLevel = model.DifficultyLevel;
                         paperSetting.Medium = model.Medium;
                         paperSetting.QrCode = model.QrCode;
+                        paperSetting.PairingScheme = model.PairingScheme;
                         paperSetting.Instructions = model.Instructions;
                         paperSetting.TotalMarks = model.TotalMarks;
                         paperSetting.PassingMarks = model.PassingMarks;

@@ -16,7 +16,8 @@ namespace ExamSystem.Models
         public QuestionTypes QuestionType { get; set; }
         //public DifficultyLevel QuestionDifficulty { get; set; }
         public Choice? OptionsQnA { get; set; }
-        public int? SelectedAnswer { get; set; }
+        public string? SelectedAnswer { get; set; }
+        public string? SelectedAnswerL { get; set; }
         public int AnswerId { get; set; }
 
 

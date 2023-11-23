@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using ExamSystem.Models;
 using QRCoder;
 using System.Drawing;
+using System.Linq;
 //using Spire.Pdf.Graphics;
 
 
@@ -62,7 +63,7 @@ namespace ExamSystem.Data.Services
             return responce;
         }
 
-        public async Task<PaperViewVM> RenderPaper(int selectedClass, int selectedSubject, DateTime PaperDate, string? TeacherName,string? qrCode, ApplicationUser usr)
+        public async Task<PaperViewVM> RenderPaper(int selectedClass, int selectedSubject, DateTime PaperDate, string? TeacherName, string? qrCode, ApplicationUser usr)
         {
             // get the current user question setting     
             var setting = new PaperSetting();
@@ -74,10 +75,24 @@ namespace ExamSystem.Data.Services
                 setting.SchoolLogo = _context.SchoolInfos.Where(u => u.AppUser.UserName == usr.UserName).First().SchoolLogo;
                 setting.ClassName = await _context.Grades.Where(e => e.Id == selectedClass).Select(g => g.GradeText).SingleOrDefaultAsync();
                 setting.SubjectName = await _context.Subjects.Where(e => e.Id == selectedSubject).Select(o => o.SubjectText).SingleOrDefaultAsync();
+                if (setting.PairingScheme == true)
+                {
+                    // use default pairing scheme for paper generation
+                    var marksPair = await _context.Topics.Where(s => s.SubjectId == selectedSubject).FirstOrDefaultAsync();
+                    setting.MCQsMarks = marksPair.MCQMarks;
+                    setting.MCQsCount = marksPair.MCQCount;
+                    setting.SEQsMarks = marksPair.SEQMarks;
+                    setting.SEQsCount = marksPair.SEQCount;
+                    setting.LongQsMarks = marksPair.LongQMarks;
+                    setting.LongQsCount = marksPair.LongQCount;
+                    //setting.FillInBlanksMarks = marksPair.filinblanks;                not available
+                    //setting.FillInBlanksCount = marksPair.fillInBlankCount            not available
+                };
                 setting.TotalMarks = Convert.ToInt32((setting.MCQsMarks * setting.MCQsCount) + (setting.SEQsCount * setting.SEQsMarks) + (setting.LongQsMarks * setting.LongQsCount) + (setting.FillInBlanksMarks * setting.FillInBlanksCount));
                 setting.TeacherName = TeacherName;
                 setting.QrCode = qrCode;
                 if (PaperDate > DateTime.Today) { setting.ConductDate = PaperDate; } else { setting.ConductDate = DateTime.Today; }
+
             }
 
             // get the questions
@@ -98,16 +113,53 @@ namespace ExamSystem.Data.Services
             {
                 //SelectedPost = Answers.ElementAt(r.Next(0, Answers.Count()));
                 // obejctive qustions
-                var questions = await _context.Questions.Where(q => q.TopicId == Titem.Id && q.QuestionType == QuestionTypes.MCQ && q.DifficultyLevel == setting.DifficultyLevel).OrderBy(o => Guid.NewGuid()).Take(Titem.MCQCount).ToListAsync();
+                var questions = await _context.Questions.Where(q => q.TopicId == Titem.Id && q.QuestionType == QuestionTypes.MCQ && q.DifficultyLevel == setting.DifficultyLevel).OrderBy(o => Guid.NewGuid()).Take(setting.MCQsCount).ToListAsync();
                 foreach (var Qitem in questions)
                 {
                     QnAs? varQnA = new();
                     varQnA.QuestionID = Qitem.Id;
-                    varQnA.QuestionTextL = Qitem.QuestionTextL;
-                    varQnA.QuestionText = Qitem.QuestionText;
-                    varQnA.QuestionType = Qitem.QuestionType;
-                    //var options = await _context.Choices.Where(q => q.QuestionId == Qitem.Id).Select(o => new { OptionID = o.Id, Option1 = o.Choice1, OptionL1 = o.ChoiceL1, Option2 = o.Choice2, OptionL2 = o.ChoiceL2, Option3 = o.Choice3, OptionL3 = o.ChoiceL3, Option4 = o.Choice4, OptionL4 = o.ChoiceL4, Answer = o.Answer }).ToListAsync();
-                    varQnA.OptionsQnA = await _context.Choices.Where(q => q.QuestionId == Qitem.Id).FirstOrDefaultAsync();
+                    varQnA.OptionsQnA = new Choice();
+                    var ans = await _context.Choices.Where(q => q.QuestionId == Qitem.Id).FirstOrDefaultAsync();
+                    switch (setting.Medium)
+                    {
+                        case Medium.Urdu:
+                            varQnA.QuestionTextL = Qitem.QuestionTextL;
+                            varQnA.OptionsQnA.ChoiceL1 = ans.ChoiceL1;
+                            varQnA.OptionsQnA.ChoiceL2 = ans.ChoiceL2;
+                            varQnA.OptionsQnA.ChoiceL3 = ans.ChoiceL3;
+                            varQnA.OptionsQnA.ChoiceL4 = ans.ChoiceL4;
+                            varQnA.SelectedAnswerL = ans.AnswerL;
+                            break;
+                        case Medium.English:
+                            varQnA.QuestionText = Qitem.QuestionText;
+                            varQnA.OptionsQnA.Choice1 = ans.Choice1;
+                            varQnA.OptionsQnA.Choice2 = ans.Choice2;
+                            varQnA.OptionsQnA.Choice3 = ans.Choice3;
+                            varQnA.OptionsQnA.Choice4 = ans.Choice4;
+                            varQnA.SelectedAnswer = ans.Answer;
+                            break;
+                        default:
+                            varQnA.QuestionTextL = Qitem.QuestionTextL;
+                            varQnA.QuestionText = Qitem.QuestionText;
+                            varQnA.OptionsQnA.ChoiceL1 = ans.ChoiceL1;
+                            varQnA.OptionsQnA.ChoiceL2 = ans.ChoiceL2;
+                            varQnA.OptionsQnA.ChoiceL3 = ans.ChoiceL3;
+                            varQnA.OptionsQnA.ChoiceL4 = ans.ChoiceL4;
+                            varQnA.OptionsQnA.Choice1 = ans.Choice1;
+                            varQnA.OptionsQnA.Choice2 = ans.Choice2;
+                            varQnA.OptionsQnA.Choice3 = ans.Choice3;
+                            varQnA.OptionsQnA.Choice4 = ans.Choice4;
+                            varQnA.SelectedAnswer = ans.Answer;
+                            varQnA.SelectedAnswerL = ans.AnswerL;
+
+                            break;
+                    }
+                    //varQnA.QuestionTextL = Qitem.QuestionTextL;
+                    //varQnA.QuestionText = Qitem.QuestionText;
+                    //varQnA.QuestionType = Qitem.QuestionType;
+                    ////var options = await _context.Choices.Where(q => q.QuestionId == Qitem.Id).Select(o => new { OptionID = o.Id, Option1 = o.Choice1, OptionL1 = o.ChoiceL1, Option2 = o.Choice2, OptionL2 = o.ChoiceL2, Option3 = o.Choice3, OptionL3 = o.ChoiceL3, Option4 = o.Choice4, OptionL4 = o.ChoiceL4, Answer = o.Answer }).ToListAsync();
+                    //varQnA.OptionsQnA = await _context.Choices.Where(q => q.QuestionId == Qitem.Id).FirstOrDefaultAsync();
+
                     objQnA.Add(varQnA);
                 }
             }
@@ -119,15 +171,30 @@ namespace ExamSystem.Data.Services
             foreach (var Sitem in topics)
             {
                 // obejctive qustions
-                var questions = await _context.Questions.Where(q => q.TopicId == Sitem.Id && q.QuestionType == QuestionTypes.SEQ && q.DifficultyLevel == setting.DifficultyLevel).OrderBy(o => Guid.NewGuid()).Take(Sitem.SEQCount).ToListAsync();
+                var questions = await _context.Questions.Where(q => q.TopicId == Sitem.Id && q.QuestionType == QuestionTypes.SEQ && q.DifficultyLevel == setting.DifficultyLevel).OrderBy(o => Guid.NewGuid()).Take(setting.SEQsCount).ToListAsync();
                 foreach (var Qitem in questions)
                 {
                     QnAs? varQnA = new();
                     varQnA.QuestionID = Qitem.Id;
-                    varQnA.QuestionTextL = Qitem.QuestionTextL;
-                    varQnA.QuestionText = Qitem.QuestionText;
-                    varQnA.QuestionType = Qitem.QuestionType;
-                    varQnA.OptionsQnA = await _context.Choices.Where(q => q.QuestionId == Qitem.Id).FirstOrDefaultAsync();
+                    varQnA.OptionsQnA = new Choice();
+                    var ans = await _context.Choices.Where(q => q.QuestionId == Qitem.Id).FirstOrDefaultAsync();
+                    switch (setting.Medium)
+                    {
+                        case Medium.Urdu:
+                            varQnA.QuestionTextL = Qitem.QuestionTextL;
+                            varQnA.SelectedAnswerL = ans.AnswerL;
+                            break;
+                        case Medium.English:
+                            varQnA.QuestionText = Qitem.QuestionText;
+                            varQnA.SelectedAnswer = ans.Answer;
+                            break;
+                        default:
+                            varQnA.QuestionTextL = Qitem.QuestionTextL;
+                            varQnA.QuestionText = Qitem.QuestionText;
+                            varQnA.SelectedAnswer = ans.Answer;
+                            varQnA.SelectedAnswerL = ans.AnswerL;
+                            break;
+                    }
                     seqQnA.Add(varQnA);
                 }
             }
@@ -138,20 +205,30 @@ namespace ExamSystem.Data.Services
             // for Long Exam Questions
             foreach (var Litem in topics)
             {
-
                 // obejctive qustions
-                var questions = await _context.Questions.Where(q => q.TopicId == Litem.Id && q.QuestionType == QuestionTypes.Long_Question && q.DifficultyLevel == setting.DifficultyLevel).OrderBy(o => Guid.NewGuid()).Take(Litem.LongQCount).ToListAsync();
+                var questions = await _context.Questions.Where(q => q.TopicId == Litem.Id && q.QuestionType == QuestionTypes.Long_Question && q.DifficultyLevel == setting.DifficultyLevel).OrderBy(o => Guid.NewGuid()).Take(setting.LongQsCount).ToListAsync();
                 foreach (var Qitem in questions)
                 {
                     QnAs? varQnA = new();
-
-                    varQnA.QuestionID = Qitem.Id;
-                    varQnA.QuestionTextL = Qitem.QuestionTextL;
-                    varQnA.QuestionText = Qitem.QuestionText;
-                    varQnA.QuestionType = Qitem.QuestionType;
-
-                    //var options = await _context.Choices.Where(q => q.QuestionId == Qitem.Id).Select(o => new { OptionID = o.Id, Option1 = o.Choice1, OptionL1 = o.ChoiceL1, Option2 = o.Choice2, OptionL2 = o.ChoiceL2, Option3 = o.Choice3, OptionL3 = o.ChoiceL3, Option4 = o.Choice4, OptionL4 = o.ChoiceL4, Answer = o.Answer }).ToListAsync();
-                    varQnA.OptionsQnA = await _context.Choices.Where(q => q.QuestionId == Qitem.Id).FirstOrDefaultAsync();
+                    varQnA.QuestionID = Qitem.Id; varQnA.OptionsQnA = new Choice();
+                    var ans = await _context.Choices.Where(q => q.QuestionId == Qitem.Id).FirstOrDefaultAsync();
+                    switch (setting.Medium)
+                    {
+                        case Medium.Urdu:
+                            varQnA.QuestionTextL = Qitem.QuestionTextL;
+                            varQnA.SelectedAnswerL = ans.AnswerL;
+                            break;
+                        case Medium.English:
+                            varQnA.QuestionText = Qitem.QuestionText;
+                            varQnA.SelectedAnswer = ans.Answer;
+                            break;
+                        default:
+                            varQnA.QuestionTextL = Qitem.QuestionTextL;
+                            varQnA.QuestionText = Qitem.QuestionText;
+                            varQnA.SelectedAnswer = ans.Answer;
+                            varQnA.SelectedAnswerL = ans.AnswerL;
+                            break;
+                    }
                     LongQnA.Add(varQnA);
                 }
             }

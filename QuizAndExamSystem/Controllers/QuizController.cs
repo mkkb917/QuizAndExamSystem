@@ -82,13 +82,13 @@ namespace ExamSystem.Controllers
             int score = 0;
             foreach (var item in model.QuizMcqs)
             {
-                if (item.SelectedAnswer == 1 && (item.OptionsQnA.Answer == "ChoiceTitle1" || item.OptionsQnA.AnswerL == "ChoiceTitleL1"))
+                if ( item.OptionsQnA.Answer == "ChoiceTitle1" || item.OptionsQnA.AnswerL == "ChoiceTitleL1")
                     IsCorrect = true;
-                else if (item.SelectedAnswer == 2 && (item.OptionsQnA.Answer == "ChoiceTitle2" || item.OptionsQnA.AnswerL == "ChoiceTitleL2"))
+                else if (item.OptionsQnA.Answer == "ChoiceTitle2" || item.OptionsQnA.AnswerL == "ChoiceTitleL2")
                     IsCorrect = true;
-                else if (item.SelectedAnswer == 3 && (item.OptionsQnA.Answer == "ChoiceTitle3" || item.OptionsQnA.AnswerL == "ChoiceTitleL3"))
+                else if (item.OptionsQnA.Answer == "ChoiceTitle3" || item.OptionsQnA.AnswerL == "ChoiceTitleL3")
                     IsCorrect = true;
-                else if (item.SelectedAnswer == 4 && (item.OptionsQnA.Answer == "ChoiceTitle4" || item.OptionsQnA.AnswerL == "ChoiceTitleL4"))
+                else if (item.OptionsQnA.Answer == "ChoiceTitle4" || item.OptionsQnA.AnswerL == "ChoiceTitleL4")
                     IsCorrect = true;
                 else
                     IsCorrect = false;

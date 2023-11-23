@@ -13,7 +13,7 @@ namespace ExamSystem.Models
         [Display(Name = "School Name")]
         public string? SchoolName { get; set; }
         // exam metadata
-        [Display(Name = "Examination")]
+        [Display(Name = "Examination Name")]
         public string? ExamName { get; set; }
         [Display(Name = "Class Name")]
         public string? ClassName { get; set; }
@@ -46,7 +46,7 @@ namespace ExamSystem.Models
         [Display(Name = "Short Question")]
         public float? SEQsMarks { get; set; }
         [Display(Name = "Short Question Count")]
-        public int? SEQsCount { get; set; }
+        public int SEQsCount { get; set; }
         [Display(Name = "Long Question")]
         public float? LongQsMarks { get; set; }
         [Display(Name = "Long Question Count")]
