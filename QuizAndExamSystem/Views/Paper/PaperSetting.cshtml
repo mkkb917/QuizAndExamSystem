@@ -56,7 +56,7 @@
                             <label class="contol-label">Secure paper with</label>
                             <div class=" form-check">
                                 <label class="form-check-label">
-                                    <input  type="checkbox" class="form-check-input" check="@(Model.QrCode!=null?"checked":"")" disabled>Barcode
+                                    <input type="checkbox" class="form-check-input" check="@(Model.QrCode!=null?"checked":"")" disabled>Barcode
                                 </label>
                             </div>
                         </div>
@@ -64,15 +64,8 @@
                             <label class="contol-label">Marks distribution for the paper</label>
                             <div class=" form-check">
                                 <label class="form-check-label">
-                                    @if (Model.PairingScheme == true)
-                                    {
-                                        <input id="pairingCheckBox" type="checkbox" class="form-check-input" checked disabled>
-                                    }
-                                    else
-                                    {
-                                        <input id="pairingCheckBox" type="checkbox" class="form-check-input"  disabled>
-                                    }
-                                    Use Default Pairing scheme
+                                    <input id="pairingCheckBox" type="checkbox" class="form-check-input" check="@(Model.PairingScheme==true?"checked":"")" disabled>
+                                    Use Default <a asp-action="PairingScheme">Pairing Schemas</a>
                                 </label>
                             </div>
                         </div>

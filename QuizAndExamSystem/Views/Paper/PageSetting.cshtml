@@ -1,0 +1,70 @@
+﻿@model ExamSystem.Data.ViewModels.PaperViewVM
+
+@{
+    ViewData["Title"] = "Page Setting";
+    Layout = "_DashboardLayout";
+}
+
+
+
+<div class="container">
+    <h2 style="text-align:center; color:red;">Page Setting </h2>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div>
+                @*<a class="btn btn-primary float-right" asp-action="Edit" asp-route-id="@Model?.Id"><i class="fas fa-pencil-square"></i> Edit</a>*@
+                <a asp-controller="Dashboard" asp-action="index" class="btn btn-secondary"> <i class="fa fa-arrow-left"></i> Back</a>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive">
+                <table class="table table-bordered table-hover">
+                    <tr class="row">
+                        <th class="th-sm col-sm-4">
+                            Page Size
+                        </th>
+                        <td class="col-sm-8">
+                            A4
+                        </td>
+                        <th class="th-sm col-sm-4">
+                            Page Oreintation
+                        </th>
+                        <td class="col-sm-8">
+                            Portrait
+                        </td>
+                        <th class="th-sm col-sm-4">
+                            Page Margins
+                        </th>
+                        <td class="col-sm-8">
+                            Normal
+                        </td>
+                        <th class="th-sm col-sm-4">
+                            Page Mode
+                        </th>
+                        <td class="col-sm-8">
+                            Colored
+                        </td>
+                        <th class="th-sm col-sm-4">
+                            Page DPI
+                        </th>
+                        <td class="col-sm-8">
+                            600 dpi
+                        </td>
+                        <th class="th-sm col-sm-4">
+                            Page Header and Footer
+                        </th>
+                        <td class="col-sm-8">
+                            Fixed company markup
+                        </td>
+                        
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+
+</div>

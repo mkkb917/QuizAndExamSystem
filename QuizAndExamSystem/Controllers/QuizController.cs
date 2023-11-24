@@ -82,13 +82,13 @@ namespace ExamSystem.Controllers
             int score = 0;
             foreach (var item in model.QuizMcqs)
             {
-                if ( item.OptionsQnA.Answer == "ChoiceTitle1" || item.OptionsQnA.AnswerL == "ChoiceTitleL1")
+                if ( item.OptionsQnA.Answer.ToString() == item.OptionsQnA.Choice1.ToString() || item.OptionsQnA.AnswerL.ToString() == item.OptionsQnA.ChoiceL1.ToString())
                     IsCorrect = true;
-                else if (item.OptionsQnA.Answer == "ChoiceTitle2" || item.OptionsQnA.AnswerL == "ChoiceTitleL2")
+                else if (item.OptionsQnA.Answer.ToString() == item.OptionsQnA.Choice2.ToString() || item.OptionsQnA.AnswerL.ToString() == item.OptionsQnA.ChoiceL2.ToString())
                     IsCorrect = true;
-                else if (item.OptionsQnA.Answer == "ChoiceTitle3" || item.OptionsQnA.AnswerL == "ChoiceTitleL3")
+                else if (item.OptionsQnA.Answer.ToString() == item.OptionsQnA.Choice3.ToString() || item.OptionsQnA.AnswerL.ToString() == item.OptionsQnA.ChoiceL3.ToString())
                     IsCorrect = true;
-                else if (item.OptionsQnA.Answer == "ChoiceTitle4" || item.OptionsQnA.AnswerL == "ChoiceTitleL4")
+                else if (item.OptionsQnA.Answer.ToString() == item.OptionsQnA.Choice4.ToString() || item.OptionsQnA.AnswerL.ToString() == item.OptionsQnA.ChoiceL4.ToString())
                     IsCorrect = true;
                 else
                     IsCorrect = false;

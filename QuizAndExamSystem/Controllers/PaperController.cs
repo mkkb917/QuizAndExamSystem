@@ -554,7 +554,11 @@ namespace ExamSystem.Controllers
             return RedirectToAction("UserPapers", new { @id = User.Identity.Name });
         }
 
-
+        [HttpGet]
+        public async Task<ActionResult> PageSetting()
+        {
+            return View();
+        }
 
     }
 }

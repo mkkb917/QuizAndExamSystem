@@ -227,63 +227,66 @@
                                 </p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a asp-controller="Grade" asp-action="Index" class="nav-link">
-                                <i class="nav-icon fas fa-copy"></i>
-                                <p>
-                                    Class
-                                    @*<i class="fas fa-angle-left right"></i>
+                        @if (User.IsInRole("Admin")||User.IsInRole("Teacher"))
+                        {
+                            <li class="nav-item">
+                                <a asp-controller="Grade" asp-action="Index" class="nav-link">
+                                    <i class="nav-icon fas fa-copy"></i>
+                                    <p>
+                                        Class
+                                        @*<i class="fas fa-angle-left right"></i>
                                     <span class="badge badge-info right">6</span>*@
-                                </p>
-                            </a>
+                                    </p>
+                                </a>
 
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-book"></i>
-                                <p>
-                                    Subject
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a asp-controller="Subject" asp-action="Index" class="nav-link">
-                                        <i class="far fa-gear nav-icon"></i>
-                                        <p>All Subjects</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-controller="Subject" asp-action="Create" class="nav-link">
-                                        <i class="far fa-plus nav-icon"></i>
-                                        <p>Add Subject</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a asp-controller="Question" asp-action="Index" class="nav-link">
-                                <i class="nav-icon fas fa-copy"></i>
-                                <p>
-                                    Question
-                                    <i class="fas fa-angle-left right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a asp-controller="Question" asp-action="index" asp-route-id="0" class="nav-link">
-                                        <i class="far fa-gear nav-icon"></i>
-                                        <p>All Questions</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-controller="Question" asp-action="Create" class="nav-link">
-                                        <i class="far fa-plus nav-icon"></i>
-                                        <p>Set Question</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon fas fa-book"></i>
+                                    <p>
+                                        Subject
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a asp-controller="Subject" asp-action="Index" class="nav-link">
+                                            <i class="far fa-gear nav-icon"></i>
+                                            <p>All Subjects</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a asp-controller="Subject" asp-action="Create" class="nav-link">
+                                            <i class="far fa-plus nav-icon"></i>
+                                            <p>Add Subject</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a asp-controller="Question" asp-action="Index" class="nav-link">
+                                    <i class="nav-icon fas fa-copy"></i>
+                                    <p>
+                                        Question
+                                        <i class="fas fa-angle-left right"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a asp-controller="Question" asp-action="index" asp-route-id="0" class="nav-link">
+                                            <i class="far fa-gear nav-icon"></i>
+                                            <p>All Questions</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a asp-controller="Question" asp-action="Create" class="nav-link">
+                                            <i class="far fa-plus nav-icon"></i>
+                                            <p>Set Question</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fa fa-upload"></i>
@@ -355,6 +358,12 @@
                                 </a>
                                 <ul class="nav nav-treeview">
                                     <li class="nav-item">
+                                        <a asp-controller="Question" asp-action="Approve" class="nav-link">
+                                            <i class="fa fa-hourglass-start nav-icon"></i>
+                                            <p>Questions</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
                                         <a asp-controller="SED" asp-action="Approve" class="nav-link">
                                             <i class="fa fa-hourglass-start nav-icon"></i>
                                             <p>SED</p>
@@ -370,65 +379,64 @@
                                 </ul>
                             </li>
                         }
-                        <li class="nav-item">
-                            <a asp-controller="Dashboard" asp-action="index" class="nav-link">
-                                <i class="nav-icon fas fa-clipboard"></i>
-                                <p>
-                                    Papers
-                                    <i class="fas fa-angle-left right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a asp-controller="Paper" asp-action="UserPapers" class="nav-link">
-                                        <i class="fa fa-copy nav-icon"></i>
-                                        <p>All Papers</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-controller="Paper" asp-action="PaperSetting" asp-route-id="0" class="nav-link">
-                                        <i class="fa fa-gear nav-icon"></i>
-                                        <p>Paper options</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-controller="Paper" asp-action="PairingScheme" class="nav-link">
-                                        <i class="fas fa-sync nav-icon"></i>
-                                        <p>Pairing Scheme</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-controller="Paper" asp-action="PageSetting" class="nav-link">
-                                        <i class="fa fa-clipboard nav-icon"></i>
-                                        <p>Page Setting</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a asp-controller="Dashboard" asp-action="index" class="nav-link">
-                                <i class="nav-icon fa fa-list-ol"></i>
-                                <p>
-                                    Quiz
-                                    <i class="fas fa-angle-left right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a asp-controller="Quiz" asp-action="UserQuiz" class="nav-link">
-                                        <i class="far fa-gear nav-icon"></i>
-                                        <p>All Quizes</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-controller="Quiz" asp-action="Create" class="nav-link">
-                                        <i class="far fa-gear nav-icon"></i>
-                                        <p>Take Quiz</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-
+                        @if (User.IsInRole("Admin")||User.IsInRole("Teacher"))
+                        {
+                            <li class="nav-item">
+                                <a asp-controller="Dashboard" asp-action="index" class="nav-link">
+                                    <i class="nav-icon fas fa-clipboard"></i>
+                                    <p>
+                                        Papers
+                                        <i class="fas fa-angle-left right"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a asp-controller="Paper" asp-action="UserPapers" class="nav-link">
+                                            <i class="fa fa-copy nav-icon"></i>
+                                            <p>All Papers</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a asp-controller="Paper" asp-action="PaperSetting" asp-route-id="0" class="nav-link">
+                                            <i class="fa fa-gear nav-icon"></i>
+                                            <p>Paper options</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a asp-controller="Paper" asp-action="PageSetting" class="nav-link">
+                                            <i class="fa fa-clipboard nav-icon"></i>
+                                            <p>Page Setting</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        @if (User.IsInRole("Admin") || User.IsInRole("Student"))
+                        {
+                            <li class="nav-item">
+                                <a asp-controller="Dashboard" asp-action="index" class="nav-link">
+                                    <i class="nav-icon fa fa-list-ol"></i>
+                                    <p>
+                                        Quiz
+                                        <i class="fas fa-angle-left right"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a asp-controller="Quiz" asp-action="UserQuiz" class="nav-link">
+                                            <i class="far fa-gear nav-icon"></i>
+                                            <p>All Quizes</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a asp-controller="Quiz" asp-action="Create" class="nav-link">
+                                            <i class="far fa-gear nav-icon"></i>
+                                            <p>Take Quiz</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
                         <li class="nav-item">
                             <form class="nav-link" asp-controller="Account" asp-action="Logout">
                                 <button class="nav-link " style="background-color: transparent; text-align:left; color:#ced4da; border: none;padding: 0px;margin:0px;cursor: pointer;">

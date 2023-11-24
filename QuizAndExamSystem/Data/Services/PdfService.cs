@@ -75,42 +75,26 @@ namespace ExamSystem.Data.Services
                 setting.SchoolLogo = _context.SchoolInfos.Where(u => u.AppUser.UserName == usr.UserName).First().SchoolLogo;
                 setting.ClassName = await _context.Grades.Where(e => e.Id == selectedClass).Select(g => g.GradeText).SingleOrDefaultAsync();
                 setting.SubjectName = await _context.Subjects.Where(e => e.Id == selectedSubject).Select(o => o.SubjectText).SingleOrDefaultAsync();
-                if (setting.PairingScheme == true)
-                {
-                    // use default pairing scheme for paper generation
-                    var marksPair = await _context.Topics.Where(s => s.SubjectId == selectedSubject).FirstOrDefaultAsync();
-                    setting.MCQsMarks = marksPair.MCQMarks;
-                    setting.MCQsCount = marksPair.MCQCount;
-                    setting.SEQsMarks = marksPair.SEQMarks;
-                    setting.SEQsCount = marksPair.SEQCount;
-                    setting.LongQsMarks = marksPair.LongQMarks;
-                    setting.LongQsCount = marksPair.LongQCount;
-                    //setting.FillInBlanksMarks = marksPair.filinblanks;                not available
-                    //setting.FillInBlanksCount = marksPair.fillInBlankCount            not available
-                };
                 setting.TotalMarks = Convert.ToInt32((setting.MCQsMarks * setting.MCQsCount) + (setting.SEQsCount * setting.SEQsMarks) + (setting.LongQsMarks * setting.LongQsCount) + (setting.FillInBlanksMarks * setting.FillInBlanksCount));
                 setting.TeacherName = TeacherName;
                 setting.QrCode = qrCode;
                 if (PaperDate > DateTime.Today) { setting.ConductDate = PaperDate; } else { setting.ConductDate = DateTime.Today; }
-
             }
 
             // get the questions
             List<QnAs>? objQnA = new();
             List<QnAs>? seqQnA = new();
             List<QnAs>? LongQnA = new();
-
-            //random number 
-            var r = new Random();
-
-            int mcqCount = Convert.ToInt32(setting.MCQsCount);
-            if (mcqCount == 0)
-                mcqCount = 10;
-
+            
             var topics = await _context.Topics.Where(t => t.SubjectId == selectedSubject).ToListAsync();
             // traverse to each Unit for questions
             foreach (var Titem in topics)
             {
+                if (setting.PairingScheme == true)
+                {
+                    setting.MCQsCount = Titem.MCQCount;
+                    setting.MCQsMarks = Titem.MCQMarks;
+                }
                 //SelectedPost = Answers.ElementAt(r.Next(0, Answers.Count()));
                 // obejctive qustions
                 var questions = await _context.Questions.Where(q => q.TopicId == Titem.Id && q.QuestionType == QuestionTypes.MCQ && q.DifficultyLevel == setting.DifficultyLevel).OrderBy(o => Guid.NewGuid()).Take(setting.MCQsCount).ToListAsync();
@@ -151,25 +135,20 @@ namespace ExamSystem.Data.Services
                             varQnA.OptionsQnA.Choice4 = ans.Choice4;
                             varQnA.SelectedAnswer = ans.Answer;
                             varQnA.SelectedAnswerL = ans.AnswerL;
-
                             break;
                     }
-                    //varQnA.QuestionTextL = Qitem.QuestionTextL;
-                    //varQnA.QuestionText = Qitem.QuestionText;
-                    //varQnA.QuestionType = Qitem.QuestionType;
-                    ////var options = await _context.Choices.Where(q => q.QuestionId == Qitem.Id).Select(o => new { OptionID = o.Id, Option1 = o.Choice1, OptionL1 = o.ChoiceL1, Option2 = o.Choice2, OptionL2 = o.ChoiceL2, Option3 = o.Choice3, OptionL3 = o.ChoiceL3, Option4 = o.Choice4, OptionL4 = o.ChoiceL4, Answer = o.Answer }).ToListAsync();
-                    //varQnA.OptionsQnA = await _context.Choices.Where(q => q.QuestionId == Qitem.Id).FirstOrDefaultAsync();
-
                     objQnA.Add(varQnA);
                 }
             }
 
-            int seqCount = Convert.ToInt32(setting.SEQsCount);
-            if (seqCount == 0)
-            { seqCount = 5; }
             // for Short Exam Questions
             foreach (var Sitem in topics)
             {
+                if (setting.PairingScheme == true)
+                {
+                    setting.SEQsCount = Sitem.SEQCount;
+                    setting.SEQsMarks = Sitem.SEQMarks;
+                }
                 // obejctive qustions
                 var questions = await _context.Questions.Where(q => q.TopicId == Sitem.Id && q.QuestionType == QuestionTypes.SEQ && q.DifficultyLevel == setting.DifficultyLevel).OrderBy(o => Guid.NewGuid()).Take(setting.SEQsCount).ToListAsync();
                 foreach (var Qitem in questions)
@@ -199,12 +178,14 @@ namespace ExamSystem.Data.Services
                 }
             }
 
-            int leqCount = Convert.ToInt32(setting.LongQsCount);
-            if (leqCount == 0)
-            { leqCount = 5; }
             // for Long Exam Questions
             foreach (var Litem in topics)
             {
+                if (setting.PairingScheme == true)
+                {
+                    setting.LongQsCount = Litem.LongQCount;
+                    setting.LongQsMarks = Litem.LongQMarks;
+                }
                 // obejctive qustions
                 var questions = await _context.Questions.Where(q => q.TopicId == Litem.Id && q.QuestionType == QuestionTypes.Long_Question && q.DifficultyLevel == setting.DifficultyLevel).OrderBy(o => Guid.NewGuid()).Take(setting.LongQsCount).ToListAsync();
                 foreach (var Qitem in questions)
@@ -248,15 +229,7 @@ namespace ExamSystem.Data.Services
             var converter = new BasicConverter(new PdfTools());
             string webRootPath = _webHostEnvironment.WebRootPath;
             string PaperPath = webRootPath + WC.PaperPathPDF;
-            //var PageOptions = new PageSettings();
-            //var htmlDoc = new StringBuilder();
-            //htmlDoc.AppendLine($"<div id = \"QrCodeArea\">");
-            //It fetches under wwwroot and include the current generating code image
-            //var path = _webHostEnvironment.WebRootPath + WC.QrCodePath + qrcode;
-            //htmlDoc.AppendLine($"<img style=\"margin-bottom:0px; width: 100px; height: 100px\" src=\"{path}\" />");
-            //htmlDoc.AppendLine("</div>");
-            //var barcode = $"<img style=\"margin-bottom:0px;\" src=\"~{path}\" length=50/>";
-
+            
             var globalSettings = new GlobalSettings
             {
                 ColorMode = ColorMode.Color,

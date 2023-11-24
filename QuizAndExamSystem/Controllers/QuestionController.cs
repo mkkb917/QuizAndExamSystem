@@ -159,27 +159,14 @@ namespace ExamSystem.Controllers
                 {
                     if (model.QuestionType == QuestionTypes.MCQ)
                     {
-                        
+
                         int val = Convert.ToInt32(frm["option"]);
                         int valL = Convert.ToInt32(frm["optionl"]);
-                        if(val==1 && valL == 1)
+
+                        if (val >= 1 && val <= 4 && val == valL)
                         {
-                            model.CorrectAnswer = model.ChoiceTitle1;
-                            model.CorrectAnswerL = model.ChoiceTitleL1;
-                        }else if (val == 2 && valL == 2)
-                        {
-                            model.CorrectAnswer = model.ChoiceTitle2;
-                            model.CorrectAnswerL = model.ChoiceTitleL2;
-                        }
-                        else if (val == 3 && valL == 3)
-                        {
-                            model.CorrectAnswer = model.ChoiceTitle3;
-                            model.CorrectAnswerL = model.ChoiceTitleL3;
-                        }
-                        else if (val == 4 && valL == 4)
-                        {
-                            model.CorrectAnswer = model.ChoiceTitle4;
-                            model.CorrectAnswerL = model.ChoiceTitleL4;
+                            model.CorrectAnswer = model.GetType().GetProperty($"ChoiceTitle{val}").GetValue(model).ToString();
+                            model.CorrectAnswerL = model.GetType().GetProperty($"ChoiceTitleL{val}").GetValue(model).ToString();
                         }
                     }
                     await _service.AddNewQuestion(model);

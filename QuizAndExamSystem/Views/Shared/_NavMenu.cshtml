@@ -35,17 +35,21 @@
                         <li><a class="dropdown-item" asp-controller="Corner" asp-action="Syllabus">Syllabus Books</a></li>
                     </ul>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle">Teacher Corner</a>
+                @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
+                {
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle">Teacher Corner</a>
                     <ul class="dropdown-menu">
                         @*<li><a class="dropdown-item" asp-controller="Corner" asp-action="Diary">Teachers Diary</a></li>
                         <li><a class="dropdown-item" asp-controller="Corner" asp-action="HelpingBooks">Helping Books</a></li>*@
                         <li><a class="dropdown-item" asp-controller="SED" asp-action="Index">Orders and Notifications</a></li>
                         <li><a class="dropdown-item" asp-controller="Corner" asp-action="Calender">Syllabus and Calanders</a></li>
                     </ul>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle">Student Corner</a>
+                </li>}
+                @if (User.IsInRole("Admin") || User.IsInRole("Student"))
+                {
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle">Student Corner</a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" asp-controller="Corner" asp-action="Notes">Helping Books</a></li>
                         <li><a class="dropdown-item" asp-controller="Corner" asp-action="Pastpapers">Past Papers</a></li>
@@ -53,7 +57,7 @@
                         <li><a class="dropdown-item" asp-controller="Corner" asp-action="Results">Results</a></li>
                         *@
                     </ul>
-                </li>
+                </li>}
                 <li class="nav-item">
                     <a class="nav-link " asp-controller="Books" asp-action="Index">Books</a>
                     @*<ul class="dropdown-menu">
