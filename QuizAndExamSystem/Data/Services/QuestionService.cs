@@ -105,6 +105,11 @@ namespace ExamSystem.Data.Services
             var responce = await _context.Questions.Where(s => s.TopicId == Id).ToListAsync();
             return responce;
         }
+        public async Task<List<Question>> GetAllQuestionsByStatus(Status status)
+        {
+            var responce = await _context.Questions.Where(s => s.Status == status).ToListAsync();
+            return responce;
+        }
 
         public async Task UpdateQuestion(int Id, QuestionVM data)
         {

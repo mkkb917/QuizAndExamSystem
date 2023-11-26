@@ -1,0 +1,104 @@
+﻿@model QuestionIndexVM
+
+@{
+    ViewData["Title"] = "List of all questions";
+    Layout = "_DashboardLayout";
+    int sno = 1;
+
+}
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-12 col-10">
+            @if (Model != null)
+            {
+                <h2 style="text-align:center; color:red;">@Model.TopicName  in @Model.SubjectName</h2>
+            }
+            else
+            {
+                <h2 style="text-align:center; color:red;"> All registered question</h2>
+            }
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div>
+
+                @if (ViewBag.SubjectId != null)
+                {
+                    <a asp-controller="Topic" asp-action="TopicsList" asp-route-id="@Model.SubjectId" class="btn btn-secondary"> <i class="fas fa-arrow-left"></i> Back</a>
+                }
+                <label class="text-center ml-5">Approved:  <button class="badge badge-success" disabled="disabled">@Model.Questions.Where(a=>a.Status == Status.Active).Count()</button> </label>
+                <label class="text-center">Waiting for approval:  <button class="badge badge-danger" disabled="disabled">@Model.Questions.Where(a=>a.Status == Status.Inactive).Count() </button> </label>
+                <label class="text-center">Total:  <button class="badge badge-info" disabled="disabled">@Model.Questions.Count </button> </label>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a asp-controller="Question" asp-action="Create" asp-route-id="@Model.TopicId" class="btn btn-primary float-right"><i class="fas fa-plus-plus"></i> Add New Question</a>
+                }
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive">
+                <table id="tblData" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Question </th>
+                            <th>Question</th>
+                            <th>Type</th>
+                            <th>Status </th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Questions)
+                        {
+                            <tr>
+                                <td>@(sno++)</td>
+                                <td><a asp-action="Details" asp-route-id="@item.Id"> @Html.DisplayFor(modelItem => item.QuestionText)</a> </td>
+                                <td align="right"><a asp-action="Details" asp-route-id="@item.Id"><span style="font-family:'Jameel Noori Nastaleeq' !important;">@Html.DisplayFor(modelItem => item.QuestionTextL)</span> </a></td>
+                                <td> @Html.DisplayFor(modelItem => item.QuestionType) </td>
+                                <td>
+                                    @if (item.Status == Status.Active)
+                                    {
+                                        <span class="badge badge-success">@Html.DisplayFor(modelItem => item.Status)</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-danger"> Waiting for Approval </span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.Status == Status.Active)
+                                    {
+                                        <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Id"> <i class="fas fa-pencil-square"></i>Edit</a>
+                                    }
+                                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                                    {
+                                        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id"> <i class="fas fa-trash"></i>Delete</a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+</div>
+
+@section Scripts{
+    <script>
+        // search bar
+        $(document).ready(function () {
+            $('#tblData').DataTable();
+            $('.dataTables_length').addClass('bs-select');
+        });
+    </script>
+    }

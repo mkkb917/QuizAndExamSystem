@@ -272,6 +272,20 @@ namespace ExamSystem.Controllers
             return Json(new { IsDuplicate = isDuplicate });
         }
 
+
+        //Get: Question/approve
+        public async Task<IActionResult> Approve()
+        {
+            Status _status = Status.Inactive;
+            var obj = await _service.GetAllQuestionsByStatus(_status);
+            var responce = new QuestionIndexVM()
+            {
+
+                Questions = obj,
+            };
+            return View(responce);
+        }
+
         // GET: Question/Delete/5
         public async Task<IActionResult> Delete(int id)
         {

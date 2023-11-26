@@ -48,12 +48,6 @@ namespace ExamSystem.Controllers
             int count = 15;     // total number of quiz mcqs
                                // get current user and validate as User.Student type 
 
-            //if ((User.IsInRole("Student") || (User.IsInRole("Admin"))) != true)
-            //{
-            //    TempData["error"] = "your are not authorize to take test. you are not a student user!.";
-            //    return RedirectToAction("Create");
-            //}
-
             // call the function to render the questions bank
             var quizViewVM = await _QuizService.RenderQuiz(selectedClass, selectedSubject, count);
             if (quizViewVM.QuizMcqs == null)

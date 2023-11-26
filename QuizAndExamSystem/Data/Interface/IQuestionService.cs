@@ -1,4 +1,5 @@
 ﻿using ExamSystem.Data.Base;
+using ExamSystem.Data.Static;
 using ExamSystem.Data.ViewModels;
 using ExamSystem.Models;
 
@@ -10,6 +11,7 @@ namespace ExamSystem.Data.Interface
         Task<Question> GetQuesDetailById(int id);
         Task<bool> SearchQuestionByString(string questionString);
         Task<List<Question>> GetAllQuestionsById(int Id);
+        Task<List<Question>> GetAllQuestionsByStatus(Status status);
         Task<DropDownsListsVM> GetDDLObject();
         Task AddNewQuestion(QuestionVM data);
         Task UpdateQuestion(int id, QuestionVM data);
