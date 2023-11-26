@@ -416,9 +416,9 @@ namespace ExamSystem.Controllers
             //var selectedTopics = Convert.ToInt32(form["TopicsDDL"]);
 
             var grade = await _SubjectService.GetGradeById(selectedClass);
-            string className = grade.GradeText;
+            string className = grade.GradeText.ToString();
             var subject = await _SubjectService.GetSubjectById(selectedSubject);
-            string subjectName = subject.SubjectText;
+            string subjectName = subject.SubjectText.ToString();
 
             // get current user and school info 
             var usr = new ApplicationUser()

@@ -60,7 +60,7 @@
                     </tr>
                     <tr style="margin:0px;">
                         <td style="align-content:center;margin:0px;">
-                            <p style="margin:0px;">Passing Marks: @Model.Setting.PassingMarks</p>
+                            <p style="margin:0px; color:red;">Passing Marks: @Model.Setting.PassingMarks</p>
                         </td>
                     </tr>
                 </table>
@@ -94,7 +94,7 @@
             </td>
         </tr>
     </table>
-    <table style="width:100%;border:solid; margin:0px; padding:0px;">
+    @*<table style="width:100%;border:solid; margin:0px; padding:0px;">
         <tr style="margin:0px;">
             <td style="width:5%; text-align:left; border:solid;">
                 <p style="margin:0px;">Marks</p>
@@ -133,7 +133,7 @@
                 <p style="margin:0px;">Total:</p>
             </td>
         </tr>
-    </table>
+    </table>*@
 
     <table style="width:100%; border:solid; margin:0px;padding:0px;">
         <tr>
@@ -183,20 +183,20 @@
                     </td>
                 </tr>
                 <tr style="width:100%; margin:0px; padding:0px;">
-                    <td style=" width:25%; margin-left:10px">
-                        @qitem.OptionsQnA.Choice1 &nbsp;
+                    <td style=" width:25%;text-align:left; margin-left:10px">
+                        @qitem.OptionsQnA.Choice1 &nbsp;|
                         <span dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important;">@qitem.OptionsQnA.ChoiceL1</span>
                     </td>
-                    <td style="width:25%;">
-                        @qitem.OptionsQnA.Choice2 &nbsp;
+                    <td style="width:25%; text-align:center;">
+                        @qitem.OptionsQnA.Choice2 &nbsp;|
                         <span dir="rtl" style=" font-family:'Jameel Noori Nastaleeq' !important;">@qitem.OptionsQnA.ChoiceL2</span>
                     </td>
-                    <td style="width:25%;">
-                        @qitem.OptionsQnA.Choice3 &nbsp;
+                    <td style="width:25%; text-align:center;">
+                        @qitem.OptionsQnA.Choice3 &nbsp;|
                         <span dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important;">@qitem.OptionsQnA.ChoiceL3</span>
                     </td>
-                    <td style="width:25%;">
-                        @qitem.OptionsQnA.Choice4 &nbsp;
+                    <td style="width:25%; text-align:right;">
+                        @qitem.OptionsQnA.Choice4 &nbsp;|
                         <span dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important;">@qitem.OptionsQnA.ChoiceL4</span>
                     </td>
                 </tr>

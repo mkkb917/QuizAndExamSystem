@@ -95,12 +95,12 @@
                         <div class="row">
                             <div class=" col-lg-2 col-md-2 col-sm-12 col-12"> Question</div>
                             <div class="col-lg-5 col-md-5 col-sm-12 col-12 ">
-                                <input id="textSearchField" asp-for="QuestionText" class="form-control" placeholder="Question in English" />
+                                <textarea id="textSearchField" asp-for="QuestionText" class="form-control" placeholder="Question in English"></textarea>
                                 <span asp-validation-for="QuestionText" class="text-danger"></span>
                             </div>
                             <div class="col-lg-5 col-md-5 col-sm-12 col-12 ">
                                 <span style="font-family:'Jameel Noori Nastaleeq' !important;">
-                                    <input asp-for="QuestionTextL" class=" form-control" dir="rtl" placeholder="سوال اردو میں " />
+                                    <textarea asp-for="QuestionTextL" class=" form-control" dir="rtl" placeholder="سوال اردو میں " ></textarea>
                                 </span>
                                 <span asp-validation-for="QuestionTextL" class="text-danger"></span>
                             </div>

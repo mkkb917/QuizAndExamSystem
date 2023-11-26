@@ -240,10 +240,14 @@ namespace ExamSystem.Controllers
             {
                 if(ModelState.IsValid && id == model.Id)
                 {
-                    if (model.QuestionType == QuestionTypes.MCQ)
+                    //model.CorrectAnswer
+                    int val = Convert.ToInt32(frm["option"]);
+                    int valL = Convert.ToInt32(frm["optionl"]);
+
+                    if (val >= 1 && val <= 4 && val == valL)
                     {
-                        model.CorrectAnswer = frm["option"].ToString();
-                        model.CorrectAnswerL = frm["optionl"].ToString();
+                        model.CorrectAnswer = model.GetType().GetProperty($"ChoiceTitle{val}").GetValue(model).ToString();
+                        model.CorrectAnswerL = model.GetType().GetProperty($"ChoiceTitleL{val}").GetValue(model).ToString();
                     }
                     await _service.UpdateQuestion(id,model);
                     return RedirectToAction(nameof(Index), new { @id = model.TopicId });

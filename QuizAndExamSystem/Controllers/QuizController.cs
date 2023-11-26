@@ -45,7 +45,7 @@ namespace ExamSystem.Controllers
             // get the class and subject DDL selected value
             int selectedClass = Convert.ToInt32(GradeDDL);
             int selectedSubject = Convert.ToInt32(SubjectDDL);
-            int count = 20;     // total number of quiz mcqs
+            int count = 15;     // total number of quiz mcqs
                                // get current user and validate as User.Student type 
 
             //if ((User.IsInRole("Student") || (User.IsInRole("Admin"))) != true)
@@ -82,20 +82,19 @@ namespace ExamSystem.Controllers
             int score = 0;
             foreach (var item in model.QuizMcqs)
             {
-                if ( item.OptionsQnA.Answer.ToString() == item.OptionsQnA.Choice1.ToString() || item.OptionsQnA.AnswerL.ToString() == item.OptionsQnA.ChoiceL1.ToString())
+                if (item.SelectedAnswer=="1" && item.OptionsQnA.Answer.ToString() == item.OptionsQnA.Choice1.ToString() || item.OptionsQnA.AnswerL.ToString() == item.OptionsQnA.ChoiceL1.ToString())
                     IsCorrect = true;
-                else if (item.OptionsQnA.Answer.ToString() == item.OptionsQnA.Choice2.ToString() || item.OptionsQnA.AnswerL.ToString() == item.OptionsQnA.ChoiceL2.ToString())
+                else if (item.SelectedAnswer == "2" && item.OptionsQnA.Answer.ToString() == item.OptionsQnA.Choice2.ToString() || item.OptionsQnA.AnswerL.ToString() == item.OptionsQnA.ChoiceL2.ToString())
                     IsCorrect = true;
-                else if (item.OptionsQnA.Answer.ToString() == item.OptionsQnA.Choice3.ToString() || item.OptionsQnA.AnswerL.ToString() == item.OptionsQnA.ChoiceL3.ToString())
+                else if (item.SelectedAnswer == "3" && item.OptionsQnA.Answer.ToString() == item.OptionsQnA.Choice3.ToString() || item.OptionsQnA.AnswerL.ToString() == item.OptionsQnA.ChoiceL3.ToString())
                     IsCorrect = true;
-                else if (item.OptionsQnA.Answer.ToString() == item.OptionsQnA.Choice4.ToString() || item.OptionsQnA.AnswerL.ToString() == item.OptionsQnA.ChoiceL4.ToString())
+                else if (item.SelectedAnswer == "4" && item.OptionsQnA.Answer.ToString() == item.OptionsQnA.Choice4.ToString() || item.OptionsQnA.AnswerL.ToString() == item.OptionsQnA.ChoiceL4.ToString())
                     IsCorrect = true;
                 else
                     IsCorrect = false;
 
                 if (IsCorrect == true)
                     score += 1;
-
             }
             double pscore = score * 100 / model.TotalMarks;
 

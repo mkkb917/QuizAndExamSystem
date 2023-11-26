@@ -75,7 +75,6 @@ namespace ExamSystem.Data.Services
                 setting.SchoolLogo = _context.SchoolInfos.Where(u => u.AppUser.UserName == usr.UserName).First().SchoolLogo;
                 setting.ClassName = await _context.Grades.Where(e => e.Id == selectedClass).Select(g => g.GradeText).SingleOrDefaultAsync();
                 setting.SubjectName = await _context.Subjects.Where(e => e.Id == selectedSubject).Select(o => o.SubjectText).SingleOrDefaultAsync();
-                setting.TotalMarks = Convert.ToInt32((setting.MCQsMarks * setting.MCQsCount) + (setting.SEQsCount * setting.SEQsMarks) + (setting.LongQsMarks * setting.LongQsCount) + (setting.FillInBlanksMarks * setting.FillInBlanksCount));
                 setting.TeacherName = TeacherName;
                 setting.QrCode = qrCode;
                 if (PaperDate > DateTime.Today) { setting.ConductDate = PaperDate; } else { setting.ConductDate = DateTime.Today; }
@@ -86,20 +85,37 @@ namespace ExamSystem.Data.Services
             List<QnAs>? seqQnA = new();
             List<QnAs>? LongQnA = new();
             
-            var topics = await _context.Topics.Where(t => t.SubjectId == selectedSubject).ToListAsync();
+            var topics = await _context.Topics.Where(t => t.SubjectId == selectedSubject && t.Status==Status.Active).ToListAsync();
             // traverse to each Unit for questions
             foreach (var Titem in topics)
             {
+                List<Question> questions = new();
                 if (setting.PairingScheme == true)
                 {
-                    setting.MCQsCount = Titem.MCQCount;
+                    //set the total marks as per pairing scheme
+                    setting.TotalMarks = Convert.ToInt32((Titem.MCQMarks * Titem.MCQCount) + (Titem.SEQMarks * Titem.SEQCount) + (Titem.LongQMarks * Titem.LongQCount));
                     setting.MCQsMarks = Titem.MCQMarks;
+                    questions = await _context.Questions.Where(q =>q.Status==Status.Active && q.TopicId == Titem.Id && q.QuestionType == QuestionTypes.MCQ && q.DifficultyLevel == setting.DifficultyLevel).OrderBy(o => Guid.NewGuid()).Take(Titem.MCQCount).ToListAsync();
                 }
+                else
+                {
+                    setting.TotalMarks = Convert.ToInt32((setting.MCQsMarks * setting.MCQsCount) + (setting.SEQsCount * setting.SEQsMarks) + (setting.LongQsMarks * setting.LongQsCount) + (setting.FillInBlanksMarks * setting.FillInBlanksCount));
+                    int totalTopics = topics.Count;
+                    int mcqCountPerTopic = setting.MCQsCount / totalTopics;
+                    int remainingMCQs = setting.MCQsCount % totalTopics;
+                    if (remainingMCQs > 0)
+                    {
+                        mcqCountPerTopic++;
+                        remainingMCQs--;
+                    }
+                    questions = await _context.Questions.Where(q => q.Status == Status.Active && q.TopicId == Titem.Id && q.QuestionType == QuestionTypes.MCQ && q.DifficultyLevel == setting.DifficultyLevel).OrderBy(o => Guid.NewGuid()).Take(mcqCountPerTopic).ToListAsync();
+                }
+
                 //SelectedPost = Answers.ElementAt(r.Next(0, Answers.Count()));
                 // obejctive qustions
-                var questions = await _context.Questions.Where(q => q.TopicId == Titem.Id && q.QuestionType == QuestionTypes.MCQ && q.DifficultyLevel == setting.DifficultyLevel).OrderBy(o => Guid.NewGuid()).Take(setting.MCQsCount).ToListAsync();
                 foreach (var Qitem in questions)
                 {
+
                     QnAs? varQnA = new();
                     varQnA.QuestionID = Qitem.Id;
                     varQnA.OptionsQnA = new Choice();
@@ -139,18 +155,30 @@ namespace ExamSystem.Data.Services
                     }
                     objQnA.Add(varQnA);
                 }
+                
             }
 
             // for Short Exam Questions
             foreach (var Sitem in topics)
             {
+                List<Question> questions = new();
                 if (setting.PairingScheme == true)
                 {
-                    setting.SEQsCount = Sitem.SEQCount;
                     setting.SEQsMarks = Sitem.SEQMarks;
+                    questions = await _context.Questions.Where(q => q.Status == Status.Active && q.TopicId == Sitem.Id && q.QuestionType == QuestionTypes.SEQ && q.DifficultyLevel == setting.DifficultyLevel).OrderBy(o => Guid.NewGuid()).Take(Sitem.SEQCount).ToListAsync();
                 }
-                // obejctive qustions
-                var questions = await _context.Questions.Where(q => q.TopicId == Sitem.Id && q.QuestionType == QuestionTypes.SEQ && q.DifficultyLevel == setting.DifficultyLevel).OrderBy(o => Guid.NewGuid()).Take(setting.SEQsCount).ToListAsync();
+                else
+                {
+                    int totalTopics = topics.Count;
+                    int SeqCountPerTopic = setting.SEQsCount / totalTopics;
+                    int remainingQs = setting.SEQsCount % totalTopics;
+                    if (remainingQs > 0)
+                    {
+                        SeqCountPerTopic++;
+                        remainingQs--;
+                    }
+                    questions = await _context.Questions.Where(q => q.Status == Status.Active && q.TopicId == Sitem.Id && q.QuestionType == QuestionTypes.SEQ && q.DifficultyLevel == setting.DifficultyLevel).OrderBy(o => Guid.NewGuid()).Take(SeqCountPerTopic).ToListAsync();
+                }
                 foreach (var Qitem in questions)
                 {
                     QnAs? varQnA = new();
@@ -181,13 +209,24 @@ namespace ExamSystem.Data.Services
             // for Long Exam Questions
             foreach (var Litem in topics)
             {
+                List<Question> questions = new();
                 if (setting.PairingScheme == true)
                 {
-                    setting.LongQsCount = Litem.LongQCount;
                     setting.LongQsMarks = Litem.LongQMarks;
+                    questions = await _context.Questions.Where(q => q.Status == Status.Active && q.TopicId == Litem.Id && q.QuestionType == QuestionTypes.Long_Question && q.DifficultyLevel == setting.DifficultyLevel).OrderBy(o => Guid.NewGuid()).Take(Litem.LongQCount).ToListAsync();
                 }
-                // obejctive qustions
-                var questions = await _context.Questions.Where(q => q.TopicId == Litem.Id && q.QuestionType == QuestionTypes.Long_Question && q.DifficultyLevel == setting.DifficultyLevel).OrderBy(o => Guid.NewGuid()).Take(setting.LongQsCount).ToListAsync();
+                else
+                {
+                    int totalTopics = topics.Count;
+                    int LongQCountPerTopic = setting.LongQsCount / totalTopics;
+                    int remainingQs = setting.LongQsCount % totalTopics;
+                    if (remainingQs > 0)
+                    {
+                        LongQCountPerTopic++;
+                        remainingQs--;
+                    }
+                    questions = await _context.Questions.Where(q => q.Status == Status.Active && q.TopicId == Litem.Id && q.QuestionType == QuestionTypes.Long_Question && q.DifficultyLevel == setting.DifficultyLevel).OrderBy(o => Guid.NewGuid()).Take(LongQCountPerTopic).ToListAsync();
+                }
                 foreach (var Qitem in questions)
                 {
                     QnAs? varQnA = new();

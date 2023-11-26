@@ -41,6 +41,10 @@
                                 @Html.HiddenFor(m=>m.QuizMcqs[q].QuestionID)
                                 @Html.HiddenFor(m=>m.QuizMcqs[q].OptionsQnA.Answer)
                                 @Html.HiddenFor(m=>m.QuizMcqs[q].OptionsQnA.AnswerL)
+                                @Html.HiddenFor(m=>m.QuizMcqs[q].OptionsQnA.Choice1)
+                                @Html.HiddenFor(m=>m.QuizMcqs[q].OptionsQnA.Choice2)
+                                @Html.HiddenFor(m=>m.QuizMcqs[q].OptionsQnA.Choice3)
+                                @Html.HiddenFor(m=>m.QuizMcqs[q].OptionsQnA.Choice4)
                                 @(q + 1):  @Model.QuizMcqs[q].QuestionText
                             </td>
                             <td colspan="2" dir="rtl" class="text-right">

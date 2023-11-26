@@ -61,7 +61,7 @@
                     </tr>
                     <tr style="margin:0px;">
                         <td style="align-content:center;margin:0px;">
-                            <partial style="margin:0px;">Passing Marks: @Model.Setting.PassingMarks</p>
+                            <partial style="margin:0px; color:red;">Passing Marks: @Model.Setting.PassingMarks</p>
                         </td>
                     </tr>
                 </table>
@@ -140,27 +140,9 @@
                     <td colspan="2" style="width:55%; text-align:left;">
                         @i:  @qitem.QuestionText
                     </td>
-                    <td style="font-weight:600; color:orangered; width:15%; margin-left:1px;">
-                        @if (qitem.OptionsQnA.Answer == "ChoiceTitle1" || qitem.OptionsQnA.AnswerL == "ChoiceTitleL1")
-                        {
-                            @qitem.OptionsQnA.Choice1
-                            <span dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important;">&nbsp;@qitem.OptionsQnA.ChoiceL1</span>
-                        }
-                        else if (qitem.OptionsQnA.Answer == "ChoiceTitle2" || qitem.OptionsQnA.AnswerL == "ChoiceTitleL2")
-                        {
-                            @qitem.OptionsQnA.Choice2
-                            <span dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important;">&nbsp;@qitem.OptionsQnA.ChoiceL2</span>
-                        }
-                        else if (qitem.OptionsQnA.Answer == "ChoiceTitle3" || qitem.OptionsQnA.AnswerL == "ChoiceTitleL3")
-                        {
-                            @qitem.OptionsQnA.Choice3
-                            <span dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important;">&nbsp;@qitem.OptionsQnA.ChoiceL3</span>
-                        }
-                        else if (qitem.OptionsQnA.Answer == "ChoiceTitle4" || qitem.OptionsQnA.AnswerL == "ChoiceTitleL4")
-                        {
-                            @qitem.OptionsQnA.Choice4
-                            <span dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important;">&nbsp;@qitem.OptionsQnA.ChoiceL4</span>
-                        }
+                    <td style="font-weight:600; color:darkblue; width:15%; margin-left:1px;">
+                            @qitem.OptionsQnA.Answer
+                            <span dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important;">&nbsp;@qitem.OptionsQnA.AnswerL</span>
                     </td>
                     <td colspan="2" style="width:45%; text-align:right;" dir="rtl">
                         @i: <span style="font-family:'Jameel Noori Nastaleeq' !important;">@qitem.QuestionTextL</span>

@@ -50,6 +50,7 @@ namespace ExamSystem.Data.ViewModels
         public string? CorrectAnswer { get; set; }              //
         public string? CorrectAnswerL { get; set; }             //
 
+        public int SelectedAnswer { get; set; }
 
         //metadata 
         [Display(Name = "Board Name:")]
