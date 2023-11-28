@@ -8,84 +8,59 @@
 
 <div class="container">
     <h2 style="text-align:center; color:red;"> All Subjects</h2>
-</div>
 
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div>
-                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-                {
-                    <a asp-controller="Subject" asp-action="Create" class="btn btn-primary float-right"> <i class="fas fa-plus-circle"></i> Add New Subject</a>
-                }
-                <a class="btn btn-secondary" asp-controller="Grade" asp-action="index"> <i class="fa fa-arrow-left"></i> Back</a>
-            </div>
-            <div class="card-header">
-                <h3 class="card-title">Manage Subjects</h3>
-            </div>
-            <!-- /.card-header -->
-            <div class="card-body table-responsive">
-                <table id="tblData" class="table table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Class</th>
-                            @if (User.IsInRole("Admin"))
-                            {
-                                <th>Code</th>
-                            }
-                            <th>Subject</th>
-                            <th>Status</th>
-                            <th>Description</th>
-                            <th>Topics</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div>
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                    {
+                        <a asp-controller="Subject" asp-action="Create" class="btn btn-primary float-right"> <i class="fas fa-plus-circle"></i> Add New Subject</a>
+                    }
+                    <a class="btn btn-secondary" asp-controller="Grade" asp-action="index"> <i class="fa fa-arrow-left"></i> Back</a>
+                </div>
+                <div class="card-header">
+                    <h3 class="card-title text-center">Manage Subjects</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div class="row">
                         @foreach (var item in Model.SubjectVm)
                         {
-                            <tr>
-                                <td>@(sno++)</td>
-                                <td>
-                                    <a asp-controller="Grade" asp-action="index">@Html.DisplayFor(Model => item.Grade.GradeText)</a>
-                                </td>
-                                @if (User.IsInRole("Admin"))
-                                {
-                                    <td>
-                                        @Html.DisplayFor(Model => item.Code)
-                                    </td>
-                                }
-                                <td><a asp-action="details" asp-route-id="@item.Id">@Html.DisplayFor(Model => item.SubjectText)</a></td>
-                                <td>
-                                    <span class="badge @(item.Status==Status.Active? "badge-success":"badge-danger")">
-                                        @Html.DisplayFor(modelItem => item.Status)
-                                    </span>
-                                    
-                                </td>
-                                <td>@Html.DisplayFor(Model => item.Description)</td>
-                                <td>@Html.DisplayFor(Model => item.Topic.Count)</td>
-                                <td>
-                                    @if (item.Status == Status.Active)
-                                    {
-                                        <a asp-controller="Topic" asp-action="TopicsList" asp-route-id="@item.Id" class="btn btn-primary"><i class="bi bi-pencil-square"></i> Manage Units</a>
-                                    }
-                                    @if (User.IsInRole("Admin"))
-                                    {
-                                        <a asp-controller="Subject" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary"><i class="bi bi-pencil-square"></i> Edit</a>
-                                        <a asp-controller="Subject" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger"><i class="bi bi-trash"></i> Delete</a>
-                                    }
-                                </td>
-
-                            </tr>
+                            <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+                                <div class="card">
+                                    <a href="@Url.Action("Details", new { id = item.Id })" class="card-link">
+                                        <img class="card-img-top" src="https://s3.eu-central-1.amazonaws.com/bootstrapbaymisc/blog/24_days_bootstrap/bologna-1.jpg" alt="Bologna">
+                                        <div class="card-body @((item.Status == Status.Active) ? "bg-primary" : "")">
+                                            <h4 class="card-title text-center">
+                                                @item.SubjectText
+                                            </h4>
+                                            <h6 class="card-subtitle mb-2 text-muted text-right">@item.Grade.GradeText</h6>
+                                            <p class="card-text"> @item.Description</p>
+                                            @if (item.Status == Status.Active)
+                                            {
+                                                <a class="btn  btn-primary" asp-controller="Topic" asp-action="TopicsList" asp-route-id="@item.Id"><i class="fas fa-pencil-square"></i> Chapters:@item.Topic.Count </a>
+                                            }
+                                            @if (User.IsInRole("Admin"))
+                                            {
+                                                <a class="btn btn-danger" asp-controller="Subject" asp-action="Delete" asp-route-id="@item.Id">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            }
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
                         }
-                    </tbody>
-                </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
             </div>
-            <!-- /.card-body -->
+            <!-- /.card -->
         </div>
-        <!-- /.card -->
+        <!-- /.col -->
     </div>
-    <!-- /.col -->
 </div>
 
 @section Scripts{

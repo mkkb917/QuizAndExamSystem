@@ -10,6 +10,9 @@ namespace ExamSystem.Models
         [Display(Name = "Class Name")]
         [StringLength(50, MinimumLength = 3, ErrorMessage = "TextLength must be between 3 and 50 characters")]
         public string? GradeText { get; set; }
+        //[Required(ErrorMessage = "Class Image is required")]
+        [Display(Name = "Class Image")]
+        public string? Image { get; set; } 
 
 
 

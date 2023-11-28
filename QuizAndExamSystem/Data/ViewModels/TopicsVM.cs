@@ -33,6 +33,8 @@ namespace ExamSystem.Data.ViewModels
         public int SubjectId { get; set; }
         [Display(Name = "Subject Name")]
         public string? SubjectText { get; set; }
+        [Display(Name = "Subject image")]
+        public string? Image { get; set; }
         [Display(Name = "User Name")]
         public string? user { get; set; }
         public List<Question>? Questions { get; set; }

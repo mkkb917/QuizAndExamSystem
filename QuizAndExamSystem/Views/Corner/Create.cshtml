@@ -33,7 +33,7 @@
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="form-group">
                             <label asp-for="FileName" class="control-label"> Select Image files only</label>
-                            <input asp-for="FileName" type="file" id="uploadBox" accept="file/pdf" multiple class="form-control" />
+                            <input asp-for="FileName" type="file" id="uploadBox" accept=".jpeg,.jpg" multiple class="form-control" />
                             <span asp-validation-for="FileName" class="text-danger"></span>
                         </div>
                         <div class="form-group">

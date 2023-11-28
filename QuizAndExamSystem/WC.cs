@@ -9,6 +9,9 @@ namespace ExamSystem
 
         // images path
         public static string ProfileImagePath = @"\images\profile\";
+        public static string GradeImagePath = @"\images\grade\";
+        public static string SubjectImagePath = @"\images\subject\";
+        public static string TopicImagePath = @"\images\topic\";
         public static string LogoPath =  @"\images\school\";
         public static string NotificationPath = @"\images\notification\";
         public static string QrCodePath = @"\images\qrcodes\";

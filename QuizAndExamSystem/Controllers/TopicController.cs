@@ -128,11 +128,12 @@ namespace ExamSystem.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var ObjTopic = await _service.GetByIdAsync(id);
+            var objquestion = await _service.GetAllQuestionsById(id);
             if (ObjTopic == null) return View("NotFound");
             var responce = new TopicsVM()
             {
                 Id = ObjTopic.Id,
-                Code =ObjTopic.Code,
+                Code = ObjTopic.Code,
                 TopicText = ObjTopic.TopicText,
                 Status = ObjTopic.Status,
                 SubjectId = ObjTopic.SubjectId,
@@ -140,7 +141,8 @@ namespace ExamSystem.Controllers
                 CreatedOn = ObjTopic.CreatedOn,
                 CreatedBy = ObjTopic.CreatedBy,
                 UpdatedOn = ObjTopic.UpdatedOn,
-                UpdatedBy = ObjTopic.UpdatedBy
+                UpdatedBy = ObjTopic.UpdatedBy,
+                Questions = objquestion,
             };
             //var QuestionCounts = await _service.GetAllTopicsById(id);
             //ViewBag.QuestionCount = QuestionCounts.Count();

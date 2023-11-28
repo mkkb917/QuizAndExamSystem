@@ -20,7 +20,7 @@
         <div class="card">
             <!-- /.card-header -->
             <div class="card-body table-responsive">
-                <form asp-action="Create">
+                <form asp-action="Create" method="post" enctype="multipart/form-data">
                     <div class="card-header">
                         <button type="submit" class="btn btn-success float-right"><i class="fas fa-floppy-disk"> </i> Save</button>
                         <a class="btn btn-secondary" asp-action="Index"> <i class="fas fa-arrow-back"></i> Back</a>
@@ -28,7 +28,11 @@
                     <input asp-for="CreatedBy" type="hidden" value="@User.Identity.Name" />
                     <input asp-for="CreatedOn" type="hidden" value="@DateTime.Now" />
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    
+                    <div class="form-group">
+                        <label asp-for="Image" class="control-label"></label>
+                        <input asp-for="Image" class="form-control" type="file" accept=".jpeg,.jpg,.png" />
+                        <span asp-validation-for="Image" class="text-danger"></span>
+                    </div>
                     <div class="form-group">
                         <label asp-for="Code" class="control-label"></label>
                         <input asp-for="Code" class="form-control" placeholder=" CS-15" />

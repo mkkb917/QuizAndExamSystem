@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ExamSystem.Models;
+using Microsoft.AspNetCore.Hosting;
+using ExamSystem.Extensions;
 
 namespace ExamSystem.Controllers
 {
@@ -13,14 +15,13 @@ namespace ExamSystem.Controllers
     public class GradeController : Controller
     {
         private readonly IGradeService _service;
-        private readonly AppDbContext _context;
-
-       
-
-        public GradeController(IGradeService service, AppDbContext context)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        //private readonly AppDbContext _context;
+        public GradeController(IGradeService service, IWebHostEnvironment webHostEnvironment)
         {
             _service = service;
-            _context = context;
+            _webHostEnvironment = webHostEnvironment;
+            //_context = context;
         }
 
         // List all grades
@@ -58,6 +59,19 @@ namespace ExamSystem.Controllers
                 TempData["error"] = "Grade Already Exists with this name";
                 return View(grade);
             }
+            // check weather the profile image is updated or uploaded
+            var files = HttpContext.Request.Form.Files;
+            string webRootPath = _webHostEnvironment.WebRootPath;
+            string Upload = webRootPath + WC.GradeImagePath;
+
+            // pass the file name, path and file to uploader
+            string fileExtension = Path.GetExtension(files[0].FileName);
+            string fileName = Path.GetFileName(files[0].FileName);
+
+            // pass the files object to funtion to save file and create thumbnail in directory
+            var uploadImage = FileUploadAndConvert.UploadFileAndConvertToImage(files, Upload, fileName);
+            
+            grade.Image = uploadImage;
             grade.CreatedOn = DateTime.Now;
             grade.CreatedBy = User.Identity.Name;
 

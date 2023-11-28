@@ -8,6 +8,9 @@ namespace ExamSystem.Models
         [Display(Name = "Unit Name")]
 
         public string? TopicText { get; set; }
+        [Required(ErrorMessage = "Topic Image is required")]
+        [Display(Name = "Topic Image")]
+        public string? Image { get; set; }
 
         //properties for pairing scheme.
         public int MCQCount { get; set; }

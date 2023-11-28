@@ -10,62 +10,62 @@
 
 <div class="container">
     <h2 style="text-align:center; color:red;">Classes</h2>
-</div>
-
-
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div>
-                @if (User.IsInRole("Admin"))
-                {
-                    <a asp-controller="Grade" asp-action="Create" class="btn btn-primary float-right"><i class="fas fa-plus-circle"></i>Add New Class</a>
-                }
-            </div>
-            <!-- /.card-header -->
-            <div class="card-body ">
-                <div class="row">
-
-                    @foreach (var item in Model)
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div>
+                    @if (User.IsInRole("Admin"))
                     {
-                        <div class="col-12 col-sm-8 col-md-6 col-lg-4">
-                            <div class="card">
-                                <a href="@Url.Action("Details", new { id = item.Id })" class="card-link">
-                                    <img class="card-img-top" src="https://s3.eu-central-1.amazonaws.com/bootstrapbaymisc/blog/24_days_bootstrap/bologna-1.jpg" alt="Bologna">
-                                    <div class="card-body @((item.Status == Status.Active) ? "bg-primary" : "")">
-                                        <h4 class="card-title text-center">
-                                            @item.GradeText
-                                        </h4>
-                                        <h6 class="card-subtitle mb-2 text-muted"></h6>
-                                        <p class="card-text"> @item.Description</p>
-                                        @if (item.Status == Status.Active)
-                                        {
-                                            <a class="btn  btn-primary" asp-controller="Subject" asp-action="SubjectsList" asp-route-id="@item.Id"><i class="fas fa-pencil-square"></i> Subjects:@item.Subject.Count </a>
-                                        }
-                                        @if (User.IsInRole("Admin"))
-                                        {
-                                            <a class="btn btn-danger" asp-controller="Grade" asp-action="Delete" asp-route-id="@item.Id">
-                                                <i class="fas fa-trash"></i>
-                                            </a>
-                                        }
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
+                        <a asp-controller="Grade" asp-action="Create" class="btn btn-primary float-right"><i class="fas fa-plus-circle"></i>Add New Class</a>
                     }
+                </div>
+                <div class="card-header">
+                    <h3 class="card-title">Manage Classes</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body ">
+                    <div class="row">
 
+                        @foreach (var item in Model)
+                        {
+                            <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+                                <div class="card">
+                                    <a href="@Url.Action("Details", new { id = item.Id })" class="card-link">
+                                        <img class="card-img-top" src="https://s3.eu-central-1.amazonaws.com/bootstrapbaymisc/blog/24_days_bootstrap/bologna-1.jpg" alt="Bologna">
+                                        <div class="card-body @((item.Status == Status.Active) ? "bg-primary" : "")">
+                                            <h4 class="card-title text-center">
+                                                @item.GradeText
+                                            </h4>
+                                            <h6 class="card-subtitle mb-2 text-muted"></h6>
+                                            <p class="card-text"> @item.Description</p>
+                                            @if (item.Status == Status.Active)
+                                            {
+                                                <a class="btn  btn-primary" asp-controller="Subject" asp-action="SubjectsList" asp-route-id="@item.Id"><i class="fas fa-pencil-square"></i> Subjects:@item.Subject.Count </a>
+                                            }
+                                            @if (User.IsInRole("Admin"))
+                                            {
+                                                <a class="btn btn-danger" asp-controller="Grade" asp-action="Delete" asp-route-id="@item.Id">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            }
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
                 </div>
             </div>
+            <!-- /.card-body -->
         </div>
-        <!-- /.card-body -->
+        <!-- /.card -->
     </div>
-    <!-- /.card -->
-</div>
-<!-- /.col -->
+    <!-- /.col -->
 </div>
 
 @section Scripts{
     <script>
-        
+
     </script>
     }
