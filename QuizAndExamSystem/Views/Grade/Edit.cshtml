@@ -27,6 +27,9 @@
             </div>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" value="@Model.Id" />
+            <input type="hidden" value="@Model.CreatedBy" />
+            <input type="hidden" value="@Model.CreatedOn" />
+
             <div class="form-group">
                 <label asp-for="Code" class="control-label"></label>
                 <input asp-for="Code" class="form-control" />
@@ -40,15 +43,9 @@
             <div class="form-group">
                 <label asp-for="Status" class="control-label"></label>
                 @{
-                    if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-                    {
-                        <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()"></select>
-                    }
-                    else
-                    {
-                        <input asp-for="Status" value="1" type="number" class="form-control" disabled="disabled" />
-                    }
+                    var selectList = User.IsInRole("Admin") ? Html.GetEnumSelectList<Status>() : new SelectList(Enum.GetValues(typeof(Status)).Cast<Status>().Where(s => s == Status.Inactive));
                 }
+                <select asp-for="Status" class="form-control" asp-items="selectList"></select>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
             <div class="form-group">

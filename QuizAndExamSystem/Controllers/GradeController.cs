@@ -44,7 +44,7 @@ namespace ExamSystem.Controllers
 
         //Post: Grade/Create            create a new entry into database
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Code,GradeText,Description,Status")]Grade grade)
+        public async Task<IActionResult> Create(Grade grade)
         {
              if (!ModelState.IsValid)
                 {
@@ -52,10 +52,15 @@ namespace ExamSystem.Controllers
                     return View(grade);
                 }
             // check weather the record already exist or not
-            //var checkgrade = _service.where(g => g.GradeText == grade.GradeText);
+            bool checkgrade = await _service.SearchGrade(grade.GradeText.ToString());
+            if(checkgrade)
+            {
+                TempData["error"] = "Grade Already Exists with this name";
+                return View(grade);
+            }
             grade.CreatedOn = DateTime.Now;
             grade.CreatedBy = User.Identity.Name;
-            
+
             await _service.AddAsync(grade);
             return RedirectToAction(nameof(Index));
         }
@@ -79,7 +84,7 @@ namespace ExamSystem.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id,[Bind("Id,Code,GradeText,Status,Description,CreatedOn,CreatedBy")]Grade grade)
+        public async Task<IActionResult> Edit(int id,Grade grade)  //[Bind("Id,Code,GradeText,Status,Description,CreatedOn,CreatedBy")]
         {
             if(id != grade.Id) return View("NotFound");
             if (!ModelState.IsValid)

@@ -20,16 +20,26 @@ namespace ExamSystem.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ISubjectService _SubjectService;
+        private readonly IUploadsService _uploadsService;
+        private readonly IQuestionService _questionService;
+        private readonly IBookService _bookService;
+        private readonly ITopicService _topicService;
+        private readonly IQuizService _quizService;
         private readonly IPdfService _PdfService;
 
 
-        public DashboardController(IPdfService PdfService, ISubjectService SubjectService, ISEDService SedService, Data.AppDbContext context, IQuestionService service, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment)
+        public DashboardController( IUploadsService uploadsService,IQuestionService questionService, IBookService bookService,ITopicService topicService, IQuizService quizService, IPdfService PdfService, ISubjectService SubjectService, ISEDService SedService, Data.AppDbContext context, IQuestionService service, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment)
         {
 
             _context = context;
             _QService = service;
             _SedService = SedService;
             _SubjectService = SubjectService;
+            _uploadsService = uploadsService;
+            _questionService = questionService;
+            _bookService = bookService;
+            _topicService = topicService;
+            _quizService = quizService;
             _PdfService = PdfService;
             _userManager = userManager;
             _webHostEnvironment = webHostEnvironment;

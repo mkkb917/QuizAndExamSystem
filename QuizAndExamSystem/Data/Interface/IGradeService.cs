@@ -7,5 +7,6 @@ namespace ExamSystem.Data.Interface
     {
         Task<List<Subject>> GetSubjectById(int Id);
         Task<List<Subject>?> GetSubjectByGrade(Grade item);
+        Task<bool> SearchGrade(string searchTerm);
     }   
 }

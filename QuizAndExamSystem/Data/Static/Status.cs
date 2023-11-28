@@ -7,7 +7,7 @@ namespace ExamSystem.Data.Static
         [Display(Name = "Active")]
         Active = 0,
         [Display(Name = "Pending")]
-        Inactive,
+        Inactive = 1,
     }
     //public static class Status
     //{

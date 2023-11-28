@@ -1,4 +1,4 @@
-﻿@using Newtonsoft.Json;
+﻿@*@using Newtonsoft.Json;
 @model QuizViewVM
 @{
     ViewData["Title"] = " Quiz";
@@ -23,12 +23,12 @@
     </div>
     @*    <div class="row">
     <partial name="_QuizPartialView" model="Model" />
-    </div>*@
+    </div>
     <!-- Display Question -->
     <div class="question-container">
         <div class="form-fieldset">
-            @*@for (int q = 0; q < Model.QuizMcqs.Count; q++)
-            {*@
+            @for (int q = 0; q < Model.QuizMcqs.Count; q++)
+            {
             <div class="form-fieldset">
                 <table class=" table table-bordered justify-content-end">
                     <!-- Objective Paper Part-->
@@ -191,3 +191,4 @@
     }
 
 
+*@

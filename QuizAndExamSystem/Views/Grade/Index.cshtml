@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
     int sno = 1;
-    
+
 }
 
 
@@ -17,81 +17,55 @@
     <div class="col-12">
         <div class="card">
             <div>
-                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                @if (User.IsInRole("Admin"))
                 {
                     <a asp-controller="Grade" asp-action="Create" class="btn btn-primary float-right"><i class="fas fa-plus-circle"></i>Add New Class</a>
                 }
             </div>
             <!-- /.card-header -->
-            <div class="card-body table-responsive">
-                <table id="tblData" class="table table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th class="th-sm"> @Html.DisplayNameFor(model => model.Code) </th>
-                            <th class="th-sm"> @Html.DisplayNameFor(model => model.GradeText) </th>
-                            <th class="th-sm"> @Html.DisplayNameFor(model => model.Status) </th>
-                            <th class="th-sm"> @Html.DisplayNameFor(model => model.Description) </th>
-                            <th class="th-sm"> Subjects </th>
-                            <th class="th-sm">Actions</th>
+            <div class="card-body ">
+                <div class="row">
 
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <th>@(sno++)</th>
-                                <td> @Html.DisplayFor(modelItem => item.Code) </td>
-                                <td><a asp-action="Details" asp-route-id="@item.Id"> @Html.DisplayFor(modelItem => item.GradeText) </a> </td>
-                                <td>
-                                    @if (item.Status == Status.Active)
-                                    {
-                                        <span class="badge badge-success">
-                                            @Html.DisplayFor(modelItem => item.Status)
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge badge-danger">
-                                            @Html.DisplayFor(modelItem => item.Status)
-                                        </span>
-                                    }
-                                </td>
-                                
-                                
-                                <td> @Html.DisplayFor(modelItem => item.Description) </td>
-                                <td> @Html.DisplayFor(modelItem => item.Subject.Count) </td>
-                                <td>
-                                    @if (item.Status == Status.Active)
-                                    {
-                                        <a class="btn  btn-primary" asp-controller="Subject" asp-action="SubjectsList" asp-route-id="@item.Id"><i class="fas fa-pencil-square"></i> Manage Subjects </a>
-                                    }
-                                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-                                    {
-                                        <a class="btn  btn-primary" asp-controller="Grade" asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-pencil-square"></i> Edit </a>
-                                        <a class="btn  btn-danger" asp-controller="Grade" asp-action="Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i> Delete </a>
-                                    }
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                    @foreach (var item in Model)
+                    {
+                        <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+                            <div class="card">
+                                <a href="@Url.Action("Details", new { id = item.Id })" class="card-link">
+                                    <img class="card-img-top" src="https://s3.eu-central-1.amazonaws.com/bootstrapbaymisc/blog/24_days_bootstrap/bologna-1.jpg" alt="Bologna">
+                                    <div class="card-body @((item.Status == Status.Active) ? "bg-primary" : "")">
+                                        <h4 class="card-title text-center">
+                                            @item.GradeText
+                                        </h4>
+                                        <h6 class="card-subtitle mb-2 text-muted"></h6>
+                                        <p class="card-text"> @item.Description</p>
+                                        @if (item.Status == Status.Active)
+                                        {
+                                            <a class="btn  btn-primary" asp-controller="Subject" asp-action="SubjectsList" asp-route-id="@item.Id"><i class="fas fa-pencil-square"></i> Subjects:@item.Subject.Count </a>
+                                        }
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <a class="btn btn-danger" asp-controller="Grade" asp-action="Delete" asp-route-id="@item.Id">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        }
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    }
+
+                </div>
             </div>
-            <!-- /.card-body -->
         </div>
-        <!-- /.card -->
-
+        <!-- /.card-body -->
     </div>
-    <!-- /.col -->
+    <!-- /.card -->
+</div>
+<!-- /.col -->
 </div>
 
 @section Scripts{
     <script>
-        // search bar
-        $(document).ready(function () {
-            $('#tblData').DataTable();
-            $('.dataTables_length').addClass('bs-select');
-        });
+        
     </script>
     }

@@ -34,16 +34,9 @@
                         <div class="form-group">
                             <label asp-for="GradeId" class="control-label"></label>
                             @{
-                                if (TempData["GradeId"] != null)
-                                {
-                                    <input asp-for="GradeId" value="@TempData["GradeId"]" class="form-control" readonly="readonly" />
-                                }
-                                else
-                                {
-                                    <select asp-for="GradeId" class="form-control" asp-items="ViewBag.Grades"></select>
-                                }
+                                var selectgrade = TempData["GradeId"] != null ? new List<SelectListItem> { new SelectListItem { Text = TempData["GradeId"].ToString(), Value = TempData["GradeId"].ToString() } } : ViewBag.Grades.ToString();
                             }
-
+                            <select asp-for="GradeId" class="form-control" asp-items="selectgrade"></select>
                         </div>
                         <div class="form-group">
                             <label asp-for="Code" class="control-label"></label>
@@ -58,15 +51,9 @@
                         <div class="form-group">
                             <label asp-for="Status" class="control-label"></label>
                             @{
-                                if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-                                {
-                                    <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()"><option value="">---Select---</option></select>
-                                }
-                                else
-                                {
-                                    <input asp-for="Status" value="1" type="number" class="form-control" disabled="disabled" />
-                                }
+                                var selectList = User.IsInRole("Admin") ? Html.GetEnumSelectList<Status>() : new SelectList(Enum.GetValues(typeof(Status)).Cast<Status>().Where(s => s == Status.Inactive));
                             }
+                            <select asp-for="Status" class="form-control" asp-items="selectList"></select>
                             <span asp-validation-for="Status" class="text-danger"></span>
                         </div>
                         <div class="form-group">

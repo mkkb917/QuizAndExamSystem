@@ -42,9 +42,7 @@
                         {
                             <tr>
                                 <td>
-                                    @(
-                                        sno++
-                                        )
+                                    @(sno++)
                                 </td>
                                 @if (User.IsInRole("Admin"))
                                 {
@@ -52,18 +50,9 @@
                                 }
                                 <td><a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(Model => item.SubjectText)</a></td>
                                 <td>
-                                    @if (item.Status == Status.Active)
-                                    {
-                                        <span class="badge badge-success">
-                                            @Html.DisplayFor(modelItem => item.Status)
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge badge-danger">
-                                            @Html.DisplayFor(modelItem => item.Status)
-                                        </span>
-                                    }
+                                    <span class="badge @(item.Status==Status.Active? "badge-success":"badge-danger")">
+                                        @Html.DisplayFor(modelItem => item.Status)
+                                    </span>
                                 </td>
                                 <td>@Html.DisplayFor(Model => item.Description)</td>
                                 <td>@Html.DisplayFor(Model => item.Topic.Count)</td>

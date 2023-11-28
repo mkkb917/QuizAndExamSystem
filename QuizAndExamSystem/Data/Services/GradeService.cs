@@ -28,5 +28,11 @@ namespace ExamSystem.Data.Services
             var responce = await _context.Subjects.Where(s => s.Grade == item).ToListAsync();
             return responce;
         }
+        public async Task<bool>SearchGrade(string searchTerm)
+        {
+            var responce = await _context.Grades.Where(s=>s.GradeText==searchTerm).FirstOrDefaultAsync();
+            if (responce!=null) return true;
+            return false;
+        }
     }
 }
