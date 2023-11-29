@@ -28,6 +28,12 @@
                             @Html.DisplayFor(model => model.Id)
                         </td>
                         <th class="th-sm col-sm-4">
+                            @Html.DisplayNameFor(model => model.Image)
+                        </th>
+                        <td class="col-sm-8">
+                            <img src="@WC.GradeImagePath@Model.Image" />
+                        </td>
+                        <th class="th-sm col-sm-4">
                             @Html.DisplayNameFor(model => model.Code)
                         </th>
                         <td class="col-sm-8">

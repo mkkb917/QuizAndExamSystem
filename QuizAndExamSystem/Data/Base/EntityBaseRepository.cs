@@ -37,7 +37,7 @@ namespace ExamSystem.Data.Base
 
         public async Task<T> GetByIdAsync(int id)
         {
-            var result = await _context.Set<T>().FirstOrDefaultAsync(n => n.Id == id);
+            var result = await _context.Set<T>().AsNoTracking().FirstOrDefaultAsync(n => n.Id == id);
             return result;
         }
 

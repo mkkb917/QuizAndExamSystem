@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ExamSystem.Models;
 using Microsoft.AspNetCore.Hosting;
 using ExamSystem.Extensions;
+using NuGet.Packaging.Signing;
 
 namespace ExamSystem.Controllers
 {
@@ -15,12 +16,12 @@ namespace ExamSystem.Controllers
     public class GradeController : Controller
     {
         private readonly IGradeService _service;
-        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly string webRootPath;
         //private readonly AppDbContext _context;
         public GradeController(IGradeService service, IWebHostEnvironment webHostEnvironment)
         {
             _service = service;
-            _webHostEnvironment = webHostEnvironment;
+            webRootPath = webHostEnvironment.WebRootPath;
             //_context = context;
         }
 
@@ -47,30 +48,34 @@ namespace ExamSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Grade grade)
         {
-             if (!ModelState.IsValid)
-                {
-                    TempData["error"] = "Invalid Model state";
-                    return View(grade);
-                }
+            if (!ModelState.IsValid)
+            {
+                TempData["error"] = "Invalid Model state";
+                return View(grade);
+            }
             // check weather the record already exist or not
             bool checkgrade = await _service.SearchGrade(grade.GradeText.ToString());
-            if(checkgrade)
+            if (checkgrade)
             {
                 TempData["error"] = "Grade Already Exists with this name";
                 return View(grade);
             }
+
             // check weather the profile image is updated or uploaded
             var files = HttpContext.Request.Form.Files;
-            string webRootPath = _webHostEnvironment.WebRootPath;
-            string Upload = webRootPath + WC.GradeImagePath;
 
             // pass the file name, path and file to uploader
-            string fileExtension = Path.GetExtension(files[0].FileName);
-            string fileName = Path.GetFileName(files[0].FileName);
-
-            // pass the files object to funtion to save file and create thumbnail in directory
-            var uploadImage = FileUploadAndConvert.UploadFileAndConvertToImage(files, Upload, fileName);
             
+            string fileExtension = Path.GetExtension(files[0].FileName);
+
+            //check the extension for image files only
+            if (!fileExtension.Equals(".jpeg") && !fileExtension.Equals(".jpg") && !fileExtension.Equals(".png"))
+            {
+                TempData["error"] = "Invlaid Image format";
+                return View(grade);
+            }
+            // pass the files object to funtion to save file and create thumbnail in directory
+            var uploadImage = _service.DeleteOldAndUploadNewFile(files, null);
             grade.Image = uploadImage;
             grade.CreatedOn = DateTime.Now;
             grade.CreatedBy = User.Identity.Name;
@@ -98,17 +103,30 @@ namespace ExamSystem.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id,Grade grade)  //[Bind("Id,Code,GradeText,Status,Description,CreatedOn,CreatedBy")]
+        public async Task<IActionResult> Edit(int id, Grade grade)  //[Bind("Id,Code,GradeText,Status,Description,CreatedOn,CreatedBy")]
         {
-            if(id != grade.Id) return View("NotFound");
+            if (id != grade.Id) return View("NotFound");
             if (!ModelState.IsValid)
             {
                 TempData["error"] = "Invalid Model state";
                 return View(grade);
             }
+            var ObjGrade = await _service.GetByIdAsync(id);
+
+            // check weather the profile image is updated or uploaded
+            var files = HttpContext.Request.Form.Files;
+            string fileExtension = Path.GetExtension(files[0].FileName);
+            if (!fileExtension.Equals(".jpeg") && !fileExtension.Equals(".jpg") && !fileExtension.Equals(".png"))
+            {
+                TempData["error"] = "Invalid Image format";
+                return View(grade);
+            }
+            //call the function
+            var imageName = _service.DeleteOldAndUploadNewFile(files, ObjGrade.Image.ToString());
+            grade.Image = imageName;
             grade.UpdatedBy = User.Identity.Name;
             grade.UpdatedOn = DateTime.Now.Date;
-            await _service.UpdateAsync(id,grade);
+            await _service.UpdateAsync(id, grade);
             return RedirectToAction(nameof(Index));
         }
 
@@ -126,7 +144,9 @@ namespace ExamSystem.Controllers
         {
             var ObjGrade = await _service.GetByIdAsync(id);
             if (ObjGrade == null) return View("NotFound");
-
+            //delete the file 
+             _service.DeleteFile(ObjGrade.Image.ToString());
+            //delete the record
             await _service.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }

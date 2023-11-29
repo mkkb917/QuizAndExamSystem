@@ -132,7 +132,6 @@
     <Folder Include="wwwroot\files\upload\books\" />
     <Folder Include="wwwroot\files\upload\notes\" />
     <Folder Include="wwwroot\files\upload\pastpapers\" />
-    <Folder Include="wwwroot\images\grade\" />
     <Folder Include="wwwroot\images\topic\" />
     <Folder Include="wwwroot\images\subject\" />
     <Folder Include="wwwroot\images\qrcodes\" />

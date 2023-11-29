@@ -9,7 +9,7 @@ namespace ExamSystem.Extensions
     // and upload to corresponding folder.
     public static class FileUploadAndConvert
     {
-        public static string? UploadFileAndConvertToImage(IFormFileCollection files, string path,string name)
+        public static string UploadFileAndConvertToImage(IFormFileCollection files, string path,string name)
         {
             if (files != null)
             {
@@ -40,36 +40,17 @@ namespace ExamSystem.Extensions
 
                     //Save the image as a JPEG file
                     image.Save(Path.Combine(path, string.Format("{0}.jpeg", name)));
+                    return name;
                 }
-                else if (fileExtension == ".jpg" || fileExtension == ".jpeg" || fileExtension == ".png")
+                else
                 {
-                    var oldfile = Path.Combine(path, name + fileExtension);
-
-                    try
-                    {
-                        // delete old file if exist
-                        if (System.IO.File.Exists(oldfile))
-                        {
-                            System.IO.File.Delete(oldfile);
-                        }
-                        //copy new file to local storage
-                        using (var filePicstream = new FileStream(Path.Combine(path, name + fileExtension), FileMode.Create))
-                        {
-                            files[0].CopyTo(filePicstream);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        // Handle exceptions (e.g., log, show user-friendly message)
-                        Console.WriteLine("Error: " + ex.Message);
-                        // Optionally, rollback any changes made
-                    }
+                    //do some thing else
                 }
-                return name;
+                return name+ fileExtension;
             }
             else
             {
-                return null;
+                return name = "";
             }
         }
 

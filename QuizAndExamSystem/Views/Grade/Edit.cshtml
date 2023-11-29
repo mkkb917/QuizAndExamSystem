@@ -20,7 +20,7 @@
     @*<div class="card-header"></div>*@
     <!-- /.card-header -->
     <div class="card-body table-responsive">
-        <form asp-controller="Grade" asp-action="Edit">
+        <form asp-controller="Grade" asp-action="Edit" method="post" enctype="multipart/form-data">
             <div>
                 <input type="submit" value="Update" class="btn btn-success float-right" />
                 <a asp-action="index" class="btn btn-secondary"> <i class="fa fa-arrow-left"></i> Back</a>
@@ -30,6 +30,11 @@
             <input type="hidden" value="@Model.CreatedBy" />
             <input type="hidden" value="@Model.CreatedOn" />
 
+            <div class="form-group">
+                <label asp-for="Image" class="control-label">Select Image</label>
+                <input asp-for="Image" class="form-control" type="file" accept=".jpeg,.jpg,.png" />
+                <span asp-validation-for="Image" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="Code" class="control-label"></label>
                 <input asp-for="Code" class="form-control" />
