@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections;
 using System.Collections.Generic;
 using ExamSystem.Models;
+using System.Diagnostics;
 
 namespace ExamSystem.Controllers
 {
@@ -16,7 +17,7 @@ namespace ExamSystem.Controllers
     {
         private readonly ISubjectService _service;
 
-        public SubjectController(ISubjectService service) 
+        public SubjectController(ISubjectService service)
         {
             _service = service;
         }
@@ -34,7 +35,7 @@ namespace ExamSystem.Controllers
 
             var objSubjectVm = new SubjectsIndexVM();
 
-            objSubjectVm.SubjectVm = (List<Subject>?) await _service.GetAllAsync();
+            objSubjectVm.SubjectVm = (List<Subject>?)await _service.GetAllAsync();
             if (objSubjectVm == null) return View("NotFound");
             foreach (var item in objSubjectVm.SubjectVm)
             {
@@ -49,7 +50,7 @@ namespace ExamSystem.Controllers
 
         public async Task<IActionResult> SubjectsList(int id)
         {
-            
+
             var objSubjectVm = new SubjectsIndexVM();
 
             objSubjectVm.SubjectVm = await _service.GetAllSubjectsById(id);
@@ -75,9 +76,11 @@ namespace ExamSystem.Controllers
             }
             else
             {
+
                 var GradesListData = await _service.GetGradesList();
                 ViewBag.Grades = new SelectList(GradesListData.Grades, "Id", "GradeText");
             }
+
             return View();
         }
 
@@ -92,6 +95,25 @@ namespace ExamSystem.Controllers
 
                 return View(subject);
             }
+            // check weather the profile image is updated or uploaded
+            var files = HttpContext.Request.Form.Files;
+            if (files.Count == 0)
+            {
+                TempData["error"] = "Image not attached";
+                return View(subject);
+            }
+            // pass the file name, path and file to uploader
+
+            string fileExtension = Path.GetExtension(files[0].FileName);
+            //check the extension for image files only
+            if (!fileExtension.Equals(".jpeg") && !fileExtension.Equals(".jpg") && !fileExtension.Equals(".png"))
+            {
+                TempData["error"] = "Invlaid Image format";
+                return View(subject);
+            }
+            // pass the files object to funtion to save file and create thumbnail in directory
+            var uploadImage = _service.DeleteOldAndUploadNewFile(files, null);
+            subject.Image = uploadImage;
             await _service.AddNewSubject(subject);
             return RedirectToAction("SubjectsList", new { @id = subject.GradeId });
         }
@@ -108,6 +130,7 @@ namespace ExamSystem.Controllers
                 Id = ObjSubject.Id,
                 SubjectText = ObjSubject.SubjectText,
                 GradeId = ObjSubject.GradeId,
+                Image = ObjSubject.Image,
                 Description = ObjSubject.Description,
                 CreatedOn = ObjSubject.CreatedOn,
                 CreatedBy = ObjSubject.CreatedBy,
@@ -128,6 +151,26 @@ namespace ExamSystem.Controllers
                 ViewBag.Grades = new SelectList(GradesListData.Grades, "Id", "GradeText");
                 return View(subject);
             }
+            var ObjSubject = await _service.GetByIdAsync(id);
+
+            // check weather the profile image is updated or uploaded
+            var files = HttpContext.Request.Form.Files;
+            if (files.Count > 0) //file is attached
+            {
+                string fileExtension = Path.GetExtension(files[0].FileName);
+                if (!fileExtension.Equals(".jpeg") && !fileExtension.Equals(".jpg") && !fileExtension.Equals(".png"))
+                {
+                    TempData["error"] = "Invalid Image format";
+                    return View(subject);
+                }
+                //call the function
+                var imageName = _service.DeleteOldAndUploadNewFile(files, ObjSubject.Image.ToString());
+                subject.Image = imageName;
+            }
+            else
+            {
+                subject.Image = ObjSubject.Image;
+            }
             await _service.UpdateSubject(id, subject);
             return RedirectToAction(nameof(SubjectsList), new { @id = subject.GradeId });
         }
@@ -137,14 +180,16 @@ namespace ExamSystem.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var ObjSubject = await _service.GetByIdAsync(id);
+            var topicslist = await _service.GetAllTopicsById(id);
             if (ObjSubject == null) return View("NotFound");
             var responce = new SubjectsVM()
             {
                 Id = ObjSubject.Id,
                 SubjectText = ObjSubject.SubjectText,
                 GradeId = ObjSubject.GradeId,
-                Code= ObjSubject.Code,
-                Status= ObjSubject.Status,
+                Code = ObjSubject.Code,
+                Topics = topicslist,
+                Status = ObjSubject.Status,
                 Description = ObjSubject.Description,
                 CreatedOn = ObjSubject.CreatedOn,
                 CreatedBy = ObjSubject.CreatedBy,
@@ -174,6 +219,9 @@ namespace ExamSystem.Controllers
         {
             var ObjSubject = await _service.GetByIdAsync(id);
             if (ObjSubject == null) return View("NotFound");
+            //delete the file 
+            _service.DeleteFile(ObjSubject.Image.ToString());
+            //delete the record
             await _service.DeleteAsync(id);
             return RedirectToAction(nameof(SubjectsList), new { @id = gradeId });
         }

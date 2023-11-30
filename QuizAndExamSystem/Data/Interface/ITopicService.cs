@@ -13,5 +13,7 @@ namespace ExamSystem.Data.Interface
         Task AddNewTopic(TopicsVM data);
         Task UpdateTopic(int Id, TopicsVM data);
 
+        string DeleteOldAndUploadNewFile(IFormFileCollection files, string? oldFile);
+        void DeleteFile(string fileName);
     }
 }

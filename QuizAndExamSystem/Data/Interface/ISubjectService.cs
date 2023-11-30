@@ -16,5 +16,8 @@ namespace ExamSystem.Data.Interface
         Task UpdateSubject(int Id, SubjectsVM data);
         Task DeleteSubject(int id);
 
+        string DeleteOldAndUploadNewFile(IFormFileCollection files, string? oldFile);
+        void DeleteFile(string fileName);
+
     }
 }

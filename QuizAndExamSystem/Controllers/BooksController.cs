@@ -149,7 +149,7 @@ namespace ExamSystem.Controllers
         // GET: BooksController/Approve
         public async Task<ActionResult> Approve()
         {
-            Status _status = Status.Inactive;
+            Status _status = Status.Pending;
             var obj = await _service.GetAllBooksByStatus(_status);
             
             return View(obj);

@@ -15,7 +15,7 @@
             </div>
             <!-- /.card-header -->
             <div class="card-body table-responsive">
-                <form asp-action="Create">
+                <form asp-action="Create" method="post" enctype="multipart/form-data">
                     <table id="tblData" class="table table-bordered table-hover">
                         <div class="form-group">
                             @*<input type="submit" value="Create" class="btn btn-primary float-right" />*@
@@ -46,6 +46,11 @@
                             }
                         </div>
                         <div class="form-group">
+                            <label asp-for="Image" class="control-label">Select Image</label>
+                            <input asp-for="Image" class="form-control" type="file" accept=".jpeg,.jpg,.png" />
+                            <span asp-validation-for="Image" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
                             <label asp-for="Code" class="control-label"></label>
                             <input asp-for="Code" class="form-control" />
                             <span asp-validation-for="Code" class="text-danger"></span>
@@ -58,7 +63,7 @@
                         <div class="form-group">
                             <label asp-for="Status" class="control-label"></label>
                             @{
-                                var selectList = User.IsInRole("Admin") ? Html.GetEnumSelectList<Status>() : new SelectList(Enum.GetValues(typeof(Status)).Cast<Status>().Where(s => s == Status.Inactive));
+                                var selectList = User.IsInRole("Admin") ? Html.GetEnumSelectList<Status>() : new SelectList(Enum.GetValues(typeof(Status)).Cast<Status>().Where(s => s == Status.Pending));
                             }
                             <select asp-for="Status" class="form-control" asp-items="selectList"></select>
                             <span asp-validation-for="Status" class="text-danger"></span>

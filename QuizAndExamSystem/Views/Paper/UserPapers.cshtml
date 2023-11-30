@@ -26,15 +26,24 @@
                                 <label class="control-label">Choose Subject</label>
                                 <select id="SubjectDDL" name="SubjectDDL" onconchange="selectedText" class="form-control"> <option selected disabled>---Select Subject---</option> </select>
                             </div>
-                            @*<div class="col-2">
-                    <label class="control-label">Subject Teacher Name</label>
-                    <input name="TeacherName" type="text" class="form-control" />
-                    </div>*@
                             <div class="col-lg-3 col-md-6 col-sm-12 col-12">
                                 <label class="control-label">Choose Paper (conduct) Date </label>
                                 <input name="PaperDate" type="date" class="form-control" min="@System.DateTime.Today" max="@System.DateTime.Today.AddDays(90)" />
                             </div>
-                            <div class="col-lg-3 col-md-6 col-sm-12 col-12 d-grid gap-2 mx-auto">
+                            <div class="col-lg-3 col-md-6 col-sm-12 col-12">
+                                <label class="control-label" for="Advance">Premium paper generation</label>
+                                <input type="checkbox" id="Advance" name="Advance" class="form-control" value="true" />
+                            </div>
+                            @*<div class="col-lg-3 col-md-6 col-sm-12 col-12">
+                                <label class="control-label">Choose Topics (optional) </label>
+                                <select id="TopicDDL" name="TopicDDL" onconchange="selectedText" class="form-control"> <option selected disabled>---Select Topics---</option> </select>
+                            </div>*@
+                            <div class="col-lg-10 col-md-9 col-sm-12 col-12">
+                                <table id="tableUnits" class="table table-responsive bordered">
+                                <!-- Table is generated dynamically using AJAX function -->
+                                </table>
+                            </div>
+                            <div class="col-lg-2 col-md-3 col-sm-12 col-12 d-grid gap-2 mx-auto">
                                 <button type="submit" class="btn btn-success btn-lg float-right mt-4">Generate Paper</button>
                             </div>
                         </div>
@@ -126,42 +135,57 @@ else
 
 @section Scripts{
     <script>
-        // search bar
         $(document).ready(function () {
+            // Hide the table by default
+            $('#tableUnits').hide();
+
+            // Toggle table visibility based on checkbox state
+            $('#Advance').change(function () {
+                if ($(this).is(":checked")) {
+                    $('#tableUnits').show();
+                } else {
+                    $('#tableUnits').hide();
+                }
+            });
+            
+
+            //// search bar
+            //$(document).ready(function () {
             $('#tblData').DataTable();
             $('.dataTables_length').addClass('bs-select');
-        });
-        //change the color of Status cell
-        $('#status').each(function () {
-            if ($(this).val() == 'Active') {
-                $(this).css({ 'color': '#13e305' })
-            }
-        });
-        function ValidateDelete() {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire(
-                        'Deleted!',
-                        'Your file has been deleted.',
-                        'success'
-                    )
-                    return true;
+
+            //change the color of Status cell
+            $('#status').each(function () {
+                if ($(this).val() == 'Active') {
+                    $(this).css({ 'color': '#13e305' })
                 }
-                return false;
-            })
-        }
+            });
 
-        // generating paper
+            function ValidateDelete() {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire(
+                            'Deleted!',
+                            'Your file has been deleted.',
+                            'success'
+                        )
+                        return true;
+                    }
+                    return false;
+                });
+            }
 
-        $(document).ready(function () {
+            //// generating paper
+
+            //$(document).ready(function () {
             // grades comes from ViewBag.Grades
             // on change of gradeDDL                //code ok
             $('#GradeDDL').change(function () {
@@ -182,21 +206,28 @@ else
             // on change of SubjectDDL                      Code OK
             $('#SubjectDDL').change(function () {
                 var id = $(this).val();
+                //$('#TopicDDL').empty();
+                //$('#TopicDDL').append("<option>--Select Topic--</option>");
                 $('#tableUnits tr:not(:first)').remove();
+                $('#tableUnits').append('<thead>' + '<tr><th>Select Units</th><th>Code</th><th>Topic Text</th><th>MCQs</th><th>SEQs</th><th>Long Qs </th><th>Blanks</th></tr>' + '</thead>');
                 $.ajax({
                     type: "POST",
-                    url: '/Paper/GetTableData?id=' + id,
+                    url: '/Paper/GetTopicsData?id=' + id,
                     data: '{ }',
                     success: function (response) {
                         var trHTML = '';
                         $.each(response, function (i, item) {
-                            //trHTML += '<tr><td>' + item.code + '</td><td>' + item.topicText + '</td><td><table><tr><td>MCQs</td><td>'+item.mcqCount+'</td><td><input type="number"></td></tr><tr><td>SEQs</td><td>' + item.seqCount + '</td></tr><tr><td>Long Questions</td><td>' + item.longQCount + '</td></tr><tr><td>Fill in the blanks</td><td>' + item.fillinBlankCount + '</td></tr></table></td>';
-                            trHTML += '<tr><td><input asp-for="' + item.id + '" type="checkbox"/></td><td>' + item.code + '</td><td>' + item.topicText + '</td><td>' + item.mcqCount + '</td><td>' + item.seqCount + '</td><td>' + item.longQCount + '</td><td>' + item.fillinBlankCount + '</td></tr>';
+                            //$('#TopicDDL').append("<option value=" + item.id + ">" + item.topicText + "</option>");
+                            //trHTML += '<tr><td>' + item.code + '</td><td>' + item.topicText + '</td><td><table><tr><td>MCQs</td><td>' + item.mcqCount + '</td><td><input type="number"></td></tr><tr><td>SEQs</td><td>' + item.seqCount + '</td></tr><tr><td>Long Questions</td><td>' + item.longQCount + '</td></tr><tr><td>Fill in the blanks</td><td>' + item.fillinBlankCount + '</td></tr></table></td>';
+                            trHTML += '<tr> <td><input id="' + item.id +'" value="'+item.id+'" type="checkbox" name="topicList"/></td> <td>' + item.code + '</td><td>' + item.topicText + '</td><td>' + item.mcqCount + '</td><td>' + item.seqCount + '</td><td>' + item.longQCount + '</td><td>' + item.fillinBlankCount + '</td></tr>';
+                            
                         });
                         $('#tableUnits').append(trHTML);
                     }
                 });
             });
+
+
 
         });
     </script>

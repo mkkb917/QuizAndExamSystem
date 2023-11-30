@@ -30,7 +30,7 @@ namespace ExamSystem.Data
                         new Grade()
                         {
                             Code    ="G-1",
-                            Status = Status.Inactive,
+                            Status = Status.Pending,
                             GradeText = "Grade 1",
                             Description = " This is test Grade 1",
                             CreatedOn = DateTime.Now,
@@ -41,7 +41,7 @@ namespace ExamSystem.Data
                         new Grade()
                         {
                             Code    ="G-2",
-                            Status = Status.Inactive,
+                            Status = Status.Pending,
                             GradeText = "Grade 2",
                             Description = " This is test Grade 2",
                             CreatedOn = DateTime.Now,
@@ -52,7 +52,7 @@ namespace ExamSystem.Data
                         new Grade()
                         {
                             Code    ="G-3",
-                            Status = Status.Inactive,
+                            Status = Status.Pending,
                             GradeText = "Grade 3",
                             Description = " This is test Grade 3",
                             CreatedOn = DateTime.Now,
@@ -72,7 +72,7 @@ namespace ExamSystem.Data
                     new Subject()
                         {
                             Code    ="SUB-1",
-                            Status = Status.Inactive,
+                            Status = Status.Pending,
                             SubjectText = "Subject 1",
                             Description = " This is test Subject 1",
                             CreatedOn = DateTime.Now,
@@ -84,7 +84,7 @@ namespace ExamSystem.Data
                     new Subject()
                         {
                         Code    ="SUB-2",
-                            Status = Status.Inactive,
+                            Status = Status.Pending,
                             SubjectText = "Subject 2",
                             Description = " This is test Subject 2",
                             CreatedOn = DateTime.Now,
@@ -96,7 +96,7 @@ namespace ExamSystem.Data
                     new Subject()
                         {
                         Code    ="SUB-3",
-                            Status = Status.Inactive,
+                            Status = Status.Pending,
                             SubjectText = "Subject 3",
                             Description = " This is test Subject 3",
                             CreatedOn = DateTime.Now,
@@ -119,7 +119,7 @@ namespace ExamSystem.Data
                             TopicText = "Unit 1",
                             Code       = "Unit 1",
                             Description = " This is test Topic or Unit 1",
-                            Status=Status.Inactive,
+                            Status=Status.Pending,
                             CreatedOn = DateTime.Now,
                             CreatedBy = "Admin",
                             UpdatedBy = string.Empty,
@@ -131,7 +131,7 @@ namespace ExamSystem.Data
                             TopicText = "Unit 2",
                             Code       = "Unit 2",
                             Description = " This is test Topic 2 or Unit 2",
-                            Status=Status.Inactive,
+                            Status=Status.Pending,
                             CreatedOn = DateTime.Now,
                             CreatedBy = "Admin",
                             UpdatedBy = string.Empty,
@@ -143,7 +143,7 @@ namespace ExamSystem.Data
                             TopicText = "Unit 3",
                             Code       = "Unit 3",
                             Description = " This is test Topic 3 or Unit 3",
-                            Status=Status.Inactive,
+                            Status=Status.Pending,
                             CreatedOn = DateTime.Now,
                             CreatedBy = "Admin",
                             UpdatedBy = string.Empty,
@@ -162,7 +162,7 @@ namespace ExamSystem.Data
                         new Question()
                         {
                             Code    ="Question 1",
-                            Status = Status.Inactive,
+                            Status = Status.Pending,
                             QuestionText = "What is a question?",
                             QuestionTextL = "کیا یہ ایک سوال ہے؟",
                             Description = " Question 1 of the Unit 1 of Subject 1 ",
@@ -177,7 +177,7 @@ namespace ExamSystem.Data
                         new Question()
                         {
                             Code    ="Question 2",
-                            Status = Status.Inactive,
+                            Status = Status.Pending,
                             QuestionText = "What is your name?",
                             QuestionTextL = "آپ کا کیا نام ہے؟",
                             Description = " Question 2 of the Unit 1 of Subject 1 ",
@@ -192,7 +192,7 @@ namespace ExamSystem.Data
                         new Question()
                         {
                             Code    ="Question 3",
-                            Status = Status.Inactive,
+                            Status = Status.Pending,
                             QuestionText = "Mouse is a(an) ________ device",
                             QuestionTextL = "ماؤس ایک ــــــ آلہ ہے۔",
                             Description = " Question 3 of the Unit 1 of Subject 1 ",

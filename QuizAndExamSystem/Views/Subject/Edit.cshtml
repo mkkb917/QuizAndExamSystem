@@ -17,7 +17,7 @@
             <!-- /.card-header -->
             <div class="card-body table-responsive">
                 <table id="tblData" class="table table-bordered table-hover">
-                    <form asp-action="Edit">
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
                         <div class="form-group">
                             <input type="hidden" value="@Model.Id" />
                             <button type="submit" value="Update" class="btn btn-success float-right" > <i class="fas fa-floppy-disk"></i> Update </button>
@@ -31,6 +31,11 @@
                             <select asp-for="GradeId" class="form-control" asp-items="ViewBag.Grades" disabled></select>
                         </div>
                         <div class="form-group">
+                            <label asp-for="Image" class="control-label">Select Image</label>
+                            <input asp-for="Image" class="form-control" type="file" accept=".jpeg,.jpg,.png" />
+                            <span asp-validation-for="Image" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
                             <label asp-for="SubjectText" class="control-label"></label>
                             <input asp-for="SubjectText" class="form-control" />
                             <span asp-validation-for="SubjectText" class="text-danger"></span>
@@ -38,7 +43,7 @@
                         <div class="form-group">
                             <label asp-for="Status" class="control-label"></label>
                             @{
-                                var selectList = User.IsInRole("Admin") ? Html.GetEnumSelectList<Status>() : new SelectList(Enum.GetValues(typeof(Status)).Cast<Status>().Where(s => s == Status.Inactive));
+                                var selectList = User.IsInRole("Admin") ? Html.GetEnumSelectList<Status>() : new SelectList(Enum.GetValues(typeof(Status)).Cast<Status>().Where(s => s == Status.Pending));
                             }
                             <select asp-for="Status" class="form-control" asp-items="selectList"></select>
                             <span asp-validation-for="Status" class="text-danger"></span>

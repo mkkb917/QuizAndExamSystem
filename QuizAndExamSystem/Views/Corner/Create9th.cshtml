@@ -61,7 +61,7 @@
                                 }
                                 else
                                 {
-                                    <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()" disabled><option value="@Status.Inactive">Inactive</option></select>
+                                    <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()" disabled><option value="@Status.Pending">Inactive</option></select>
                                     <label> will be activated and displayed after approval from admin</label>
                                 }
                             }

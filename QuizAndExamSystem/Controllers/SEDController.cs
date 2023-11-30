@@ -142,7 +142,7 @@ namespace ExamSystem.Controllers
         // GET: SEDsController/Approve
         public async Task<ActionResult> Approve()
         {
-            Status _status = Status.Inactive;
+            Status _status = Status.Pending;
             var obj = await _service.GetAllFilesByStatus(_status);
             
             return View(obj);

@@ -34,7 +34,7 @@
                     <a asp-controller="Topic" asp-action="TopicsList" asp-route-id="@Model.SubjectId" class="btn btn-secondary"> <i class="fas fa-arrow-left"></i> Back</a>
                 }
                 <label class="text-center ml-5">Approved:  <button class="badge badge-success" disabled="disabled">@Model.Questions.Where(a=>a.Status == Status.Active).Count()</button> </label>
-                <label class="text-center">Waiting for approval:  <button class="badge badge-danger" disabled="disabled">@Model.Questions.Where(a=>a.Status == Status.Inactive).Count() </button> </label>
+                <label class="text-center">Waiting for approval:  <button class="badge badge-danger" disabled="disabled">@Model.Questions.Where(a=>a.Status == Status.Pending).Count() </button> </label>
                 <label class="text-center">Total:  <button class="badge badge-info" disabled="disabled">@Model.Questions.Count </button> </label>
                 @if (User.Identity.IsAuthenticated)
                 {

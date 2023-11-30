@@ -45,13 +45,16 @@ namespace ExamSystem.Data.Services
             // pass the file name, path and file to uploader
             string fileName = Path.GetFileNameWithoutExtension(files[0].FileName);
             //if the file already exsit then delete it before new upload
-            //delete the old file
-            var oldfile = Path.Combine(Upload, oldFile);
-            //check if the file already exists then delete the old file
-            if (System.IO.File.Exists(oldfile))
+            if (oldFile != null)
             {
-                System.IO.File.Delete(oldfile);
+                //delete the old file
+                var oldfile = Path.Combine(Upload, oldFile);
+                //check if the file already exists then delete the old file
+                if (System.IO.File.Exists(oldfile))
+                {
+                    System.IO.File.Delete(oldfile);
 
+                }
             }
             // pass the new files object to funtion to save file and create thumbnail in directory
             var uploadImage = FileUploadAndConvert.UploadFileAndConvertToImage(files, Upload, fileName);

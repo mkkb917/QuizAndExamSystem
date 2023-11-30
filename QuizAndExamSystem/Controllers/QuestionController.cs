@@ -276,7 +276,7 @@ namespace ExamSystem.Controllers
         //Get: Question/approve
         public async Task<IActionResult> Approve()
         {
-            Status _status = Status.Inactive;
+            Status _status = Status.Pending;
             var obj = await _service.GetAllQuestionsByStatus(_status);
             var responce = new QuestionIndexVM()
             {

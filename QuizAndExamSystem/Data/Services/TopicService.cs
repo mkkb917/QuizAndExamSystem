@@ -3,6 +3,7 @@ using ExamSystem.Data.Interface;
 using ExamSystem.Data.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using ExamSystem.Models;
+using ExamSystem.Extensions;
 
 namespace ExamSystem.Data.Services
 {
@@ -10,9 +11,11 @@ namespace ExamSystem.Data.Services
     {
         //pass the datacontext object to base class
         private readonly AppDbContext _context;
-        public TopicService(AppDbContext context) : base(context)
+        private readonly string webRootPath;
+        public TopicService(AppDbContext context, IWebHostEnvironment webHostEnvironment) : base(context)
         {
             _context = context;
+            webRootPath = webHostEnvironment.WebRootPath;
         }
 
         public async Task AddNewTopic(TopicsVM data)
@@ -21,6 +24,7 @@ namespace ExamSystem.Data.Services
             {
                 Code = data.Code,
                 TopicText = data.TopicText,
+                Image = data.Image,
                 Status = data.Status,
                 SubjectId = data.SubjectId,
                 Description = data.Description,
@@ -75,6 +79,7 @@ namespace ExamSystem.Data.Services
             {
                 obj.Code = data.Code;
                 obj.TopicText = data.TopicText;
+                obj.Image = data.Image;
                 obj.Status = data.Status;
                 obj.Description = data.Description;
                 obj.UpdatedOn = DateTime.Now.Date;
@@ -88,6 +93,41 @@ namespace ExamSystem.Data.Services
                 //update the data to the database
                 await _context.SaveChangesAsync();
 
+            }
+        }
+
+        public string DeleteOldAndUploadNewFile(IFormFileCollection files, string? oldFile)
+        {
+            string Upload = webRootPath + WC.TopicImagePath;
+
+            // pass the file name, path and file to uploader
+            string fileName = Path.GetFileNameWithoutExtension(files[0].FileName);
+            //if the file already exsit then delete it before new upload
+            if (oldFile != null)
+            {
+                //delete the old file
+                var oldfile = Path.Combine(Upload, oldFile);
+                //check if the file already exists then delete the old file
+                if (System.IO.File.Exists(oldfile))
+                {
+                    System.IO.File.Delete(oldfile);
+
+                }
+            }
+            // pass the new files object to funtion to save file and create thumbnail in directory
+            var uploadImage = FileUploadAndConvert.UploadFileAndConvertToImage(files, Upload, fileName);
+            return uploadImage;
+        }
+        public void DeleteFile(string fileName)
+        {
+            string Upload = webRootPath + WC.TopicImagePath;
+
+            //delete the old file
+            var oldfile = Path.Combine(Upload, fileName);
+            //check if the file already exists then delete the old file
+            if (System.IO.File.Exists(oldfile))
+            {
+                System.IO.File.Delete(oldfile);
             }
         }
     }

@@ -16,7 +16,7 @@
             <!-- /.card-header -->
             <div class="card-body table-responsive">
                 <table id="tblData" class="table table-bordered table-hover">
-                    <form asp-action="Create">
+                    <form asp-action="Create" method="post" enctype="multipart/form-data">
                         <div class="form-group">
                             <button type="submit" value="Create" class="btn btn-success float-right"><i class="fas fa-floppy-disk"></i> Create </button>
                             <a asp-controller="Topic" asp-action="TopicsList" asp-route-id="@TempData["SubjectId"]" class="btn btn-secondary"> <i class="fas fa-arrow-back"></i> Cancel</a>
@@ -36,6 +36,11 @@
                                 }
                             }
 
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Image" class="control-label">Select Image</label>
+                            <input asp-for="Image" class="form-control" type="file" accept=".jpeg,.jpg,.png" />
+                            <span asp-validation-for="Image" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label asp-for="Code" class="control-label"></label>

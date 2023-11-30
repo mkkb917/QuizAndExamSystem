@@ -81,7 +81,7 @@
                                     }
                                     else
                                     {
-                                        <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()" hidden><option value="@Status.Inactive"></option></select>
+                                        <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()" hidden><option value="@Status.Pending"></option></select>
                                     }
                                 }
                                 <span asp-validation-for="Status" class="text-danger"></span>

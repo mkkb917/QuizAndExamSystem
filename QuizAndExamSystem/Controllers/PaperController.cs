@@ -54,10 +54,10 @@ namespace ExamSystem.Controllers
             return new JsonResult(sl);
         }
 
-        public JsonResult GetTableData(int id)
+        public JsonResult GetTopicsData(int id)
         {
 
-            var query = _context.Topics.Where(s => s.SubjectId == id).ToList();
+            var query = _context.Topics.Where(s => s.SubjectId == id && s.Status == Status.Active).ToList();
 
             var objtopiclist = new List<TopicsWithQCountsVM>();
 
@@ -70,11 +70,15 @@ namespace ExamSystem.Controllers
                         Id = item.Id,
                         Code = item.Code,
                         TopicText = item.TopicText,
-                        // manually query the total counts
-                        McqCount = _context.Questions.Where(q => q.TopicId == item.Id && q.QuestionType == QuestionTypes.MCQ).Count(),
-                        SeqCount = _context.Questions.Where(q => q.TopicId == item.Id && q.QuestionType == QuestionTypes.SEQ).Count(),
-                        LongQCount = _context.Questions.Where(q => q.TopicId == item.Id && q.QuestionType == QuestionTypes.Long_Question).Count(),
-                        FillinBlankCount = _context.Questions.Where(q => q.TopicId == item.Id && q.QuestionType == QuestionTypes.Fill_In_The_Blanks).Count()
+                        McqCount = item.MCQCount,
+                        SeqCount = item.SEQCount,
+                        LongQCount = item.LongQCount,
+                        FillinBlankCount = 0,
+                        //manually query the total counts
+                        //McqCount = _context.Questions.Where(q => q.TopicId == item.Id && q.QuestionType == QuestionTypes.MCQ).Count(),
+                        //SeqCount = _context.Questions.Where(q => q.TopicId == item.Id && q.QuestionType == QuestionTypes.SEQ).Count(),
+                        //LongQCount = _context.Questions.Where(q => q.TopicId == item.Id && q.QuestionType == QuestionTypes.Long_Question).Count(),
+                        //FillinBlankCount = _context.Questions.Where(q => q.TopicId == item.Id && q.QuestionType == QuestionTypes.Fill_In_The_Blanks).Count()
                     });
                 }
             }
@@ -91,8 +95,8 @@ namespace ExamSystem.Controllers
             }
             return new JsonResult(false);
         }
-        
-        
+
+
 
         [HttpPost]
         public async Task<IActionResult> SavePairingData([FromBody] List<Dictionary<string, string>> entities)
@@ -102,7 +106,7 @@ namespace ExamSystem.Controllers
                 // data sample of entity
                 //[{0: "1005", 1: "Problem Solving", 2: "2", 3: "1", 4: "2", 5: "0", 6: "3", 7: "5"},…]
                 int defaultValue = 0;
-                if(entities==null) return StatusCode(500, new { status = "Error", message = "the data array is empty." });
+                if (entities == null) return StatusCode(500, new { status = "Error", message = "the data array is empty." });
 
                 foreach (var entity in entities)
                 {
@@ -157,14 +161,14 @@ namespace ExamSystem.Controllers
                     }
                     await _context.SaveChangesAsync();
                 }
-                
+
 
                 return Ok(new { status = "Success", message = "Data saved successfully!" });
             }
             catch (Exception ex)
             {
                 // Log the exception here
-                return StatusCode(500, new { status = "Error", message = "An error occurred while saving the data.",ex.Message });
+                return StatusCode(500, new { status = "Error", message = "An error occurred while saving the data.", ex.Message });
             }
         }
 
@@ -407,7 +411,7 @@ namespace ExamSystem.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GeneratePaper(string? GradeDDL, string? SubjectDDL, DateTime PaperDate, string? TeacherName)
+        public async Task<IActionResult> GeneratePaper(string? GradeDDL, string? SubjectDDL, DateTime PaperDate, string? TeacherName, bool Advance, List<string>? topicList)
         {
 
             // get the class and subject DDL selected value
@@ -419,6 +423,19 @@ namespace ExamSystem.Controllers
             string className = grade.GradeText.ToString();
             var subject = await _SubjectService.GetSubjectById(selectedSubject);
             string subjectName = subject.SubjectText.ToString();
+            //if the advance is checked
+            bool advance = Convert.ToBoolean(Advance);
+            if (advance == true)
+            {
+                //foreach (var item in topicList)
+                //{
+                //    // Access item.Id and item.IsChecked here
+                //    int checkboxId = item.Id;
+                //    bool isChecked = item.IsChecked;
+                //    // Perform your logic based on checkboxId and isChecked
+                //}
+            }
+
 
             // get current user and school info 
             var usr = new ApplicationUser()

@@ -63,9 +63,13 @@ namespace ExamSystem.Controllers
 
             // check weather the profile image is updated or uploaded
             var files = HttpContext.Request.Form.Files;
-
+            if (files.Count == 0)
+            {
+                TempData["error"] = "Image not attached";
+                return View(grade);
+            }
             // pass the file name, path and file to uploader
-            
+
             string fileExtension = Path.GetExtension(files[0].FileName);
 
             //check the extension for image files only
@@ -89,6 +93,7 @@ namespace ExamSystem.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var ObjGrade = await _service.GetByIdAsync(id);
+            ObjGrade.Subject = await _service.GetSubjectById(ObjGrade.Id);
             if (ObjGrade == null) return View("NotFound");
             return View(ObjGrade);
         }
@@ -115,15 +120,22 @@ namespace ExamSystem.Controllers
 
             // check weather the profile image is updated or uploaded
             var files = HttpContext.Request.Form.Files;
-            string fileExtension = Path.GetExtension(files[0].FileName);
-            if (!fileExtension.Equals(".jpeg") && !fileExtension.Equals(".jpg") && !fileExtension.Equals(".png"))
+            if (files.Count > 0) //file is attached
             {
-                TempData["error"] = "Invalid Image format";
-                return View(grade);
+                string fileExtension = Path.GetExtension(files[0].FileName);
+                if (!fileExtension.Equals(".jpeg") && !fileExtension.Equals(".jpg") && !fileExtension.Equals(".png"))
+                {
+                    TempData["error"] = "Invalid Image format";
+                    return View(grade);
+                }
+                //call the function
+                var imageName = _service.DeleteOldAndUploadNewFile(files, ObjGrade.Image.ToString());
+                grade.Image = imageName;
             }
-            //call the function
-            var imageName = _service.DeleteOldAndUploadNewFile(files, ObjGrade.Image.ToString());
-            grade.Image = imageName;
+            else
+            {
+                grade.Image = ObjGrade.Image;
+            }
             grade.UpdatedBy = User.Identity.Name;
             grade.UpdatedOn = DateTime.Now.Date;
             await _service.UpdateAsync(id, grade);

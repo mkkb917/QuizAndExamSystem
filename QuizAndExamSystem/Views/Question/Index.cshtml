@@ -11,14 +11,7 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-9 col-md-8 col-sm-12 col-10">
-            @if (Model != null)
-            {
-                <h2 style="text-align:center; color:red;">@Model.TopicName  in @Model.SubjectName</h2>
-            }
-            else
-            {
-                <h2 style="text-align:center; color:red;"> All registered question</h2>
-            }
+            <h2 style="text-align:center; color:red;">@(@Model.TopicName != null ? "@Model.TopicName  in @Model.SubjectName" : "All registered question")</h2>
         </div>
         <div class="col-lg-3 col-md-4 col-sm-12 col-2">
             @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
@@ -28,7 +21,7 @@
                         <input class="form-control" type="file">
                     </div>
                     <div class="col-3">
-                    <a asp-controller="Question" asp-action="UploadQuestionFile" asp-route-id="@Model.TopicId" class="btn btn-primary float-right"><i class="fas fa-upload"></i></a>
+                        <a asp-controller="Question" asp-action="UploadQuestionFile" asp-route-id="@Model.TopicId" class="btn btn-primary float-right"><i class="fas fa-upload"></i></a>
                     </div>
                 </div>
             }
@@ -47,7 +40,7 @@
                     <a asp-controller="Topic" asp-action="TopicsList" asp-route-id="@Model.SubjectId" class="btn btn-secondary"> <i class="fas fa-arrow-left"></i> Back</a>
                 }
                 <label class="text-center ml-5">Approved:  <button class="badge badge-success" disabled="disabled">@Model.Questions.Where(a=>a.Status == Status.Active).Count()</button> </label>
-                <label class="text-center">Waiting for approval:  <button class="badge badge-danger" disabled="disabled">@Model.Questions.Where(a=>a.Status == Status.Inactive).Count() </button> </label>
+                <label class="text-center">Waiting for approval:  <button class="badge badge-danger" disabled="disabled">@Model.Questions.Where(a=>a.Status == Status.Pending).Count() </button> </label>
                 <label class="text-center">Total:  <button class="badge badge-info" disabled="disabled">@Model.Questions.Count </button> </label>
                 @if (User.Identity.IsAuthenticated)
                 {

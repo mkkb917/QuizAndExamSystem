@@ -18,6 +18,13 @@ namespace ExamSystem.Data.ViewModels
         public int FillinBlankCount { get; set; }
     }
 
+    //VM Class for generate paper postback to controller  
+    public class CheckboxItemForTopics
+    {
+        public int Id { get; set; }
+        public bool IsChecked { get; set; }
+    }
+
 }
 
 

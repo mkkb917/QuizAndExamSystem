@@ -212,7 +212,7 @@ namespace ExamSystem.Controllers
         [HttpGet]
         public async Task<ActionResult> Approve()
         {
-            Status _status = Status.Inactive;
+            Status _status = Status.Pending;
             var obj = await _uploadsService.GetAllFilesByStatus(_status);
             ViewBag.CurrentAction = "Approve";
             return View(obj);

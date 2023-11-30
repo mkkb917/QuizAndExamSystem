@@ -14,6 +14,7 @@ namespace ExamSystem.Data.ViewModels
         [Required(ErrorMessage ="Unit Code is required")]
         [Display(Name ="Unit Code")]
         public string? Code { get; set; }
+        public string? Image { get; set; } = string.Empty;
         public Status? Status { get; set; }
         [Display(Name = "Description")]
         public string? Description { get; set; }
@@ -34,7 +35,7 @@ namespace ExamSystem.Data.ViewModels
         [Display(Name = "Subject Name")]
         public string? SubjectText { get; set; }
         [Display(Name = "Subject image")]
-        public string? Image { get; set; }
+        public string? SubjectImage { get; set; }
         [Display(Name = "User Name")]
         public string? user { get; set; }
         public List<Question>? Questions { get; set; }

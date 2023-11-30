@@ -46,7 +46,7 @@ namespace ExamSystem.Controllers
             foreach (var item in obj.Topic)
             {
                 item.Question = await _service.GetAllQuestionsById(item.Id);
-                item.SubjectId= subject.Id;
+                item.SubjectId = subject.Id;
             }
             return View(obj);
         }
@@ -66,6 +66,7 @@ namespace ExamSystem.Controllers
                 var SubjectListData = await _service.GetSubjectList();
                 ViewBag.Subject = new SelectList(SubjectListData.Subjects, "Id", "SubjectText");
             }
+
             return View();
         }
 
@@ -81,10 +82,28 @@ namespace ExamSystem.Controllers
                 //ViewBag.Subjects = new SelectList(SubjectListData.Subjects, "Id", "SubjectText");
                 return View(topic);
             }
-           
+            // check weather the profile image is updated or uploaded
+            var files = HttpContext.Request.Form.Files;
+            if (files.Count == 0)
+            {
+                TempData["error"] = "Image not attached";
+                return View(topic);
+            }
+            // pass the file name, path and file to uploader
+
+            string fileExtension = Path.GetExtension(files[0].FileName);
+            //check the extension for image files only
+            if (!fileExtension.Equals(".jpeg") && !fileExtension.Equals(".jpg") && !fileExtension.Equals(".png"))
+            {
+                TempData["error"] = "Invlaid Image format";
+                return View(topic);
+            }
+            // pass the files object to funtion to save file and create thumbnail in directory
+            var uploadImage = _service.DeleteOldAndUploadNewFile(files, null);
+            topic.Image = uploadImage;
             await _service.AddNewTopic(topic);
-            return RedirectToAction(nameof(TopicsList),new {@id=topic.SubjectId});
-            
+            return RedirectToAction(nameof(TopicsList), new { @id = topic.SubjectId });
+
         }
 
         //edit a Topic
@@ -96,8 +115,9 @@ namespace ExamSystem.Controllers
             var responce = new TopicsVM()
             {
                 Id = Obj.Id,
-                Code=Obj.Code,
+                Code = Obj.Code,
                 TopicText = Obj.TopicText,
+                Image = Obj.Image,
                 Status = Obj.Status,
                 SubjectId = Obj.SubjectId,
                 MCQCount = Obj.MCQCount,
@@ -118,7 +138,27 @@ namespace ExamSystem.Controllers
         public async Task<IActionResult> Edit(int id, TopicsVM topic)
         {
             if (!ModelState.IsValid) return View(topic);
-            
+
+            var Objtopic = await _service.GetByIdAsync(id);
+
+            // check weather the profile image is updated or uploaded
+            var files = HttpContext.Request.Form.Files;
+            if (files.Count > 0) //file is attached
+            {
+                string fileExtension = Path.GetExtension(files[0].FileName);
+                if (!fileExtension.Equals(".jpeg") && !fileExtension.Equals(".jpg") && !fileExtension.Equals(".png"))
+                {
+                    TempData["error"] = "Invalid Image format";
+                    return View(topic);
+                }
+                //call the function
+                var imageName = _service.DeleteOldAndUploadNewFile(files, Objtopic.Image.ToString());
+                topic.Image = imageName;
+            }
+            else
+            {
+                topic.Image = Objtopic.Image;
+            }
             await _service.UpdateTopic(id, topic);
             return RedirectToAction(nameof(TopicsList), new { @id = topic.SubjectId });
         }
@@ -134,6 +174,7 @@ namespace ExamSystem.Controllers
             {
                 Id = ObjTopic.Id,
                 Code = ObjTopic.Code,
+                Image = ObjTopic.Image,
                 TopicText = ObjTopic.TopicText,
                 Status = ObjTopic.Status,
                 SubjectId = ObjTopic.SubjectId,
@@ -143,9 +184,13 @@ namespace ExamSystem.Controllers
                 UpdatedOn = ObjTopic.UpdatedOn,
                 UpdatedBy = ObjTopic.UpdatedBy,
                 Questions = objquestion,
+                MCQCount = ObjTopic.MCQCount,
+                MCQMarks = ObjTopic.MCQMarks,
+                SEQCount = ObjTopic.SEQCount,
+                SEQMarks = ObjTopic.SEQMarks,
+                LongQCount = ObjTopic.LongQCount,
+                LongQMarks = ObjTopic.LongQMarks,
             };
-            //var QuestionCounts = await _service.GetAllTopicsById(id);
-            //ViewBag.QuestionCount = QuestionCounts.Count();
             return View(responce);
         }
 
@@ -160,6 +205,7 @@ namespace ExamSystem.Controllers
             {
                 Id = ObjTopic.Id,
                 Code = ObjTopic.Code,
+                Image = ObjTopic.Image,
                 TopicText = ObjTopic.TopicText,
                 Status = ObjTopic.Status,
                 SubjectId = ObjTopic.SubjectId,
@@ -176,9 +222,12 @@ namespace ExamSystem.Controllers
         {
             var ObjTopic = await _service.GetByIdAsync(id);
             if (ObjTopic == null) return View("NotFound");
+            //delete the file 
+            _service.DeleteFile(ObjTopic.Image.ToString());
+            //delete the record
             await _service.DeleteAsync(id);
 
-            return RedirectToAction(nameof(TopicsList), new { @id = subjectId});
+            return RedirectToAction(nameof(TopicsList), new { @id = subjectId });
         }
 
     }

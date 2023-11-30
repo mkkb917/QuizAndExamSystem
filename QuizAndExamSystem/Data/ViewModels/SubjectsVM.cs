@@ -15,7 +15,11 @@ namespace ExamSystem.Data.ViewModels
         public string? SubjectText { get; set; }
         [Display(Name = "Subject Code")]
         [Required(ErrorMessage ="Please Enter the Subejct Code")]
-        public string Code { get; set; } = "NoCode";
+        public string? Code { get; set; } = "NoCode";
+        [Display(Name = "Subject Image")]
+        //[Required(ErrorMessage = "Please Enter the Subejct Code")]
+        public string? Image { get; set; } = string.Empty;
+        public List<Topic>? Topics { get; set; }
         public Status? Status { get; set; }
         [Display(Name = "Subject Description")]
         [Required(ErrorMessage = "Please Enter the Subejct Description")]
