@@ -170,6 +170,11 @@ namespace ExamSystem.Data.Services
             return responce;
         }
 
+        public async Task<List<Uploads>> GetFilesByCategoryForComponenet(Status status, UploadsCategory code)
+        {
+            var responce = await _context.Uploads.Where(n => n.Status == status).Where(c => c.FileType == code).Take(6).ToListAsync();
+            return responce;
+        }
         public async Task<Uploads> GetFileById(int id, UploadsCategory category)
         {
             var responce = await _context.Uploads.Where(n => n.Id == id).Where(c => c.FileType == category).FirstOrDefaultAsync();
@@ -256,6 +261,8 @@ namespace ExamSystem.Data.Services
                 await _context.SaveChangesAsync();
             }
         }
+
+        
     }
 }
 

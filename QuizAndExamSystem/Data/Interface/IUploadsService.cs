@@ -10,6 +10,7 @@ namespace ExamSystem.Data.Interface
         Task<Uploads> GetFileById(int id, UploadsCategory category);
         Task<List<Uploads>> GetAllFilesByUser(string user, UploadsCategory category);
         Task<List<Uploads>> GetAllFilesByCategory(Status status, UploadsCategory code);
+        Task<List<Uploads>> GetFilesByCategoryForComponenet(Status status, UploadsCategory code);
         Task<List<Uploads>> GetAllFilesByStatus(Status status);
         Task AddNewFile(Uploads data, IFormFileCollection files);
         Task UpdateFile(int Id, Uploads data, IFormFileCollection files);

@@ -46,6 +46,7 @@ namespace ExamSystem.Controllers
             var Obj = await _pdfService.GetAllPapers();
             return View(Obj);
         }
+        
 
         // JSON method for dropdownlists        code OK
         public JsonResult Subject(int id)
@@ -417,25 +418,12 @@ namespace ExamSystem.Controllers
             // get the class and subject DDL selected value
             int selectedClass = Convert.ToInt32(GradeDDL);
             int selectedSubject = Convert.ToInt32(SubjectDDL);
-            //var selectedTopics = Convert.ToInt32(form["TopicsDDL"]);
+            List<int>? selectedTopics = new();
 
             var grade = await _SubjectService.GetGradeById(selectedClass);
             string className = grade.GradeText.ToString();
             var subject = await _SubjectService.GetSubjectById(selectedSubject);
             string subjectName = subject.SubjectText.ToString();
-            //if the advance is checked
-            bool advance = Convert.ToBoolean(Advance);
-            if (advance == true)
-            {
-                //foreach (var item in topicList)
-                //{
-                //    // Access item.Id and item.IsChecked here
-                //    int checkboxId = item.Id;
-                //    bool isChecked = item.IsChecked;
-                //    // Perform your logic based on checkboxId and isChecked
-                //}
-            }
-
 
             // get current user and school info 
             var usr = new ApplicationUser()
@@ -445,9 +433,16 @@ namespace ExamSystem.Controllers
             string guid = Guid.NewGuid().ToString().Substring(0, 5);
             string qrstring = className + subjectName;
             var qrcode = _pdfService.BarCodeGenerator(qrstring, guid);
-
-            // call the function to render the questions bank for generating paper object
-            var paperViewVM = await _pdfService.RenderPaper(selectedClass, selectedSubject, PaperDate, TeacherName, qrcode, usr);
+            var paperViewVM = new PaperViewVM();
+            if (Advance == true) // its means user want to create small test of chapter wise
+            {
+                if (topicList != null)
+                {
+                    // conver the string list of topics to int list
+                    selectedTopics = topicList.Select(int.Parse).ToList();
+                }
+            }
+            paperViewVM = await _pdfService.RenderPaper(selectedClass, selectedSubject, selectedTopics, PaperDate, TeacherName, qrcode, usr);
 
             if (paperViewVM.Setting == null)
             { return RedirectToAction("PaperSetting", new { @id = 0 }); }

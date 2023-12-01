@@ -29,8 +29,9 @@
         <div class="row mt-3">
             @foreach (var item in Model)
             {
-                // partial view of all SED files based on Code
-                <partial name="_IndividualUploadView" model="item" />
+                <div class="col col-lg-4 col-md-6 col-sm-12">
+                    <partial name="_IndividualUploadView" model="item" />
+                </div>
             }
         </div>
     </div>

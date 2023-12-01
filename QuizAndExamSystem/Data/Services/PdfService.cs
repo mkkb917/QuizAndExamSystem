@@ -63,7 +63,7 @@ namespace ExamSystem.Data.Services
             return responce;
         }
 
-        public async Task<PaperViewVM> RenderPaper(int selectedClass, int selectedSubject, DateTime PaperDate, string? TeacherName, string? qrCode, ApplicationUser usr)
+        public async Task<PaperViewVM> RenderPaper(int selectedClass, int selectedSubject, List<int>?selectedTopics, DateTime PaperDate, string? TeacherName, string? qrCode, ApplicationUser usr)
         {
             // get the current user question setting     
             var setting = new PaperSetting();
@@ -84,13 +84,21 @@ namespace ExamSystem.Data.Services
             List<QnAs>? objQnA = new();
             List<QnAs>? seqQnA = new();
             List<QnAs>? LongQnA = new();
-            
-            var topics = await _context.Topics.Where(t => t.SubjectId == selectedSubject && t.Status==Status.Active).ToListAsync();
+            List<Topic> topics = new();
+
+            if (selectedTopics.Count==0)
+            {
+                topics = await _context.Topics.Where(t => t.SubjectId == selectedSubject && t.Status == Status.Active).ToListAsync();
+            }
+            else
+            {
+                topics = await _context.Topics.Where(t => t.SubjectId == selectedSubject && t.Status == Status.Active && selectedTopics.Contains(t.Id)).ToListAsync();
+            }
             // traverse to each Unit for questions
             foreach (var Titem in topics)
             {
                 List<Question> questions = new();
-                if (setting.PairingScheme == true)
+                if (selectedTopics.Count==0 || setting.PairingScheme == true)
                 {
                     //set the total marks as per pairing scheme
                     setting.TotalMarks = Convert.ToInt32((Titem.MCQMarks * Titem.MCQCount) + (Titem.SEQMarks * Titem.SEQCount) + (Titem.LongQMarks * Titem.LongQCount));
@@ -162,7 +170,7 @@ namespace ExamSystem.Data.Services
             foreach (var Sitem in topics)
             {
                 List<Question> questions = new();
-                if (setting.PairingScheme == true)
+                if (selectedTopics.Count == 0 || setting.PairingScheme == true)
                 {
                     setting.SEQsMarks = Sitem.SEQMarks;
                     questions = await _context.Questions.Where(q => q.Status == Status.Active && q.TopicId == Sitem.Id && q.QuestionType == QuestionTypes.SEQ && q.DifficultyLevel == setting.DifficultyLevel).OrderBy(o => Guid.NewGuid()).Take(Sitem.SEQCount).ToListAsync();
@@ -210,7 +218,7 @@ namespace ExamSystem.Data.Services
             foreach (var Litem in topics)
             {
                 List<Question> questions = new();
-                if (setting.PairingScheme == true)
+                if (selectedTopics.Count == 0 || setting.PairingScheme == true)
                 {
                     setting.LongQsMarks = Litem.LongQMarks;
                     questions = await _context.Questions.Where(q => q.Status == Status.Active && q.TopicId == Litem.Id && q.QuestionType == QuestionTypes.Long_Question && q.DifficultyLevel == setting.DifficultyLevel).OrderBy(o => Guid.NewGuid()).Take(Litem.LongQCount).ToListAsync();

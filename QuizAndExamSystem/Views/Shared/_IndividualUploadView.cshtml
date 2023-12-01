@@ -51,7 +51,7 @@
 
 @if (Model != null)
 {
-    <div class="col-lg-3 col-sm-5 col-12 filter @typeName">
+    <div class=" filter @typeName">
         <div class="card" data-string="{{@Model.Code}}{{@Model.Title}}{{@Model.FileType}}{{@typeName.ToString()}}">
             <a asp-controller="Corner" asp-action="Details" asp-route-id="@Model.Id">
                 <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light" data-mdb-ripple-color="light">
