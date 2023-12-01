@@ -31,7 +31,9 @@
             @foreach (var item in Model)
             {
                 // partial view of all SED files based on Code
+                <div class="col-lg-3 col-sm-5 col-12">
                 <partial name="_IndividualBookView" model="item" />
+                </div>
             }
         </div>
     </div>

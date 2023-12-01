@@ -71,7 +71,7 @@
                 </div>
                 <div class="col-lg-4 col-md-6 mt-5 mt-md-0 text-center">
                     <i class="ti-paint-bucket text-primary h1"></i>
-                    <h3 class="mt-4 text-capitalize h5 ">1 click Papers Generations</h3>
+                    <h3 class="mt-4 text-capitalize h5 "><a asp-controller="Paper" asp-action="UserPapers">1 click Papers Generations</a></h3>
                     <p class="regular text-muted">
                         1 Click paper generation is a revolutionary tool that simplifies and expedites the process of creating academic papers, reports, and documents. With just a single click, users can effortlessly generate well-structured and professional-looking papers, eliminating the need for time-consuming formatting and manual document assembly. This innovative technology streamlines the entire document creation process, from layout design to content integration, allowing individuals to focus on their core research and content rather than wrestling with formatting intricacies.
                     </p>
@@ -101,9 +101,10 @@
 <section class="feature section pt-0">
     <div class="container">
         <div class="row">
-            <div class="col-lg-6 ml-auto justify-content-center">
+            @await Component.InvokeAsync("Books")
+            @*<div class="col-lg-6 ml-auto justify-content-center">
                 <!-- Feature Mockup -->
-                <div class="image-content" data-aos="fade-right">
+                @*<div class="image-content" data-aos="fade-right">
                     <img class="img-fluid" src="~/images/feature/feature-new-01.jpg" alt="iphone">
                 </div>
             </div>
@@ -134,7 +135,7 @@
                         <li class="list-inline-item">Jonathon Andrew </li>
                     </ul>
                 </div>
-            </div>
+            </div>*@
         </div>
     </div>
 </section>

@@ -9,6 +9,7 @@ namespace ExamSystem.Data.Interface
         Task<Books> GetBookById(int id);
         Task<List<Books>> GetAllBooksByUser(string Id);
         Task<List<Books>> GetAllBooksByStatus(Status status);
+        Task<List<Books>> GetBooksByCategoryForComponenet(Status status);
         Task<List<Books>> GetAllBooks();
         Task AddNewBook(Books data, IFormFileCollection files);
         Task UpdateBook(int Id, Books data, IFormFileCollection files);

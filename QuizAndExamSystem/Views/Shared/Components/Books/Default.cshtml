@@ -1,31 +1,34 @@
-﻿@model IEnumerable<ExamSystem.Models.Uploads>
+﻿@model IEnumerable<ExamSystem.Models.Books>
 
 
 @if (Model != null)
 {
+
     <div class="container">
         <br>
         <div class="row">
             <div class="feature-content">
                 <!-- Feature Title -->
                 <h2>
-                    <a asp-controller="Corner" asp-action="Decorate">Decorate</a> your Classrooms and School
+                    Increase your knowledge by reading multiple online <a asp-controller="Book" asp-action="Index">Books</a> resources 
                 </h2>
                 <!-- Feature Description -->
                 <p>
-                    Decorating schools and classrooms with Panaflex banners can create a vibrant and 
-                    engaging learning environment. These banners, featuring colorful murals, educational
-                    charts, and student artwork, can transform plain walls into inspiring spaces. Glass 
-                    covers can be used to protect these decorations and keep them looking fresh and new.
-                    Themed decorations, such as science models of planets and atoms or history timelines,
-                    can make learning more fun and help reinforce the curriculum. Comfortable furniture, 
-                    good lighting, and organized storage areas also contribute to a positive learning 
-                    environment. Remember, a well-decorated classroom can stimulate curiosity, foster 
-                    creativity, and make school a place where students love to learn. 😊
+                    Our website offers a vast library of free online books that cater to a variety of 
+                    interests and educational needs. You can enrich your general knowledge with our 
+                    collection of books spanning numerous topics. For students of Allama Iqbal Open 
+                    University (AIOU), we have a dedicated section that includes course-related books 
+                    and resources. Our Stories section will take you on fascinating journeys through 
+                    fictional worlds, while the Islamic literature section offers insightful content on 
+                    various aspects of Islam. English literature enthusiasts will find a treasure trove 
+                    of classic and contemporary works. For those preparing for public service examinations,
+                    our collection of preparatory materials can be a valuable resource. We believe in the 
+                    power of reading and aim to make it accessible to everyone. Enjoy exploring our diverse
+                    collection! 😊
                 </p>
             </div>
         </div>
-        
+
         <div class="row">
             <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="2000">
                 <div class="carousel-inner">
@@ -37,7 +40,7 @@
                                 {
                                     var item = Model.ElementAt(i + j);
                                     <div class="col-md-4">
-                                        <partial name="_IndividualUploadView" model="item" />
+                                        <partial name="_IndividualBookView" model="item" />
                                     </div>
                                 }
                             </div>
@@ -56,10 +59,15 @@
 
         </div>
     </div>
-
 }
 else
 {
-    <h4 class="mt-4 mb-5"><strong>No File found</strong></h4>
+    <h4 class="mt-4 mb-5"><strong>No Data found</strong></h4>
 }
 
+
+@section Scripts{
+    <script>
+       
+    </script>
+}

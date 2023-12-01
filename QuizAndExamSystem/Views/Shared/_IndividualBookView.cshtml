@@ -6,7 +6,7 @@
     Enum.TryParse(Model.Code, out BookCategory category);
 }
 
-<div class="col-lg-3 col-sm-5 col-12 filter @category">
+<div class=" filter @category">
     <div class="card">
         @*<a href="@WC.PDF_Book_Path@Model.FileName" target="_blank">*@
         <a asp-controller="Books" asp-action="Details" asp-route-id="@Model.Id">

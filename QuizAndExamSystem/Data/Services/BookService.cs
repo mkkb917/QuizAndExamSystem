@@ -93,6 +93,11 @@ namespace ExamSystem.Data.Services
             var responce = await _context.Books.Where(n => n.CreatedBy == Id).ToListAsync();
             return responce;
         }
+        public async Task<List<Books>> GetBooksByCategoryForComponenet(Status status)
+        {
+            var responce = await _context.Books.Where(n => n.Status == status).Take(6).ToListAsync();
+            return responce;
+        }
 
         public async Task<List<Books>> GetAllBooksByStatus(Status status)
         {
@@ -152,6 +157,8 @@ namespace ExamSystem.Data.Services
                 await _context.SaveChangesAsync();
             }
         }
+
+        
     }
 }
 
