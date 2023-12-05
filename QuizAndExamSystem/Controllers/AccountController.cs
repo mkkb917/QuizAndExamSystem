@@ -255,26 +255,28 @@ namespace ExamSystem.Controllers
         public async Task<IActionResult> SchoolProfile(string id)
         {
             var schooldata = await _context.SchoolInfos.FirstOrDefaultAsync(u => u.Id == id);
-            var obj = new SchoolVM()
+            _logger.LogInformation("School Profile page is accessed by {0}", User.Identity.Name);
+            if (schooldata == null)
             {
-                Id = id,
-                //school information
-                SchoolType = schooldata.SchoolType,
-                SchoolName = schooldata.SchoolName,
-                SchoolCode = schooldata.SchoolCode,
-                SchoolAddress = schooldata.SchoolAddress,
-                SchoolContactNumber = schooldata.SchoolContactNumber,
-                SchoolDescription = schooldata.SchoolDescription,
-                SchoolEmail = schooldata.SchoolEmail,
-                SchoolLogo = schooldata.SchoolLogo,
-            };
-            if (obj == null)
-            {
-                TempData["error"] = "UserDetial is empty";
-                return RedirectToAction(nameof(NotFound));
+                return View(new SchoolVM());
             }
-            _logger.LogInformation("School Profile page of Account Contorller is accessed by {0}", User.Identity.Name);
-            return View(obj);
+            else
+            {
+                var obj = new SchoolVM()
+                {
+                    Id = id,
+                    //school information
+                    SchoolType = schooldata.SchoolType,
+                    SchoolName = schooldata.SchoolName,
+                    SchoolCode = schooldata.SchoolCode,
+                    SchoolAddress = schooldata.SchoolAddress,
+                    SchoolContactNumber = schooldata.SchoolContactNumber,
+                    SchoolDescription = schooldata.SchoolDescription,
+                    SchoolEmail = schooldata.SchoolEmail,
+                    SchoolLogo = schooldata.SchoolLogo,
+                };
+                return View(obj);
+            }
         }
 
         // edit School profile
@@ -415,12 +417,13 @@ namespace ExamSystem.Controllers
                 if (role == UserRoles.Teacher)
                 {
                     await _userManager.AddToRoleAsync(newUser, UserRoles.Teacher);
+                    _logger.LogInformation("Role Teacher is assigned to {0}", User.Identity.Name);
                     return RedirectToAction("Login", "Account");
                 }
                 else if (role == UserRoles.Student)
                 {
                     await _userManager.AddToRoleAsync(newUser, UserRoles.Student);
-                    _logger.LogInformation("New user created asid {0}", User.Identity.Name);
+                    _logger.LogInformation("Role Student is assigned to {0}", User.Identity.Name);
                     return RedirectToAction("Login", "Account");
                 }
             }
@@ -649,7 +652,7 @@ namespace ExamSystem.Controllers
                     await _signInManager.SignInAsync(user, isPersistent: false);
 
                     _logger.LogInformation("External Login attempt of Account Contorller is  by {0}", User.Identity.Name);
-                    returnUrl = returnUrl ?? Url.Content("~/Account/EditProfile/"+user.Id);
+                    returnUrl = Url.Content("~/Account/EditProfile/"+user.Id);
 
                     return LocalRedirect(returnUrl);
                 }

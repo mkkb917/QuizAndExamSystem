@@ -96,7 +96,11 @@ namespace ExamSystem.Controllers
             return new JsonResult(false);
         }
 
-
+        public IActionResult PageSetting()
+        {
+            _logger.LogInformation("Pagesetting page is accessed by {0}", User.Identity.Name);
+            return View();
+        }
 
         [HttpPost]
         public async Task<IActionResult> SavePairingData([FromBody] List<Dictionary<string, string>> entities)
