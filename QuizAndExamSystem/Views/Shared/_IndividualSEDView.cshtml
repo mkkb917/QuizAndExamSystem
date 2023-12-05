@@ -7,9 +7,9 @@
 }
 
 
-<div class="col-lg-3 col-sm-5 col-12 filter @category">
+<div class="filter @category">
     <div class="card" data-string="{{@Model.IssuedBy}}{{@Model.Title}}{{@Model.Date}}{{@category.ToString()}}">
-        <a href="@WC.PDF_SED_Path@Model.FileName" target="_blank">
+        <a href="@WC.PDF_SED_Path@Model.FileName" target="_blank" class="text-decoration-none" >
             <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light" data-mdb-ripple-color="light">
                 <img src="@WC.PDF_SED_Path@Model.FileFaceImage" alt="Card image cap" width="100%" height="200px">
             </div>

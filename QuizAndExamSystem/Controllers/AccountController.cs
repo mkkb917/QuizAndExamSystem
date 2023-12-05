@@ -8,24 +8,30 @@ using System.Security.Claims;
 using ExamSystem.Data.Static;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using NuGet.Packaging.Signing;
 using ExamSystem.Filters;
 using ExamSystem.Models;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Text;
+using ExamSystem.Data.Interface;
 
 namespace ExamSystem.Controllers
 {
     [BreadcrumbActionFilter]
     public class AccountController : Controller
     {
+        private readonly ILogger<AccountController> _logger;
+        private readonly IEmailService _emailservice;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly AppDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;    // for including WC constant paths
 
         //constructor
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, AppDbContext context, IWebHostEnvironment webHostEnvironment)
+        public AccountController(ILogger<AccountController> logger, IEmailService emailservice, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, AppDbContext context, IWebHostEnvironment webHostEnvironment)
         {
+            _logger = logger;
+            _emailservice = emailservice;
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
@@ -43,6 +49,7 @@ namespace ExamSystem.Controllers
             {
                 return NotFound();
             }
+            _logger.LogInformation("All User page of Account Contorller is accessed by {0}", User.Identity.Name);
             return View(user);
         }
         public async Task<IActionResult> AllProfiles()
@@ -52,6 +59,7 @@ namespace ExamSystem.Controllers
             {
                 return NotFound();
             }
+            _logger.LogInformation("All User profiles page of Account Contorller is accessed by {0}", User.Identity.Name);
             return View(obj);
         }
 
@@ -61,10 +69,13 @@ namespace ExamSystem.Controllers
         public async Task<IActionResult> Profile(string id)
         {
             var userdata = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id);
+            // Get the role names for the user
+            var roleNames = await _userManager.GetRolesAsync(userdata);
+            string? role = roleNames.FirstOrDefault();  // Now 'roles' is a list of role names the user belongs to
             var profile = new ProfileVM()
             {
                 Id = userdata.Id,
-
+                Role = role,
                 //profile information
                 FirstName = userdata.FirstName,
                 LastName = userdata.LastName,
@@ -97,7 +108,7 @@ namespace ExamSystem.Controllers
                 TempData["error"] = "UserDetial is empty";
                 return RedirectToAction(nameof(NotFound));
             }
-
+            _logger.LogInformation("User profile page of Account Contorller is accessed by {0}", User.Identity.Name);
             return View(profile);
         }
 
@@ -107,9 +118,14 @@ namespace ExamSystem.Controllers
         public async Task<IActionResult> EditProfile(string id)
         {
             var userdata = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id);
+            // Get the role names for the user
+            var roleNames = await _userManager.GetRolesAsync(userdata);
+            string? role = roleNames.FirstOrDefault();  // Now 'roles' is a list of role names the user belongs to
+
             var profile = new ProfileVM()
             {
                 Id = userdata.Id,
+                Role = role,
                 //profile information
                 FirstName = userdata.FirstName,
                 LastName = userdata.LastName,
@@ -141,6 +157,7 @@ namespace ExamSystem.Controllers
                 TempData["error"] = "UserDetial is empty";
                 return RedirectToAction(nameof(NotFound));
             }
+            _logger.LogInformation("Edit profile page of Account Contorller is accessed by {0}", User.Identity.Name);
             return View(profile);
         }
 
@@ -213,6 +230,24 @@ namespace ExamSystem.Controllers
                 //commet changes to database
                 await _userManager.UpdateAsync(user);
             }
+                //check the selected role and assign to it
+                var roleNames = await _userManager.GetRolesAsync(user);
+                string? myrole = roleNames.FirstOrDefault();
+            if (string.IsNullOrEmpty(myrole))
+            {
+                string role = model.Role;
+                if (role == UserRoles.Teacher)
+                {
+                    await _userManager.AddToRoleAsync(user, UserRoles.Teacher);
+                    _logger.LogInformation("Teacher role is assigned in profile to {0}", user.UserName);
+                }
+                else if (role == UserRoles.Student)
+                {
+                    await _userManager.AddToRoleAsync(user, UserRoles.Student);
+                    _logger.LogInformation("Student role is assigned in profile to {0}", user.UserName);
+                }
+            }
+            _logger.LogInformation("Profile is successfully modified by {0}", User.Identity.Name);
             return RedirectToAction("Profile", new { @id = model.Id });
         }
 
@@ -238,6 +273,7 @@ namespace ExamSystem.Controllers
                 TempData["error"] = "UserDetial is empty";
                 return RedirectToAction(nameof(NotFound));
             }
+            _logger.LogInformation("School Profile page of Account Contorller is accessed by {0}", User.Identity.Name);
             return View(obj);
         }
 
@@ -265,6 +301,7 @@ namespace ExamSystem.Controllers
                 TempData["error"] = "No School profile found";
                 return RedirectToAction(nameof(NotFound));
             }
+            _logger.LogInformation("Edit School Profile page of Account Contorller is accessed by {0}", User.Identity.Name);
             return View(obj);
         }
         [HttpPost]
@@ -323,15 +360,18 @@ namespace ExamSystem.Controllers
 
                 //commet the changes to database
                 await _context.SaveChangesAsync();
+                _logger.LogInformation("School Profile is updated/created by {0}", User.Identity.Name);
             }
             return RedirectToAction("SchoolProfile", new { @id = model.Id });
         }
 
 
         #region Register
+
         public IActionResult Register()
         {
             // pass the view model to the view
+            _logger.LogInformation("Register page of Account Contorller is accessed by {0}", User.Identity.Name);
             return View(new RegisterVM());
         }
 
@@ -345,13 +385,14 @@ namespace ExamSystem.Controllers
             var user = await _userManager.FindByEmailAsync(registerVM.Email);
             if (user != null)
             {
-                TempData["error"] = "User already exists";
+                TempData["error"] = "Email already registered. Please try another email address";
                 return RedirectToAction(nameof(Login));
             }
 
             //extract username from email address adn set it
             string? s = registerVM.Email;
             string userIdFromEmail = s.Substring(0, s.IndexOf('@'));
+            string? returnUrl = Url.Content("~/");
 
             // register new user 
             var newUser = new ApplicationUser()
@@ -367,8 +408,8 @@ namespace ExamSystem.Controllers
             // if new user successfully regsiter then assign a role and redirect to profile section
             if (newUserResponce.Succeeded)
             {
-                //send an activation link to the newly registered user
-
+                _logger.LogInformation("New user created with new email address and password");
+                await ConfirmEmailSend(registerVM, returnUrl, newUser);
                 //check the selected role and assign to it
                 var role = registerVM.Role;
                 if (role == UserRoles.Teacher)
@@ -379,24 +420,77 @@ namespace ExamSystem.Controllers
                 else if (role == UserRoles.Student)
                 {
                     await _userManager.AddToRoleAsync(newUser, UserRoles.Student);
+                    _logger.LogInformation("New user created asid {0}", User.Identity.Name);
                     return RedirectToAction("Login", "Account");
                 }
             }
             TempData["error"] = "Something bad happen.... Please try again after some time ";
             return View(registerVM);
         }
+
+        [HttpGet]
+        public async Task ConfirmEmailSend(RegisterVM registerVM, string? returnUrl, ApplicationUser? newUser)
+        {
+            var user = new ApplicationUser();
+            user.Email = newUser == null ? registerVM.Email : newUser.Email;
+            string returnAddress;
+            returnAddress = returnUrl == null ? returnAddress = "~/" : returnAddress = returnUrl;
+
+
+            //send an activation link to the newly registered user
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(System.Text.Encoding.UTF8.GetBytes(code));
+            var callbackUrl = Url.ActionLink(
+                action: "ConfirmEmail",
+                controller: "Account",
+                values: new { userId = newUser.Id, returnUrl = returnAddress },
+                protocol: Request.Scheme
+                );
+
+
+            _logger.LogInformation("email with confirmation link is send to registered user");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ConfirmEmail(string userId, string code)
+        {
+            if (userId == null || code == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{userId}'.");
+            }
+
+            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+            var result = await _userManager.ConfirmEmailAsync(user, code);
+            if (!result.Succeeded)
+            {
+                _logger.LogInformation("Error confirming email for user with ID {0}:", userId);
+                throw new InvalidOperationException($"Error confirming email for user with ID '{userId}':");
+            }
+
+            return View("ConfirmEmail");
+        }
+
         #endregion
+
 
         #region Login
 
 
-        public async Task<IActionResult> LoginAsync()/*string? returnUrl=null)*/
+        public async Task<IActionResult> LoginAsync(string? returnUrl=null)
         {
+            _logger.LogInformation("login function called");
             LoginVM model = new LoginVM()
             {
                 ReturnUrl = Url.Content("~/"),
                 ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList()
             };
+            _logger.LogInformation("Login page of Account Contorller is accessed ");
             return View(model);
         }
 
@@ -422,10 +516,18 @@ namespace ExamSystem.Controllers
             //var user = await _userManager.Users.FirstOrDefaultAsync(x => x.NormalizedEmail == normalizedEmail);
             if (user != null)
             {
+                //check if user email is not confirmed
+                if (_userManager.Options.SignIn.RequireConfirmedAccount && !await _userManager.IsEmailConfirmedAsync(user))
+                {
+                    TempData["error"] = "Email address is not confirmed yet. Please confirm your emailaddress and try again";
+                    return View(loginVM);
+                }
+                //check the password
                 var passwordcheck = await _userManager.CheckPasswordAsync(user, loginVM.Password);
                 if (passwordcheck)
                 {
                     var result = await _signInManager.PasswordSignInAsync(user, loginVM.Password, loginVM.RememberMe, false);
+                    _logger.LogInformation("User logged in successfully");
                     if (result.Succeeded)
                     {
                         var claims = new List<Claim>
@@ -448,6 +550,15 @@ namespace ExamSystem.Controllers
                         //}
 
                     }
+                    if (result.RequiresTwoFactor)
+                    {
+                        return RedirectToAction("LoginWith2FA", "Account");
+                    }
+                    if (result.IsLockedOut)
+                    {
+                        _logger.LogWarning("User account has been locked out");
+                        return RedirectToAction("UserLocked", "Account");
+                    }
                 }
                 // if password are not correct   
                 TempData["error"] = "Wrong Credentials!, Please try again";
@@ -466,6 +577,7 @@ namespace ExamSystem.Controllers
                                     new { ReturnUrl = returnUrl });
 
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+            _logger.LogInformation("External Login page of Account Contorller is accessed by");
 
             return new ChallengeResult(provider, properties);
         }
@@ -474,12 +586,12 @@ namespace ExamSystem.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ExternalLoginCallback(string? returnUrl = null, string? remoteError = null)
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
+            
 
             LoginVM loginVM = new LoginVM
             {
-                //ReturnUrl = returnUrl,
-                //ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList()
+                ReturnUrl = returnUrl,
+                ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList()
             };
 
             if (remoteError != null)
@@ -536,6 +648,9 @@ namespace ExamSystem.Controllers
                     await _userManager.AddLoginAsync(user, info);
                     await _signInManager.SignInAsync(user, isPersistent: false);
 
+                    _logger.LogInformation("External Login attempt of Account Contorller is  by {0}", User.Identity.Name);
+                    returnUrl = returnUrl ?? Url.Content("~/Account/EditProfile/"+user.Id);
+
                     return LocalRedirect(returnUrl);
                 }
 
@@ -545,14 +660,70 @@ namespace ExamSystem.Controllers
                 return View("Error");
             }
         }
+
+
+        public IActionResult UserLocked()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Loginwith2FA()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LoginWith2FA(LoginWith2FAVM model, bool rememberMe, string returnUrl = null)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            if (user == null)
+            {
+                throw new InvalidOperationException($"Unable to load two-factor authentication user.");
+            }
+
+            var authenticatorCode = model.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
+
+            var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, rememberMe, model.RememberMachine);
+
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("User with ID '{UserId}' logged in with 2fa.", user.Id);
+                return LocalRedirect(returnUrl ?? Url.Content("~/"));
+            }
+            else if (result.IsLockedOut)
+            {
+                _logger.LogWarning("User with ID '{UserId}' account locked out.", user.Id);
+                return RedirectToAction(nameof(UserLocked));
+            }
+            else
+            {
+                _logger.LogWarning("Invalid authenticator code entered for user with ID '{UserId}'.", user.Id);
+                ModelState.AddModelError(string.Empty, "Invalid authenticator code.");
+                return View();
+            }
+        }
+
+
         ///Login section end here
+
+
         #endregion
+
 
         #region Forget Password adn Recovery
         //account/forgetpassword
         [AllowAnonymous]
         public IActionResult ForgotPassword()
         {
+            _logger.LogInformation("Forget page of Account Contorller is accessed by {0}", User.Identity.Name);
+
             return View();
         }
 
@@ -576,15 +747,16 @@ namespace ExamSystem.Controllers
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var link = Url.Action("ResetPassword", "Account", new { token, email = user.Email }, Request.Scheme);
 
-                EmailHelper emailHelper = new EmailHelper();
-                bool emailResponse = emailHelper.SendEmailPasswordReset(user.Email, link);
-
-                if (emailResponse)
-                    return RedirectToAction("ForgotPasswordConfirmation");
-                else
+                try
                 {
+                    await _emailservice.SendEmailAsync(user.Email, "ResetPassword", link);
+                    _logger.LogInformation("forget page of Account Contorller is accessed by {0}", User.Identity.Name);
+                    return RedirectToAction("ForgotPasswordConfirmation");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to send reset password email.");
                     TempData["error"] = "Something gone wrong! reset email not sent";
-                    // log email failed 
                     return View();
                 }
             }
@@ -602,6 +774,8 @@ namespace ExamSystem.Controllers
         public IActionResult ResetPassword(string token, string email)
         {
             var model = new ResetPasswordVM { Token = token, Email = email };
+            _logger.LogInformation("reset Password page of Account Contorller is accessed by {0}", User.Identity.Name);
+
             return View(model);
         }
 
@@ -621,6 +795,7 @@ namespace ExamSystem.Controllers
             {
                 foreach (var error in resetPassResult.Errors)
                     ModelState.AddModelError(error.Code, error.Description);
+                _logger.LogInformation("Password is reset by {0}", User.Identity.Name);
                 return View();
             }
 
@@ -641,6 +816,9 @@ namespace ExamSystem.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
+            _logger.LogInformation("Logout page of account controller is accessed");
+            _logger.LogInformation("User is logged out successfully");
+
             return RedirectToAction("Index", "Home");
         }
         #endregion

@@ -23,7 +23,7 @@
                         </div>
 
                         <div class="title-text">
-                            <h3>Sign in to To Your Account</h3>
+                            <h3>Sign in to your Account</h3>
                         </div>
                         <form  asp-controller="Account" asp-action="Login" method="post" new { returnUrl = Context.Request.QueryString["ReturnUrl"]}> @*asp-route-returnurl="@Model.ReturnUrl">*@
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -51,18 +51,17 @@
                             <!-- Submit Button -->
                             <input class="btn btn-main-sm btn-outline-primary" type="submit" value="Login">
                         </form>
-                        <div class="new-acount">
-                            <a asp-controller="Account" asp-action="ForgotPassword">Forget your password?</a>
+                        <div class="new-acount ml-4">
+                            <a class="link float-left" asp-controller="Account" asp-action="ForgotPassword">Forget your password?</a> 
+                            <a class="link float-right" asp-controller="Account" asp-action="ConfirmEmailSend" asp-route-user="@Model.Email">Send confirmation Email</a>
                             <p>Don't Have an account? <a asp-controller="Account" asp-action="Signup"> SIGN UP</a></p>
                         </div>
 
-
+                        <!-- External login code-->
                         <div class="title-text">
                             <h3>Sign In Using</h3>
                         </div>
-
-                        <!-- External login code-->
-                    @*    @{
+                        @{
                             if ((Model.ExternalLogins?.Count ?? 0) == 0)
                             {
                                 <div>No external logins configured</div>
@@ -82,14 +81,11 @@
                                     </div>
                                 </form>
                             }
-                        }*@
+                        }
                     </div>
-
-
                 </div>
             </div>
         </div>
     </div>
-  
 </section>
 

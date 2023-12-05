@@ -1,0 +1,40 @@
+﻿@model IEnumerable<ExamSystem.Models.SED>
+
+
+
+@if (Model != null)
+{
+
+    <div class="container">
+        <div class="row">
+            <div class="feature-content">
+                <!-- Feature Title -->
+                <h2>
+                    Find all <a asp-controller="SED" asp-action="Index">Orders and Notifications</a> of School Education department
+                </h2>
+                <!-- Feature Description -->
+                <p>
+                    Finding School Education Department orders and notification for official and procedural requirement
+                    is very tough and time taking. OPEGS offers a seperate section for the ease of all Teachers and employees 
+                    to find the Orders, Notifications, Judgements and Policies with the queries by date, time, issued by and 
+                    title and description etc. We offer alot of official documents that are free to download in its origional 
+                    form. 😊
+                </p>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            @foreach (var item in Model.Take(6))
+            {
+                <div class="col-lg-3 col-sm-5 col-12 ">
+                    @* partial view of all SED files based on Code*@
+                    <partial name="_IndividualSEDView" model="item" />
+                </div>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <h4 class="mt-4 mb-5"><strong>No Data found</strong></h4>
+}

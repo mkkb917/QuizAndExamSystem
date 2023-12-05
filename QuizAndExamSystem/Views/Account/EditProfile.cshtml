@@ -78,6 +78,27 @@
                             <hr>
                             <div class="row">
                                 <div class="col-sm-4">
+                                    <h6 class="mb-0">Profile Type:</h6>
+                                </div>
+                                <div class="col-sm-8 text-secondary">
+                                    @if (string.IsNullOrEmpty(Model.Role))
+                                    {
+                                        <select id="Role" asp-for="Role" class="form-control">
+                                            <option value="">Select Role</option>
+                                            <option value="Teacher">Teacher</option>
+                                            <option value="Student">Student</option>
+                                        </select>
+                                        <span asp-validation-for="Role" class="text-danger"></span>
+                                    }else
+                                    {
+                                        <input id="Role" asp-for="Role" type="text" class="form-control" readonly="readonly"/>
+                                        <span asp-validation-for="Role" class="text-danger"></span>
+                                    }
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-4">
                                     <h6 class="mb-0">Gender:</h6>
                                 </div>
                                 <div class="col-sm-8 text-secondary">

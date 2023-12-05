@@ -24,13 +24,15 @@
                 <input type="text" class="search" style="width:100%" placeholder="Search item...">
             </div>
         </div>
-        
+
         <br>
-        <div class="row" >
+        <div class="row">
             @foreach (var item in Model)
             {
-                // partial view of all SED files based on Code
-                <partial name="_IndividualSEDView" model="item" />
+                <div class="col-lg-3 col-sm-5 col-12 ">
+                    @*partial view of all SED files based on Code*@
+                    <partial name="_IndividualSEDView" model="item" />
+                </div>
             }
         </div>
     </div>
@@ -43,10 +45,10 @@ else
 
 @section Scripts{
     <script>
-            //src = "~/js/SearchFunction";
+        //src = "~/js/SearchFunction";
 
-        $(document).ready(function() {
-            $(".filter-button").click(function() {
+        $(document).ready(function () {
+            $(".filter-button").click(function () {
                 var value = $(this).attr('data-filter');
                 if (value == "all") {
                     $('.filter').show('1000');
@@ -58,8 +60,8 @@ else
             });
         });
 
-        
-            //search code for search bar    ok
+
+        //search code for search bar    ok
         $(".search").on("keyup", function () {
             var input = $(this).val().toUpperCase();
 

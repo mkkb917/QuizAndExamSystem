@@ -13,17 +13,20 @@ namespace ExamSystem.Controllers
     [BreadcrumbActionFilter]
     public class QuestionController : Controller
     {
+        private readonly ILogger<QuestionController> _logger;
         private readonly IQuestionService _service;
         private readonly Data.AppDbContext _context;
 
-        public QuestionController(IQuestionService service, Data.AppDbContext context) //, /*DbContext context*/)
+        public QuestionController(ILogger<QuestionController> logger,IQuestionService service, Data.AppDbContext context) //, /*DbContext context*/)
         {
+            _logger = logger;
             _service = service;
             _context = context;
         }
         // GET: Question
         public async Task<IActionResult> Index(int id)
         {
+            _logger.LogInformation("Index page of Question Controller is accessed by {0}", User.Identity.Name);
             var obj = new QuestionIndexVM();
             if (id == 0)
             {
@@ -61,17 +64,20 @@ namespace ExamSystem.Controllers
         public JsonResult Subject(int id)
         {
             var sl = _context.Subjects.Where(s => s.GradeId == id).ToList();
+            _logger.LogInformation("Json Subjcts of Question Controller is accessed by {0}", User.Identity.Name);
             return new JsonResult(sl);
         }
         public JsonResult Topic(int id)
         {
             var tl = _context.Topics.Where(s => s.SubjectId == id).ToList();
+            _logger.LogInformation("Json Topics of Question Controller is accessed by {0}", User.Identity.Name);
             return new JsonResult(tl);
         }
 
         //GET: Question/Details/5
         public async Task<IActionResult> Details(int id)
         {
+            _logger.LogInformation("Details page of Question Controller is accessed by {0}", User.Identity.Name);
             //var SubjectText = await _service.GetByIdAsync(id);
             //TempData["SubjectText"] = SubjectText;
             var ObjQuestion = await _service.GetQuesDetailById(id);
@@ -145,6 +151,7 @@ namespace ExamSystem.Controllers
                 ViewBag.Subjects = new SelectList(newQuestionDropdown.Subjects, "Id", "SubjectText");
                 ViewBag.Topics = new SelectList(newQuestionDropdown.Topics, "Id", "TopicText");
             }
+            _logger.LogInformation("Create page of Question Controller is accessed by {0}", User.Identity.Name);
             return View();
         }
 
@@ -176,6 +183,8 @@ namespace ExamSystem.Controllers
                 ViewBag.Grades = new SelectList(newQuestionDropdown.Grades, "Id", "GradeText");
                 ViewBag.Subjects = new SelectList(newQuestionDropdown.Subjects, "Id", "SubjectText");
                 ViewBag.Topics = new SelectList(newQuestionDropdown.Topics, "Id", "TopicText");
+                _logger.LogInformation("Create page of Question Controller is accessed by {0}", User.Identity.Name);
+                _logger.LogInformation("The new Record is successfully created by {0}", User.Identity.Name);
                 return View(model);
             }
             catch (Exception ex)
@@ -191,6 +200,7 @@ namespace ExamSystem.Controllers
         {
             try
             {
+                _logger.LogInformation("Edit page of Question Controller is accessed by {0}", User.Identity.Name);
                 var ObjQuestion = await _service.GetQuesDetailById(id);
                 if (ObjQuestion == null) return View("NotFound");
 
@@ -238,7 +248,8 @@ namespace ExamSystem.Controllers
         {
             try
             {
-                if(ModelState.IsValid && id == model.Id)
+                _logger.LogInformation("Edit page of Question Controller is accessed by {0}", User.Identity.Name);
+                if (ModelState.IsValid && id == model.Id)
                 {
                     //model.CorrectAnswer
                     int val = Convert.ToInt32(frm["option"]);
@@ -250,6 +261,7 @@ namespace ExamSystem.Controllers
                         model.CorrectAnswerL = model.GetType().GetProperty($"ChoiceTitleL{val}").GetValue(model).ToString();
                     }
                     await _service.UpdateQuestion(id,model);
+                    _logger.LogInformation("The record is successfully modified by {0}", User.Identity.Name);
                     return RedirectToAction(nameof(Index), new { @id = model.TopicId });
                 }
 
@@ -276,6 +288,7 @@ namespace ExamSystem.Controllers
         //Get: Question/approve
         public async Task<IActionResult> Approve()
         {
+
             Status _status = Status.Pending;
             var obj = await _service.GetAllQuestionsByStatus(_status);
             var responce = new QuestionIndexVM()
@@ -283,6 +296,7 @@ namespace ExamSystem.Controllers
 
                 Questions = obj,
             };
+            _logger.LogInformation("Approve page of Question Controller is accessed by {0}", User.Identity.Name);
             return View(responce);
         }
 
@@ -320,6 +334,7 @@ namespace ExamSystem.Controllers
                 CorrectAnswerL = ObjQuestion.Choice.AnswerL,
 
             };
+            _logger.LogInformation("Delete page of Question Controller is accessed by {0}", User.Identity.Name);
             return View(responce);
         }
 
@@ -331,6 +346,8 @@ namespace ExamSystem.Controllers
             var ObjQuestion = await _service.GetByIdAsync(id);
             if (ObjQuestion == null) return View("NotFound");
             await _service.DeleteQuestion(id);
+            _logger.LogInformation("Delete page of Question Controller is accessed by {0}", User.Identity.Name);
+            _logger.LogInformation("Record is successfully deleted by {0}", User.Identity.Name);
             return RedirectToAction(nameof(Index));
         }
 

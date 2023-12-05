@@ -13,11 +13,13 @@ namespace ExamSystem.Controllers
     [BreadcrumbActionFilter]
     public class NotificationsController : Controller
     {
+        private readonly ILogger<NotificationsController> _logger;
         private readonly INotificationService _service;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly UserManager<ApplicationUser> _userManager;
-        public NotificationsController(INotificationService service, IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> userManager)
+        public NotificationsController(ILogger<NotificationsController> logger, INotificationService service, IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> userManager)
         {
+            _logger = logger;
             _service = service;
             _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
@@ -27,6 +29,7 @@ namespace ExamSystem.Controllers
         // list all notifications
         public async Task<IActionResult> Index()
         {
+            _logger.LogInformation("Index page of Notification Controller is accessed by {0}", User.Identity.Name);
             var ObjAllNotifications = await _service.GetAllNotification();
             return View(ObjAllNotifications);
         }
@@ -34,6 +37,7 @@ namespace ExamSystem.Controllers
         // all notification by user
         public async Task<IActionResult> UserNotification()
         {
+            _logger.LogInformation(" User Index page of Notification Controller is accessed by {0}", User.Identity.Name);
             var user = _userManager.GetUserName(User);
             var obj = await _service.GetAllNotificationByUser(user);
             return View(obj);
@@ -43,6 +47,7 @@ namespace ExamSystem.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            _logger.LogInformation("Create page of Notification Controller is accessed by {0}", User.Identity.Name);
             var newNotification = new Notification();
             return View(newNotification);
             //return View();
@@ -69,7 +74,8 @@ namespace ExamSystem.Controllers
 
                 // pass the model and files to notification service
                 await _service.AddNewNotification(notification, files);
-
+                _logger.LogInformation("Create page of Notification Controller is accessed by {0}", User.Identity.Name);
+                _logger.LogInformation("New record is successfully created by {0}", User.Identity.Name);
                 return RedirectToAction("UserNotification", new { @id = User.Identity.Name });
             }
             return View("NotFound");
@@ -98,6 +104,7 @@ namespace ExamSystem.Controllers
                 UpdatedOn = ObjNotification.UpdatedOn,
                 UpdatedBy = ObjNotification.UpdatedBy
             };
+            _logger.LogInformation("Edit page of Notification Controller is accessed by {0}", User.Identity.Name);
             return View(responce);
         }
         //[Bind("Id", "NotificationFile", "NotificationDate", "IssuedBy", "Status", "Code", "Description", "")]
@@ -107,11 +114,13 @@ namespace ExamSystem.Controllers
             var Obj = await _service.GetByIdAsync(id);
             if (ModelState.IsValid)
             {
+                _logger.LogInformation("Edit page of Notification Controller is accessed by {0}", User.Identity.Name);
                 //grab the file
                 var files = Request.Form.Files;
                 string webRootPath = _webHostEnvironment.WebRootPath;
                 string Upload = webRootPath + WC.NotificationPath;
                 var oldfile = Path.Combine(webRootPath, notification.NotificationFile);
+                _logger.LogInformation("record is updated/ modified successfully by {0}", User.Identity.Name);
                 if (files.Count > 0)
                 {
                     //check if the file already exists then delete the old file
@@ -128,6 +137,7 @@ namespace ExamSystem.Controllers
                         files[0].CopyTo(fileStream);
                     }
                     await _service.UpdateNotification(id, notification, fileName + extension);
+
                     return RedirectToAction("UserNotification", new { @id = User.Identity.Name });
                 }
                 else
@@ -143,6 +153,7 @@ namespace ExamSystem.Controllers
         //Post: /Delete/id
         public async Task<IActionResult> Delete(int id)
         {
+            _logger.LogInformation("Delete page of Notification Controller is accessed by {0}", User.Identity.Name);
             var Obj = await _service.GetByIdAsync(id);
 
             // delete the saved file from directory
@@ -155,6 +166,7 @@ namespace ExamSystem.Controllers
             // delete the record from database
             if (Obj == null) return View("NotFound");
             await _service.DeleteAsync(id);
+            _logger.LogInformation("the Record is successfully deleted by {0}", User.Identity.Name);
             return RedirectToAction("UserNotification", new { @id = User.Identity.Name });
 
         }

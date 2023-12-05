@@ -12,11 +12,13 @@ namespace ExamSystem.Controllers
     [BreadcrumbActionFilter]
     public class SEDController : Controller
     {
+        private readonly ILogger<SEDController> _logger;
         private readonly ISEDService _service;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly UserManager<ApplicationUser> _userManager;
-        public SEDController(ISEDService service, IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> userManager)
+        public SEDController(ILogger<SEDController> logger ,ISEDService service, IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> userManager)
         {
+            _logger = logger;
             _service = service;
             _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
@@ -25,6 +27,7 @@ namespace ExamSystem.Controllers
         public async Task<ActionResult> Index()
         {
             var Obj = await _service.GetAllFiles();
+            _logger.LogInformation("Index page of SED Controller is accessed by {0}", User.Identity.Name);
             return View(Obj);
         }
 
@@ -33,6 +36,7 @@ namespace ExamSystem.Controllers
         {
             var user = _userManager.GetUserName(User);
             var obj = await _service.GetAllFilesByUser(user);
+            _logger.LogInformation("User Index page of SED Controller is accessed by {0}", User.Identity.Name);
             return View(obj);
         }
 
@@ -40,6 +44,7 @@ namespace ExamSystem.Controllers
         public ActionResult Create()
         {
             var obj = new SED();
+            _logger.LogInformation("Create page of SED Controller is accessed by {0}", User.Identity.Name);
             return View(obj);
         }
 
@@ -65,8 +70,9 @@ namespace ExamSystem.Controllers
                 // await _service.AddNewFaceFile(files);
 
                 // pass the model and files to notification service
+                _logger.LogInformation("Create page of SED Controller is accessed by {0}", User.Identity.Name);
                 await _service.AddNewFile(sed, files);
-
+                _logger.LogInformation("New record is successfully created by {0}", User.Identity.Name);
 
                 return RedirectToAction("UserSED", new { @id = User.Identity.Name });
             }
@@ -76,7 +82,7 @@ namespace ExamSystem.Controllers
         // GET: SEDsController/Edit/5
         public async Task<ActionResult> Edit(int id)
         {
-
+            _logger.LogInformation("Edit page of SED Controller is accessed by {0}", User.Identity.Name);
             var Obj = await _service.GetByIdAsync(id);
 
             var responce = new SED()
@@ -119,6 +125,8 @@ namespace ExamSystem.Controllers
                     }
                 }
                 await _service.UpdateFile(id, sed, files);
+                _logger.LogInformation("Edit page of SED Controller is accessed by {0}", User.Identity.Name);
+                _logger.LogInformation("Th record is successfully modified by {0}", User.Identity.Name);
                 return RedirectToAction("UserSED", new { @id = User.Identity.Name });
             }
             return View(nameof(NotFound));
@@ -131,10 +139,11 @@ namespace ExamSystem.Controllers
         public async Task<ActionResult> Delete(int id)
         {
             var Obj = await _service.GetByIdAsync(id);
-
+            _logger.LogInformation("Delete page of SED Controller is accessed by {0}", User.Identity.Name);
             // delete the record from database
             if (Obj == null) return View("NotFound");
             await _service.DeleteFile(id);
+            _logger.LogInformation("The Record is successfully deleted by {0}", User.Identity.Name);
             return RedirectToAction("UserSED", new { @id = User.Identity.Name });
         }
 
@@ -144,7 +153,7 @@ namespace ExamSystem.Controllers
         {
             Status _status = Status.Pending;
             var obj = await _service.GetAllFilesByStatus(_status);
-            
+            _logger.LogInformation("Approve page of SED Controller is accessed by {0}", User.Identity.Name);
             return View(obj);
         }
 
@@ -169,6 +178,7 @@ namespace ExamSystem.Controllers
                     }
                 }
                 await _service.UpdateFile(id, sed, files);
+                _logger.LogInformation("record is successfully approved by {0}", User.Identity.Name);
                 return RedirectToAction("UserSED", new { @id = User.Identity.Name });
             }
             return View(nameof(NotFound));

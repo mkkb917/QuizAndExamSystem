@@ -22,12 +22,14 @@ namespace ExamSystem.Controllers
         private readonly Data.AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IQuizService _QuizService;
+        private readonly ILogger<QuizController> _logger;
         private readonly ISubjectService _SubjectService;
-        public QuizController(ISubjectService SubjectService, Data.AppDbContext context, UserManager<ApplicationUser> userManager, IQuizService QuizService)
+        public QuizController(ILogger<QuizController> logger,ISubjectService SubjectService, Data.AppDbContext context, UserManager<ApplicationUser> userManager, IQuizService QuizService)
         {
             _context = context;
             _userManager = userManager;
             _QuizService = QuizService;
+            _logger = logger;
             _SubjectService = SubjectService;
         }
 
@@ -36,12 +38,14 @@ namespace ExamSystem.Controllers
         {
             var newQuestionDropdown = await _context.Grades.OrderBy(t => t.GradeText).ToListAsync();
             ViewBag.Grades = new SelectList(newQuestionDropdown, "Id", "GradeText");
+            _logger.LogInformation("Create page of Quiz Controller is accessed by {0}", User.Identity.Name);
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> QuizView(string? GradeDDL, string? SubjectDDL)
         {
+            _logger.LogInformation("New Quiz page of Quiz Controller is accessed by {0}", User.Identity.Name);
             // get the class and subject DDL selected value
             int selectedClass = Convert.ToInt32(GradeDDL);
             int selectedSubject = Convert.ToInt32(SubjectDDL);
@@ -72,6 +76,7 @@ namespace ExamSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> QuizResult(QuizViewVM model)
         {
+            _logger.LogInformation("Quiz Result page of Quiz Controller is accessed by {0}", User.Identity.Name);
             bool IsCorrect = false;
             int score = 0;
             foreach (var item in model.QuizMcqs)
@@ -123,6 +128,7 @@ namespace ExamSystem.Controllers
         [ActionName("QuizResult")]
         public async Task<ActionResult> QuizResultAsync(int id)
         {
+            _logger.LogInformation("Quiz Results page of Quiz Controller is accessed by {0}", User.Identity.Name);
             var obj = await _QuizService.GetByIdAsync(id);
             return View(obj);
         }
@@ -131,11 +137,12 @@ namespace ExamSystem.Controllers
         public JsonResult Subject(int id)
         {
             var sl = _context.Subjects.Where(s => s.GradeId == id).ToList();
+            _logger.LogInformation("Json Subject of Quiz Controller is accessed by {0}", User.Identity.Name);
             return new JsonResult(sl);
         }
         public JsonResult GetTableData(int id)
         {
-
+            _logger.LogInformation("Json Get Table Data of Quiz Controller is accessed by {0}", User.Identity.Name);
             var query = _context.Topics.Where(s => s.SubjectId == id).ToList();
 
             var objtopiclist = new List<TopicsWithQCountsVM>();
@@ -161,18 +168,22 @@ namespace ExamSystem.Controllers
         {
             var user = _userManager.GetUserName(User);
             var obj = await _QuizService.GetAllQuizesByUser(user);
+            _logger.LogInformation("User Quiz Results of Quiz Controller is accessed by {0}", User.Identity.Name);
             return View(obj);
 
         }
 
         public IActionResult GetAllQuizes()
         {
+            _logger.LogInformation("All Quizes page of Quiz Controller is accessed by {0}", User.Identity.Name);
             return View();
         }
 
         public async Task<IActionResult> Delete(int id)
         {
             await _QuizService.DeleteAsync(id);
+            _logger.LogInformation("Delete page of Quiz Controller is accessed by {0}", User.Identity.Name);
+            _logger.LogInformation("record is successfully deleted by {0}", User.Identity.Name);
             return RedirectToAction("UserQuiz", new {@id = User.Identity.Name});
         }
 

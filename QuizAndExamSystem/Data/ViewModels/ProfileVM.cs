@@ -9,6 +9,7 @@ namespace ExamSystem.Data.ViewModels
     {
         public string?  Id { get; set; }
 
+        public string Role { get; set; } = string.Empty;
         [Display(Name = "First Name:")]
         [DataType(DataType.Text)]
         [MaxLength(255)]

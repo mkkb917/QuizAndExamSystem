@@ -60,7 +60,7 @@
                         </li>
                     </ul>
                 </div>
-                <div class="row gutters-sm">
+                @* <div class="row gutters-sm">
                     <div class="col-sm-12 mb-2">
                         <div class="card h-100">
                             <div class="card-body">
@@ -88,7 +88,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> *@
             </div>
             <div class="col-md-7">
                 <div class="card mb-2">
@@ -99,8 +99,11 @@
                             <div class="col-sm-4">
                                 <h6 class="mb-0">Full Name:</h6>
                             </div>
-                            <div class="col-sm-8 text-secondary">
+                            <div class="col-sm-6 text-primary">
                                 @Model.FirstName &nbsp; @Model.LastName
+                            </div>
+                            <div class="col-sm-2 text-danger">
+                                @Model.Role
                             </div>
                         </div>
                         <hr>
@@ -108,7 +111,7 @@
                             <div class="col-sm-4">
                                 <h6 class="mb-0">CNIC Number:</h6>
                             </div>
-                            <div class="col-sm-8 text-secondary ">
+                            <div class="col-sm-8 text-primary ">
                                 @Model.CNIC
                             </div>
                         </div>
@@ -117,7 +120,7 @@
                             <div class="col-sm-4">
                                 <h6 class="mb-0">Gender:</h6>
                             </div>
-                            <div class="col-sm-8 text-secondary ">
+                            <div class="col-sm-8 text-primary ">
                                 @Model.Gender
                                 @*@Html.DisplayFor(Model=>Model.Gender)*@
                             </div>
@@ -127,7 +130,7 @@
                             <div class="col-sm-4">
                                 <h6 class="mb-0">Qualification:</h6>
                             </div>
-                            <div class="col-sm-8 text-secondary">
+                            <div class="col-sm-8 text-primary">
                                 @Model.DegreeName
                             </div>
                         </div>
@@ -136,7 +139,7 @@
                             <div class="col-sm-4">
                                 <h6 class="mb-0">Phone:</h6>
                             </div>
-                            <div class="col-sm-8 text-secondary">
+                            <div class="col-sm-8 text-primary">
                                 @Model.ContactNo
                             </div>
                         </div>
@@ -145,7 +148,7 @@
                             <div class="col-sm-4">
                                 <h6 class="mb-0">Mobile:</h6>
                             </div>
-                            <div class="col-sm-8 text-secondary">
+                            <div class="col-sm-8 text-primary">
                                 @Model.CellPhoneNo
                             </div>
                         </div>
@@ -154,7 +157,7 @@
                             <div class="col-sm-4">
                                 <h6 class="mb-0">Whatsapp:</h6>
                             </div>
-                            <div class="col-sm-8 text-secondary">
+                            <div class="col-sm-8 text-primary">
                                 @Model.WhatsApp
                             </div>
                         </div>
@@ -163,7 +166,7 @@
                             <div class="col-sm-4">
                                 <h6 class="mb-0">Address:</h6>
                             </div>
-                            <div class="col-sm-8 text-secondary">
+                            <div class="col-sm-8 text-primary">
                                 @Model.HomeAddress , @Model.PostalCode, @*@Enum.GetName(typeof(Model.State))*@, @Html.DisplayFor(Model=>Model.Country)
                             </div>
                         </div>

@@ -15,10 +15,12 @@ namespace ExamSystem.Controllers
     [BreadcrumbActionFilter]
     public class SubjectController : Controller
     {
+        private readonly ILogger<SubjectController> _logger;
         private readonly ISubjectService _service;
 
-        public SubjectController(ISubjectService service)
+        public SubjectController(ILogger<SubjectController> logger,ISubjectService service)
         {
+            _logger = logger;
             _service = service;
         }
 
@@ -32,7 +34,7 @@ namespace ExamSystem.Controllers
 
         public async Task<IActionResult> Index()
         {
-
+            _logger.LogInformation("Index page of Subject Controller is accessed by {0}", User.Identity.Name);
             var objSubjectVm = new SubjectsIndexVM();
 
             objSubjectVm.SubjectVm = (List<Subject>?)await _service.GetAllAsync();
@@ -62,7 +64,7 @@ namespace ExamSystem.Controllers
             var Grade = await _service.GetGradeById(id);
             objSubjectVm.GradeId = Grade.Id;
             objSubjectVm.GradeName = Grade.GradeText;
-
+            _logger.LogInformation("Subject List page of Subject Controller is accessed by {0}", User.Identity.Name);
             return View(objSubjectVm);
         }
 
@@ -79,8 +81,9 @@ namespace ExamSystem.Controllers
 
                 var GradesListData = await _service.GetGradesList();
                 ViewBag.Grades = new SelectList(GradesListData.Grades, "Id", "GradeText");
-            }
 
+            }
+            _logger.LogInformation("Create page of Subject Controller is accessed by {0}", User.Identity.Name);
             return View();
         }
 
@@ -115,6 +118,7 @@ namespace ExamSystem.Controllers
             var uploadImage = _service.DeleteOldAndUploadNewFile(files, null);
             subject.Image = uploadImage;
             await _service.AddNewSubject(subject);
+            _logger.LogInformation("New record is successfully created by {0}", User.Identity.Name);
             return RedirectToAction("SubjectsList", new { @id = subject.GradeId });
         }
 
@@ -139,6 +143,7 @@ namespace ExamSystem.Controllers
             };
             var GradesListData = await _service.GetGradesList();
             ViewBag.Grades = new SelectList(GradesListData.Grades, "Id", "GradeText");
+            _logger.LogInformation("Edit page of Subject Controller is accessed by {0}", User.Identity.Name);
             return View(responce);
         }
 
@@ -172,6 +177,7 @@ namespace ExamSystem.Controllers
                 subject.Image = ObjSubject.Image;
             }
             await _service.UpdateSubject(id, subject);
+            _logger.LogInformation("The record is successfully modified by {0}", User.Identity.Name);
             return RedirectToAction(nameof(SubjectsList), new { @id = subject.GradeId });
         }
 
@@ -198,6 +204,7 @@ namespace ExamSystem.Controllers
             };
             var TopicCounts = await _service.GetAllTopicsById(id);
             ViewBag.TopicCount = TopicCounts.Count();
+            _logger.LogInformation("Details page of Subject Controller is accessed by {0}", User.Identity.Name);
             return View(responce);
         }
 
@@ -207,6 +214,7 @@ namespace ExamSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
+            _logger.LogInformation("Delete page of Subject Controller is accessed by {0}", User.Identity.Name);
             var TopicCounts = await _service.GetAllTopicsById(id);
             ViewBag.TopicCount = TopicCounts.Count();
 
@@ -223,6 +231,7 @@ namespace ExamSystem.Controllers
             _service.DeleteFile(ObjSubject.Image.ToString());
             //delete the record
             await _service.DeleteAsync(id);
+            _logger.LogInformation("The Record is successfully deleted by {0}", User.Identity.Name);
             return RedirectToAction(nameof(SubjectsList), new { @id = gradeId });
         }
     }

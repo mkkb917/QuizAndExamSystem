@@ -14,12 +14,12 @@ namespace ExamSystem.Controllers
     public class TopicController : Controller
     {
         private readonly ITopicService _service;
-        //private readonly AppDbContext _context;
+        private readonly ILogger<TopicController> _logger;
 
-        public TopicController(ITopicService service) //, AppDbContext context)
+        public TopicController(ITopicService service, ILogger<TopicController> logger) //, AppDbContext context)
         {
             _service = service;
-            //_context = context;
+            _logger = logger;
         }
         public async Task<IActionResult> Index(int Id)
         {
@@ -29,6 +29,7 @@ namespace ExamSystem.Controllers
             {
                 item.Questions = await _service.GetAllQuestionsById(item.Id);
             }
+            _logger.LogInformation("Index page of Topic Contorller is accessed by {0}", User.Identity.Name);
             return View(obj);
 
         }
@@ -48,6 +49,7 @@ namespace ExamSystem.Controllers
                 item.Question = await _service.GetAllQuestionsById(item.Id);
                 item.SubjectId = subject.Id;
             }
+            _logger.LogInformation("Topics list page of Topic Contorller is accessed by {0}", User.Identity.Name);
             return View(obj);
         }
 
@@ -66,7 +68,7 @@ namespace ExamSystem.Controllers
                 var SubjectListData = await _service.GetSubjectList();
                 ViewBag.Subject = new SelectList(SubjectListData.Subjects, "Id", "SubjectText");
             }
-
+            _logger.LogInformation("Create page of Topic Contorller is accessed by {0}", User.Identity.Name);
             return View();
         }
 
@@ -102,6 +104,7 @@ namespace ExamSystem.Controllers
             var uploadImage = _service.DeleteOldAndUploadNewFile(files, null);
             topic.Image = uploadImage;
             await _service.AddNewTopic(topic);
+            _logger.LogInformation("New record is successfully created by {0}", User.Identity.Name);
             return RedirectToAction(nameof(TopicsList), new { @id = topic.SubjectId });
 
         }
@@ -132,6 +135,7 @@ namespace ExamSystem.Controllers
                 UpdatedOn = Obj.UpdatedOn,
                 UpdatedBy = Obj.UpdatedBy
             };
+            _logger.LogInformation("Edit page of Topic Contorller is accessed by {0}", User.Identity.Name);
             return View(responce);
         }
         [HttpPost]
@@ -160,6 +164,7 @@ namespace ExamSystem.Controllers
                 topic.Image = Objtopic.Image;
             }
             await _service.UpdateTopic(id, topic);
+            _logger.LogInformation("The Record is successfully modified by {0}", User.Identity.Name);
             return RedirectToAction(nameof(TopicsList), new { @id = topic.SubjectId });
         }
 
@@ -191,6 +196,7 @@ namespace ExamSystem.Controllers
                 LongQCount = ObjTopic.LongQCount,
                 LongQMarks = ObjTopic.LongQMarks,
             };
+            _logger.LogInformation("Details page of Topic Contorller is accessed by {0}", User.Identity.Name);
             return View(responce);
         }
 
@@ -215,6 +221,7 @@ namespace ExamSystem.Controllers
                 UpdatedOn = ObjTopic.UpdatedOn,
                 UpdatedBy = ObjTopic.UpdatedBy
             };
+            _logger.LogInformation("Delete page of Topic Contorller is accessed by {0}", User.Identity.Name);
             return View(responce);
         }
         [HttpPost, ActionName("Delete")]
@@ -226,7 +233,7 @@ namespace ExamSystem.Controllers
             _service.DeleteFile(ObjTopic.Image.ToString());
             //delete the record
             await _service.DeleteAsync(id);
-
+            _logger.LogInformation("The record is successfuly deleted by {0}", User.Identity.Name);
             return RedirectToAction(nameof(TopicsList), new { @id = subjectId });
         }
 

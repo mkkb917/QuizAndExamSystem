@@ -12,11 +12,13 @@ namespace ExamSystem.Controllers
     [BreadcrumbActionFilter]
     public class CornerController : Controller
     {
+        private readonly ILogger<CornerController> _logger;
         private readonly IUploadsService _uploadsService;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly UserManager<ApplicationUser> _userManager;
-        public CornerController(IUploadsService uploadsService, IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> userManager)
+        public CornerController(ILogger<CornerController> logger,IUploadsService uploadsService, IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> userManager)
         {
+            _logger = logger;
             _uploadsService = uploadsService;
             _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
@@ -59,6 +61,7 @@ namespace ExamSystem.Controllers
 
         public ActionResult Create()
         {
+            _logger.LogInformation("Create page of Corner Controller is requested by {0}", User.Identity.Name);
             var obj = new Uploads();
             return View(obj);
         }
@@ -69,6 +72,7 @@ namespace ExamSystem.Controllers
         //[ValidateReCaptcha(Action = "submit")]
         public async Task<ActionResult> Create(Uploads model)
         {
+            _logger.LogInformation("Create page of Corner Controller is accessed by {0}", User.Identity.Name);
             if (ModelState.IsValid)
             {
                 var files = HttpContext.Request.Form.Files;
@@ -83,6 +87,7 @@ namespace ExamSystem.Controllers
                     string actionName;
                     actionName = ReturnRedirectActionName(model.FileType);
                     //return RedirectToAction(actionName, "Corner", new { @id = User.Identity.Name });
+                    _logger.LogInformation("New record is successfully created by {0}", User.Identity.Name);
                     return RedirectToAction(actionName, "Corner");
 
                 }
@@ -97,7 +102,7 @@ namespace ExamSystem.Controllers
         // GET: CornerController/Edit/5
         public async Task<ActionResult> Edit(int id)
         {
-
+            _logger.LogInformation("Edit page of Corner Controller is requested by {0}", User.Identity.Name);
             var Obj = await _uploadsService.GetByIdAsync(id);
 
             var responce = new Uploads()
@@ -125,7 +130,7 @@ namespace ExamSystem.Controllers
         //[ValidateReCaptcha]
         public async Task<ActionResult> Edit(int id, Uploads model)
         {
-
+            _logger.LogInformation("Edit page of Corner Controller is accessed by {0}", User.Identity.Name);
             var Obj = await _uploadsService.GetByIdAsync(id);
             if (ModelState.IsValid)
             {
@@ -140,6 +145,7 @@ namespace ExamSystem.Controllers
                         // return to page of category
                         string actionName;
                         actionName = ReturnRedirectActionName(model.FileType);
+                        _logger.LogInformation("Record is successfully updated by {0}", User.Identity.Name);
                         return RedirectToAction(actionName, "Corner");
                     }
                 }
@@ -154,6 +160,7 @@ namespace ExamSystem.Controllers
         //GET: CornerController/Details/5
         public async Task<ActionResult> Details(int id)
         {
+            _logger.LogInformation("Detail page of Corner Controller is requested by {0}", User.Identity.Name);
             var Obj = await _uploadsService.GetByIdAsync(id);
             if (Obj == null) return View("NotFound");
             return View(Obj);
@@ -164,7 +171,7 @@ namespace ExamSystem.Controllers
         public async Task<ActionResult> Delete(int id)
         {
             var Obj = await _uploadsService.GetByIdAsync(id);
-
+            _logger.LogInformation("Delete page of Corner Controller is requested by {0}", User.Identity.Name);
             // delete the record from database
             if (Obj == null) return View("NotFound");
             await _uploadsService.DeleteFile(id);
@@ -172,6 +179,7 @@ namespace ExamSystem.Controllers
             // return to page of category
             string actionName;
             actionName = ReturnRedirectActionName(Obj.FileType);
+            _logger.LogInformation("record is successfully deleted by {0}", User.Identity.Name);
             return RedirectToAction(actionName, "Corner");
 
         }
@@ -212,6 +220,7 @@ namespace ExamSystem.Controllers
         [HttpGet]
         public async Task<ActionResult> Approve()
         {
+            _logger.LogInformation("Approve page of Corner Controller is requested by {0}", User.Identity.Name);
             Status _status = Status.Pending;
             var obj = await _uploadsService.GetAllFilesByStatus(_status);
             ViewBag.CurrentAction = "Approve";
@@ -229,6 +238,8 @@ namespace ExamSystem.Controllers
                 return View(nameof(NotFound));
             }
             await _uploadsService.ApproveFile(id);
+            _logger.LogInformation("Approve page of Corner Controller is accessed by {0}", User.Identity.Name);
+            _logger.LogInformation("Data is successfully approved by {0}", User.Identity.Name);
             return RedirectToAction("Approve");
         }
 
@@ -240,6 +251,7 @@ namespace ExamSystem.Controllers
         {
             //pass the staus and upload category as Code 
             var obj = await _uploadsService.GetAllFilesByCategory(Status.Active, UploadsCategory.Decorate);
+            _logger.LogInformation("Decorate page of Corner Controller is accessed by {0}", User.Identity.Name);
             return View(obj);
         }
 
@@ -250,6 +262,7 @@ namespace ExamSystem.Controllers
             var user = _userManager.GetUserName(User);
             //int category = (int)UploadsCategory.Decoration;
             var obj = await _uploadsService.GetAllFilesByUser(user, UploadsCategory.Decorate);
+            _logger.LogInformation("User Decorate page of Corner Controller is accessed by {0}", User.Identity.Name);
             return View(obj);
         }
         #endregion
@@ -260,6 +273,7 @@ namespace ExamSystem.Controllers
         {
             //pass the staus and upload category as Code 
             var obj = await _uploadsService.GetAllFilesByCategory(Status.Active, UploadsCategory.Syllabus);
+            _logger.LogInformation("Syllabus page of Corner Controller is accessed by {0}", User.Identity.Name);
             return View(obj);
         }
 
@@ -269,6 +283,7 @@ namespace ExamSystem.Controllers
 
             var user = _userManager.GetUserName(User);
             var obj = await _uploadsService.GetAllFilesByUser(user, UploadsCategory.Syllabus);
+            _logger.LogInformation("user Syllabus page of Corner Controller is accessed by {0}", User.Identity.Name);
             return View(obj);
         }
         #endregion
@@ -279,6 +294,7 @@ namespace ExamSystem.Controllers
         {
             //pass the staus and upload category as Code 
             var obj = await _uploadsService.GetAllFilesByCategory(Status.Active, UploadsCategory.Events);
+            _logger.LogInformation("School Events page of Corner Controller is accessed by {0}", User.Identity.Name);
             return View(obj);
         }
 
@@ -289,6 +305,7 @@ namespace ExamSystem.Controllers
 
             var user = _userManager.GetUserName(User);
             var obj = await _uploadsService.GetAllFilesByUser(user, UploadsCategory.Events);
+            _logger.LogInformation("User School Events page of Corner Controller is accessed by {0}", User.Identity.Name);
             return View(obj);
         }
         #endregion
@@ -299,6 +316,7 @@ namespace ExamSystem.Controllers
         {
             //pass the staus and upload category as Code 
             var obj = await _uploadsService.GetAllFilesByCategory(Status.Active, UploadsCategory.Events);
+            _logger.LogInformation("School manage page of Corner Controller is accessed by {0}", User.Identity.Name);
             return View(obj);
         }
 
@@ -309,6 +327,7 @@ namespace ExamSystem.Controllers
 
             var user = _userManager.GetUserName(User);
             var obj = await _uploadsService.GetAllFilesByUser(user, UploadsCategory.Events);
+            _logger.LogInformation("User school manage page of Corner Controller is accessed by {0}", User.Identity.Name);
             return View(obj);
         }
         #endregion
@@ -319,6 +338,7 @@ namespace ExamSystem.Controllers
         {
             //pass the staus and upload category as Code 
             var obj = await _uploadsService.GetAllFilesByCategory(Status.Active, UploadsCategory.Calender);
+            _logger.LogInformation("Educational calender page of Corner Controller is accessed by {0}", User.Identity.Name);
             return View(obj);
         }
 
@@ -328,6 +348,7 @@ namespace ExamSystem.Controllers
 
             var user = _userManager.GetUserName(User);
             var obj = await _uploadsService.GetAllFilesByUser(user, UploadsCategory.Calender);
+            _logger.LogInformation("User Educational Calandar page of Corner Controller is accessed by {0}", User.Identity.Name);
             return View(obj);
         }
         #endregion
@@ -338,6 +359,7 @@ namespace ExamSystem.Controllers
         {
             //pass the staus and upload category as Code 
             var obj = await _uploadsService.GetAllFilesByCategory(Status.Active, UploadsCategory.Notes);
+            _logger.LogInformation("Student Notes page of Corner Controller is accessed by {0}", User.Identity.Name);
             return View(obj);
         }
 
@@ -347,6 +369,7 @@ namespace ExamSystem.Controllers
 
             var user = _userManager.GetUserName(User);
             var obj = await _uploadsService.GetAllFilesByUser(user, UploadsCategory.Notes);
+            _logger.LogInformation("user student Notes page of Corner Controller is accessed by {0}", User.Identity.Name);
             return View(obj);
         }
         #endregion
@@ -357,6 +380,7 @@ namespace ExamSystem.Controllers
         {
             //pass the staus and upload category as Code 
             var obj = await _uploadsService.GetAllFilesByCategory(Status.Active, UploadsCategory.PastPapers);
+            _logger.LogInformation("student PastPaper page of Corner Controller is accessed by {0}", User.Identity.Name);
             return View(obj);
         }
 
@@ -365,6 +389,7 @@ namespace ExamSystem.Controllers
         {
             var user = _userManager.GetUserName(User);
             var obj = await _uploadsService.GetAllFilesByUser(user, UploadsCategory.PastPapers);
+            _logger.LogInformation("User Student PastPaper page of Corner Controller is accessed by {0}", User.Identity.Name);
             return View(obj);
         }
         #endregion

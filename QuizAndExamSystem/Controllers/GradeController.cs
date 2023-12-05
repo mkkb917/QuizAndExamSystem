@@ -15,19 +15,21 @@ namespace ExamSystem.Controllers
     [BreadcrumbActionFilter]
     public class GradeController : Controller
     {
+        private readonly ILogger<GradeController> _logger;
         private readonly IGradeService _service;
         private readonly string webRootPath;
-        //private readonly AppDbContext _context;
-        public GradeController(IGradeService service, IWebHostEnvironment webHostEnvironment)
+        public GradeController(ILogger<GradeController> logger,IGradeService service, IWebHostEnvironment webHostEnvironment)
         {
+            _logger = logger;
             _service = service;
             webRootPath = webHostEnvironment.WebRootPath;
-            //_context = context;
+            
         }
 
         // List all grades
         public async Task<IActionResult> Index()
         {
+            _logger.LogInformation("Index page of Grade Controller is accessed by {0}", User.Identity.Name);
             var obj = new List<Grade>();
             obj = (List<Grade>)await _service.GetAllAsync();
             foreach (var item in obj)
@@ -41,6 +43,7 @@ namespace ExamSystem.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            _logger.LogInformation("Create page of Grade Controller is requested by {0}", User.Identity.Name);
             return View();
         }
 
@@ -48,6 +51,7 @@ namespace ExamSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Grade grade)
         {
+            _logger.LogInformation("Create page of Grade Controller is accessed by {0}", User.Identity.Name);
             if (!ModelState.IsValid)
             {
                 TempData["error"] = "Invalid Model state";
@@ -85,6 +89,7 @@ namespace ExamSystem.Controllers
             grade.CreatedBy = User.Identity.Name;
 
             await _service.AddAsync(grade);
+            _logger.LogInformation("New record is added/created by {0}", User.Identity.Name);
             return RedirectToAction(nameof(Index));
         }
 
@@ -92,6 +97,7 @@ namespace ExamSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
+            _logger.LogInformation("Detail page of Grade Controller is accessed by {0}", User.Identity.Name);
             var ObjGrade = await _service.GetByIdAsync(id);
             ObjGrade.Subject = await _service.GetSubjectById(ObjGrade.Id);
             if (ObjGrade == null) return View("NotFound");
@@ -102,6 +108,7 @@ namespace ExamSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
+            _logger.LogInformation("Edit page of Grade Controller is requested by {0}", User.Identity.Name);
             var ObjGrade = await _service.GetByIdAsync(id);
             if (ObjGrade == null) return View("NotFound");
             return View(ObjGrade);
@@ -110,6 +117,7 @@ namespace ExamSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(int id, Grade grade)  //[Bind("Id,Code,GradeText,Status,Description,CreatedOn,CreatedBy")]
         {
+            _logger.LogInformation("Edit page of Grade Controller is accessed by {0}", User.Identity.Name);
             if (id != grade.Id) return View("NotFound");
             if (!ModelState.IsValid)
             {
@@ -139,6 +147,7 @@ namespace ExamSystem.Controllers
             grade.UpdatedBy = User.Identity.Name;
             grade.UpdatedOn = DateTime.Now.Date;
             await _service.UpdateAsync(id, grade);
+            _logger.LogInformation("The Record is updated successfully by {0}", User.Identity.Name);
             return RedirectToAction(nameof(Index));
         }
 
@@ -147,6 +156,7 @@ namespace ExamSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
+            _logger.LogInformation("Delete page of Grade Controller is accessed by {0}", User.Identity.Name);
             var ObjGrade = await _service.GetByIdAsync(id);
             if (ObjGrade == null) return View("NotFound");
             return View(ObjGrade);
@@ -160,6 +170,7 @@ namespace ExamSystem.Controllers
              _service.DeleteFile(ObjGrade.Image.ToString());
             //delete the record
             await _service.DeleteAsync(id);
+            _logger.LogInformation("the record is successfully deleted by {0}", User.Identity.Name);
             return RedirectToAction(nameof(Index));
         }
 

@@ -11,6 +11,7 @@ using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 namespace ExamSystem.Controllers
 {
     [BreadcrumbActionFilter]
+    [Authorize]
     public class DashboardController : Controller
     {
 
@@ -20,6 +21,7 @@ namespace ExamSystem.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ISubjectService _SubjectService;
+        private readonly ILogger<DashboardController> _logger;
         private readonly IUploadsService _uploadsService;
         private readonly IQuestionService _questionService;
         private readonly IBookService _bookService;
@@ -28,13 +30,14 @@ namespace ExamSystem.Controllers
         private readonly IPdfService _PdfService;
 
 
-        public DashboardController( IUploadsService uploadsService,IQuestionService questionService, IBookService bookService,ITopicService topicService, IQuizService quizService, IPdfService PdfService, ISubjectService SubjectService, ISEDService SedService, Data.AppDbContext context, IQuestionService service, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment)
+        public DashboardController( ILogger<DashboardController> logger,IUploadsService uploadsService,IQuestionService questionService, IBookService bookService,ITopicService topicService, IQuizService quizService, IPdfService PdfService, ISubjectService SubjectService, ISEDService SedService, Data.AppDbContext context, IQuestionService service, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment)
         {
 
             _context = context;
             _QService = service;
             _SedService = SedService;
             _SubjectService = SubjectService;
+            _logger = logger;
             _uploadsService = uploadsService;
             _questionService = questionService;
             _bookService = bookService;
@@ -47,14 +50,9 @@ namespace ExamSystem.Controllers
 
         }
 
-        [Authorize]
+        
         public async Task<IActionResult> Index()
         {
-            //if (message != null)
-            //{
-            //    //display the sweet alert message
-            //    TempData["Message"] = "Data has been saved successfully";
-            //}
             var usr = new ApplicationUser()
             { UserName = _userManager.GetUserName(User) };
             var obj = new DashboardVM
@@ -79,6 +77,8 @@ namespace ExamSystem.Controllers
                 Uploads = await _context.Uploads.ToListAsync(),
                 MyUploads = await _context.Uploads.Where(u => u.CreatedBy == usr.UserName).ToListAsync(),
             };
+            _logger.LogInformation("Index page of Corner Controller is accessed by {0}", User.Identity.Name);
+
             return View(obj);
         }
 

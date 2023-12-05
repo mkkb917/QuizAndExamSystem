@@ -4,6 +4,8 @@ namespace ExamSystem
 {
     public static class WC
     {
+        // log file path 
+        public static string logfilePath = @"\logs\";
         //namespace for UploadCategoryEnums
         public static string UploadEnumPath = "ExamSystem.Data.Static";
 

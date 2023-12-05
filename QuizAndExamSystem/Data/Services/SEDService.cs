@@ -101,6 +101,7 @@ namespace ExamSystem.Data.Services
             return responce;
         }
 
+        
         public async Task<SED> GetFileById(int id)
         {
             var responce = await _context.SED.Where(n => n.Id == id).FirstOrDefaultAsync();
@@ -151,6 +152,7 @@ namespace ExamSystem.Data.Services
                 await _context.SaveChangesAsync();
             }
         }
+
     }
 }
 

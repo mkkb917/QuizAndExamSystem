@@ -101,7 +101,7 @@
 <section class="feature section pt-0">
     <div class="container">
         <div class="row">
-            @await Component.InvokeAsync("Books")
+            @await Component.InvokeAsync("Books")   @* display atmost 6 book of differnt kinds*@
             @*<div class="col-lg-6 ml-auto justify-content-center">
                 <!-- Feature Mockup -->
                 @*<div class="image-content" data-aos="fade-right">
@@ -140,6 +140,47 @@
     </div>
 </section>
 
+<section class="feature section pt-0">
+    <div class="container">
+        <div class="row">
+            @await Component.InvokeAsync("OrdersAndNotifications")  @* Diplay orders and notifications only 6 *@
+            @*<div class="col-lg-6 ml-auto justify-content-center">
+            <!-- Feature Mockup -->
+            @*<div class="image-content" data-aos="fade-right">
+            <img class="img-fluid" src="~/images/feature/feature-new-01.jpg" alt="iphone">
+            </div>
+            </div>
+            <div class="col-lg-6 mr-auto align-self-center">
+            <div class="feature-content">
+            <!-- Feature Title -->
+            <h2>
+            Reduces Errors
+            </h2>
+            <!-- Feature Description -->
+            <p class="desc">
+            The Automatic Question Paper Generator Software significantly reduces the likelihood of errors by
+            automating the question paper creation process for students in schools, colleges, and institutes.
+            Consequently, educators face fewer challenges related to formatting, question selection, and answer
+            key generation, resulting in substantial time and effort savings that would otherwise be consumed by error correction.
+            </p>
+            </div>
+            <!-- Testimonial Quote -->
+            <div class="testimonial">
+            <p>
+            "InVision is a window into everything that's being designed at Twitter. It gets all of our best work in one
+            place."
+            </p>
+            <ul class="list-inline meta">
+            <li class="list-inline-item">
+            <img src="~/images/testimonial/feature-testimonial-thumb.jpg" alt="">
+            </li>
+            <li class="list-inline-item">Jonathon Andrew </li>
+            </ul>
+            </div>
+            </div>*@
+        </div>
+    </div>
+</section>
 <section class="feature section pt-0">
     <div class="container">
         <div class="row">
