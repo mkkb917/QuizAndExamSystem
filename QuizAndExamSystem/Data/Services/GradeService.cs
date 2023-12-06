@@ -1,24 +1,26 @@
 ﻿using ExamSystem.Data.Base;
 using ExamSystem.Data.Interface;
+using ExamSystem.Data.Static;
 using ExamSystem.Extensions;
 using ExamSystem.Models;
 using Microsoft.EntityFrameworkCore;
+using SkiaSharp;
 
 namespace ExamSystem.Data.Services
 {
     // inherits the class from general Entity base repository by passing the Grade class entity
-    public class GradeService:EntityBaseRepository<Grade>, IGradeService
+    public class GradeService : EntityBaseRepository<Grade>, IGradeService
     {
-         
+
         private readonly AppDbContext _context;
         private readonly string webRootPath;
-        public GradeService(AppDbContext context, IWebHostEnvironment webHostEnvironment) :base(context)
+        public GradeService(AppDbContext context, IWebHostEnvironment webHostEnvironment) : base(context)
         {
             _context = context;
             webRootPath = webHostEnvironment.WebRootPath;
         }
 
-        
+
 
         public async Task<List<Subject>> GetSubjectById(int Id)
         {
@@ -31,10 +33,10 @@ namespace ExamSystem.Data.Services
             var responce = await _context.Subjects.Where(s => s.Grade == item).ToListAsync();
             return responce;
         }
-        public async Task<bool>SearchGrade(string searchTerm)
+        public async Task<bool> SearchGrade(string searchTerm)
         {
-            var responce = await _context.Grades.Where(s=>s.GradeText==searchTerm).FirstOrDefaultAsync();
-            if (responce!=null) return true;
+            var responce = await _context.Grades.Where(s => s.GradeText == searchTerm).FirstOrDefaultAsync();
+            if (responce != null) return true;
             return false;
         }
 
@@ -70,9 +72,15 @@ namespace ExamSystem.Data.Services
             if (System.IO.File.Exists(oldfile))
             {
                 System.IO.File.Delete(oldfile);
-                
+
             }
-            
+
+        }
+
+        public async Task<List<Grade>?> GetActiveGradesByOrder()
+        {
+            var grades = await _context.Grades.Where(g=>g.Status==Status.Active).OrderBy(t => t.GradeText).ToListAsync();
+            return grades;
         }
     }
 }

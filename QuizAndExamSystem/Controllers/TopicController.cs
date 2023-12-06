@@ -40,7 +40,7 @@ namespace ExamSystem.Controllers
         {
             var subject = await _service.GetSubjectById(id);
             var obj = new TopicIndexVM();
-            obj.Topic = await _service.GetAllTopicsById(id);
+            obj.Topic = await _service.GetAllActiveTopicsById(id);
             obj.SubjectName = subject.SubjectText;
             obj.SubjectId = subject.Id;
             obj.GradeId = subject.GradeId;

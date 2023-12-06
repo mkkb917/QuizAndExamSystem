@@ -27,10 +27,10 @@ namespace ExamSystem.Controllers
         private readonly IBookService _bookService;
         private readonly ITopicService _topicService;
         private readonly IQuizService _quizService;
-        private readonly IPdfService _PdfService;
+        private readonly IPaperService _PdfService;
 
 
-        public DashboardController( ILogger<DashboardController> logger,IUploadsService uploadsService,IQuestionService questionService, IBookService bookService,ITopicService topicService, IQuizService quizService, IPdfService PdfService, ISubjectService SubjectService, ISEDService SedService, Data.AppDbContext context, IQuestionService service, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment)
+        public DashboardController( ILogger<DashboardController> logger,IUploadsService uploadsService,IQuestionService questionService, IBookService bookService,ITopicService topicService, IQuizService quizService, IPaperService PdfService, ISubjectService SubjectService, ISEDService SedService, Data.AppDbContext context, IQuestionService service, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment)
         {
 
             _context = context;

@@ -55,7 +55,7 @@ namespace ExamSystem.Controllers
 
             var objSubjectVm = new SubjectsIndexVM();
 
-            objSubjectVm.SubjectVm = await _service.GetAllSubjectsById(id);
+            objSubjectVm.SubjectVm = await _service.GetAllActiveSubjectsById(id);
             if (objSubjectVm == null) return View("NotFound");
             foreach (var item in objSubjectVm.SubjectVm)
             {

@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
 }
 
-
+<script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
 
 <div class="container">
     <h2 style="text-align:center; color:red;">New Question</h2>
@@ -69,7 +69,7 @@
                             </div>
                             <div class="col-lg-3 col-md-3 col-sm-6 col-12">
                                 <select id="QType" asp-for="QuestionType" class="form-control" asp-items="Html.GetEnumSelectList<QuestionTypes>()">
-                                    <option selected disabled>---Select Type---</option>
+                                    <option selected disabled>---Select Question Type---</option>
                                 </select>
                                 <span asp-validation-for="QuestionType" class="text-danger"></span>
                             </div>
@@ -95,12 +95,12 @@
                         <div class="row">
                             <div class=" col-lg-2 col-md-2 col-sm-12 col-12"> Question</div>
                             <div class="col-lg-5 col-md-5 col-sm-12 col-12 ">
-                                <textarea id="textSearchField" asp-for="QuestionText" class="form-control" placeholder="Question in English"></textarea>
+                                <textarea id="QuestionText" name="QuestionText" asp-for="QuestionText" rows="10" cols="80" class="form-control" placeholder="Question in English"></textarea>
                                 <span asp-validation-for="QuestionText" class="text-danger"></span>
                             </div>
                             <div class="col-lg-5 col-md-5 col-sm-12 col-12 ">
                                 <span style="font-family:'Jameel Noori Nastaleeq' !important;">
-                                    <textarea asp-for="QuestionTextL" class=" form-control" dir="rtl" placeholder="سوال اردو میں " ></textarea>
+                                    <textarea id="QuestionTextL" name="QuestionTextL" asp-for="QuestionTextL" rows="10" cols="80" class=" form-control" dir="rtl" placeholder="سوال اردو میں "></textarea>
                                 </span>
                                 <span asp-validation-for="QuestionTextL" class="text-danger"></span>
                             </div>
@@ -281,19 +281,7 @@
 
 @section Scripts{
     <script>
-
         
-        // serach for duplicate questions on the lost focus of textbox during the new entry.
-        $("#textSearchField").on("blur", function () {
-            var textFieldValue = $(this).val();
-            $.post("/QuestionController/CheckForDuplicate", { textFieldValue: textFieldValue }, function (data) {
-                if (data.IsDuplicate) {
-                    $("#QuestionText").text("Sorry! This Question already exists.");
-                } else {
-                    $("#QuestionText").text("");
-                }
-            });
-        });
 
         // script code for Question Type DDL
         $(function () {

@@ -13,28 +13,34 @@ namespace ExamSystem.Controllers
     [BreadcrumbActionFilter]
     public class PaperController : Controller
     {
-        private readonly IPdfService _pdfService;
+        private readonly IPaperService _pdfService;
+        private readonly ITopicService _topicService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<PaperController> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly Data.AppDbContext _context;
-        private readonly ISubjectService _SubjectService;
+        private readonly ISubjectService _subjectService;
+        private readonly IGradeService _gradeService;
         private readonly IRazorPartialToStringRenderer _Renderer;
 
         public PaperController(IRazorPartialToStringRenderer Renderer,
                                 ISubjectService SubjectService,
+                                IGradeService gradeService,
                                 Data.AppDbContext context,
-                                IPdfService pdfService,
+                                IPaperService pdfService,
+                                ITopicService topicService,
                                 IWebHostEnvironment webHostEnvironment,
                                 UserManager<ApplicationUser> userManager,
                                 ILogger<PaperController> logger)
         {
             _webHostEnvironment = webHostEnvironment;
             _pdfService = pdfService;
+            _topicService = topicService;
             _userManager = userManager;
             _logger = logger;
             _context = context;
-            _SubjectService = SubjectService;
+            _subjectService = SubjectService;
+            _gradeService = gradeService;
             _Renderer = Renderer;
         }
 
@@ -48,17 +54,16 @@ namespace ExamSystem.Controllers
         
 
         // JSON method for dropdownlists        code OK
-        public JsonResult Subject(int id)
+        public async Task<JsonResult> SubjectAsync(int id)
         {
-            var sl = _context.Subjects.Where(s => s.GradeId == id && s.Status == Status.Active).ToList();
+            var sl = await _subjectService.GetAllActiveSubjectsById(id);
             return new JsonResult(sl);
         }
 
-        public JsonResult GetTopicsData(int id)
+        public async Task<JsonResult> GetTopicsDataAsync(int id)
         {
 
-            var query = _context.Topics.Where(s => s.SubjectId == id && s.Status == Status.Active).ToList();
-
+            var query = await _topicService.GetAllActiveTopicsById(id);
             var objtopiclist = new List<TopicsWithQCountsVM>();
 
             if (query.Any() == true)
@@ -86,9 +91,9 @@ namespace ExamSystem.Controllers
         }
 
         // GET: Pairing scheme dropdown fetch data
-        public JsonResult GetPairingData(int id)
+        public async Task<JsonResult> GetPairingDataAsync(int id)
         {
-            var responce = _context.Topics.Where(s => s.SubjectId == id).ToList();
+            var responce = await _topicService.GetAllActiveTopicsById(id);
             if (responce != null)
             {
                 return new JsonResult(responce);
@@ -153,7 +158,8 @@ namespace ExamSystem.Controllers
                         }
                     }
                     //save each iteration data to database 
-                    var objscheme = await _context.Topics.FirstOrDefaultAsync(s => s.Id == obj.Id);
+                    //var objscheme = await _context.Topics.FirstOrDefaultAsync(s => s.Id == obj.Id);
+                    var objscheme = await _topicService.GetByIdAsync(obj.Id);
                     if (objscheme != null)
                     {
                         objscheme.MCQMarks = obj.McqMarks;
@@ -164,7 +170,7 @@ namespace ExamSystem.Controllers
                         objscheme.LongQCount = obj.LongQCount;
                     }
                     await _context.SaveChangesAsync();
-                    _logger.LogInformation("{0} saved his Pairing Scheme on date:{1}", User.Identity.Name );
+                    _logger.LogInformation("{0} saved his Pairing Scheme", User.Identity.Name );
                 }
 
 
@@ -186,7 +192,7 @@ namespace ExamSystem.Controllers
                 UserName = _userManager.GetUserName(User)
             };
             // fetch the record
-            var result = await _context.PaperSettings.Where(u => u.UserName == user.UserName).FirstOrDefaultAsync();
+            var result = await _pdfService.GetPaperSettingByUser(user);
             if (result != null)
             {
                 PaperSetting objsetting = new PaperSetting()
@@ -252,7 +258,7 @@ namespace ExamSystem.Controllers
             }
             else if (id > 0)
             {
-                var result = await _context.PaperSettings.FindAsync(id);
+                var result = await _pdfService.GetPaperSettingById(id);
                 if (result != null)
                 {
                     PaperSetting setting = new()
@@ -297,7 +303,7 @@ namespace ExamSystem.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Upsert(int? id, PaperSetting model)
+        public async Task<IActionResult> Upsert(int id, PaperSetting model)
         {
             if (ModelState.IsValid)
             {
@@ -305,84 +311,13 @@ namespace ExamSystem.Controllers
                 if (id == 0)
                 {
                     //Create new setting
-                    PaperSetting setting = new()
-                    {
-                        UserName = model.UserName,
-                        SchoolLogo = model.SchoolLogo,
-                        SchoolName = model.SchoolName,
-                        ExamName = model.ExamName,
-                        TeacherName = model.TeacherName,
-                        ClassName = model.ClassName,
-                        SubjectName = model.SubjectName,
-                        ConductDate = model.ConductDate,
-                        Duration = model.Duration,
-                        DifficultyLevel = model.DifficultyLevel,
-                        Medium = model.Medium,
-                        QrCode = model.QrCode,
-                        PairingScheme = model.PairingScheme,
-                        Instructions = model.Instructions,
-                        TotalMarks = model.TotalMarks,
-                        PassingMarks = model.PassingMarks,
-                        MCQsMarks = model.MCQsMarks,
-                        SEQsMarks = model.SEQsMarks,
-                        LongQsMarks = model.LongQsMarks,
-                        FillInBlanksMarks = model.FillInBlanksMarks,
-                        MCQsCount = model.MCQsCount,
-                        SEQsCount = model.SEQsCount,
-                        FillInBlanksCount = model.FillInBlanksCount,
-                        LongQsCount = model.LongQsCount,
-                        Code = model.Code,
-                        CreatedBy = model.CreatedBy,
-                        CreatedOn = model.CreatedOn,
-                        UpdatedBy = model.UpdatedBy,
-                        UpdatedOn = model.UpdatedOn,
-                    };
-                    await _context.PaperSettings.AddAsync(setting);
-                    await _context.SaveChangesAsync();
-
+                    await _pdfService.CreatePaperSetting(model);
+                    _logger.LogInformation("New PaperSetting is created by {0}", User.Identity.Name);
                     return RedirectToAction(nameof(PaperSetting));
                 }
                 else
                 {
-                    // calculate the total marks
-                    var total = (model.MCQsMarks * model.MCQsCount) + (model.SEQsMarks * model.SEQsCount) + (model.LongQsCount * model.LongQsMarks) + (model.FillInBlanksMarks * model.FillInBlanksCount);
-                    //update record
-                    var paperSetting = await _context.PaperSettings.FindAsync(id);
-                    if (paperSetting != null)
-                    {
-                        paperSetting.UserName = model.UserName;
-                        paperSetting.SchoolLogo = model.SchoolLogo;
-                        paperSetting.SchoolName = model.SchoolName;
-                        paperSetting.ExamName = model.ExamName;
-                        paperSetting.TeacherName = model.TeacherName;
-                        paperSetting.ClassName = model.ClassName;
-                        paperSetting.SubjectName = model.SubjectName;
-                        paperSetting.ConductDate = model.ConductDate;
-                        paperSetting.Duration = model.Duration;
-                        paperSetting.DifficultyLevel = model.DifficultyLevel;
-                        paperSetting.Medium = model.Medium;
-                        paperSetting.QrCode = model.QrCode;
-                        paperSetting.PairingScheme = model.PairingScheme;
-                        paperSetting.Instructions = model.Instructions;
-                        paperSetting.TotalMarks = model.TotalMarks;
-                        paperSetting.PassingMarks = model.PassingMarks;
-                        paperSetting.MCQsMarks = model.MCQsMarks;
-                        paperSetting.SEQsMarks = model.SEQsMarks;
-                        paperSetting.LongQsMarks = model.LongQsMarks;
-                        paperSetting.FillInBlanksMarks = model.FillInBlanksMarks;
-                        paperSetting.MCQsCount = model.MCQsCount;
-                        paperSetting.SEQsCount = model.SEQsCount;
-                        paperSetting.FillInBlanksCount = model.FillInBlanksCount;
-                        paperSetting.LongQsCount = model.LongQsCount;
-                        paperSetting.CreatedBy = model.CreatedBy;
-                        paperSetting.CreatedOn = model.CreatedOn;
-                        paperSetting.UpdatedBy = model.UpdatedBy;
-                        paperSetting.UpdatedOn = model.UpdatedOn;
-                        paperSetting.Status = model.Status;
-                    };
-
-                    //commet the changes to database
-                    await _context.SaveChangesAsync();
+                    await _pdfService.UpdatePaperSetting(id, model);
                     _logger.LogInformation("{0} Updated his Pairing Scheme", User.Identity.Name );
                     return RedirectToAction(nameof(PaperSetting));
                 }
@@ -394,7 +329,7 @@ namespace ExamSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> PairingScheme()
         {
-            var newQuestionDropdown = await _context.Grades.OrderBy(t => t.GradeText).ToListAsync();
+            var newQuestionDropdown = await _gradeService.GetActiveGradesByOrder();
             ViewBag.Grades = new SelectList(newQuestionDropdown, "Id", "GradeText");
             _logger.LogInformation("{0} requested to access the pairing scheme ", User.Identity.Name );
             return View();
@@ -403,7 +338,7 @@ namespace ExamSystem.Controllers
         // GET: PaperController/UserPapers
         public async Task<IActionResult> UserPapers()
         {
-            var newQuestionDropdown = await _context.Grades.OrderBy(t => t.GradeText).ToListAsync();
+            var newQuestionDropdown = await _gradeService.GetActiveGradesByOrder();
             ViewBag.Grades = new SelectList(newQuestionDropdown, "Id", "GradeText");
 
             var user = _userManager.GetUserName(User);
@@ -431,9 +366,9 @@ namespace ExamSystem.Controllers
             int selectedSubject = Convert.ToInt32(SubjectDDL);
             List<int>? selectedTopics = new();
 
-            var grade = await _SubjectService.GetGradeById(selectedClass);
+            var grade = await _subjectService.GetGradeById(selectedClass);
             string className = grade.GradeText.ToString();
-            var subject = await _SubjectService.GetSubjectById(selectedSubject);
+            var subject = await _subjectService.GetSubjectById(selectedSubject);
             string subjectName = subject.SubjectText.ToString();
 
             // get current user and school info 
@@ -506,15 +441,15 @@ namespace ExamSystem.Controllers
             {
                 paperObj = Obj.PaperFile;
                 var paperFile = await _pdfService.RenderPdf(paperObj, fileName);
-                Response.Headers.Add("Content-Disposition", $"inline; filename={fileName}");
-                _logger.LogInformation("{0} downloaded/View the objective paper {1} ",User.Identity.Name,fileName,DateTime.Now.Date);
+                Response.Headers.Append("Content-Disposition", $"inline; filename={fileName}");
+                _logger.LogInformation("{0} downloaded/View the objective paper {1} ",User.Identity.Name,fileName);
                 return new FileContentResult(paperFile, "application/pdf");
             }
             else if (type == "subjective")
             {
                 paperObj = Obj.PaperSubjetiveFile;
                 var paperFile = await _pdfService.RenderPdf(paperObj, fileName);
-                Response.Headers.Add("Content-Disposition", $"inline; filename={fileName}");
+                Response.Headers.Append("Content-Disposition", $"inline; filename={fileName}");
                 _logger.LogInformation("{0} downloaded/View the subjective paper {1}  ", User.Identity.Name, fileName );
                 return new FileContentResult(paperFile, "application/pdf");
             }
@@ -522,7 +457,7 @@ namespace ExamSystem.Controllers
             {
                 paperObj = Obj.SolutionFile;
                 var paperFile = await _pdfService.RenderPdf(paperObj, fileName);
-                Response.Headers.Add("Content-Disposition", $"inline; filename={fileName}");
+                Response.Headers.Append("Content-Disposition", $"inline; filename={fileName}");
                 _logger.LogInformation("{0} downloaded/View the solution paper {1}  ", User.Identity.Name, fileName );
                 return new FileContentResult(paperFile, "application/pdf");
             }

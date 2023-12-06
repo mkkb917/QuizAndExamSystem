@@ -15,7 +15,7 @@ using System.Linq;
 
 namespace ExamSystem.Data.Services
 {
-    public class PdfService : IPdfService
+    public class PaperService : IPaperService
     {
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -24,7 +24,7 @@ namespace ExamSystem.Data.Services
         private readonly IConverter _pdfConverter;
         private readonly IQuestionService _service;
         private readonly ICompositeViewEngine _viewEngine;
-        public PdfService(
+        public PaperService(
             UserManager<ApplicationUser> userManager,
             AppDbContext context,
             IWebHostEnvironment webHostEnvironment,
@@ -43,7 +43,7 @@ namespace ExamSystem.Data.Services
         }
 
 
-        async Task<List<GeneratedPaper>> IPdfService.GetAllPapers()
+        async Task<List<GeneratedPaper>> IPaperService.GetAllPapers()
         {
             var responce = await _context.GeneratedPapers.ToListAsync();
             return responce;
@@ -51,13 +51,13 @@ namespace ExamSystem.Data.Services
 
 
 
-        async Task<GeneratedPaper> IPdfService.GetPaperById(int id)
+        async Task<GeneratedPaper> IPaperService.GetPaperById(int id)
         {
             var responce = await _context.GeneratedPapers.Where(n => n.Id == id).FirstOrDefaultAsync();
             return responce;
         }
 
-        async Task<List<GeneratedPaper>> IPdfService.GetAllPapersByUser(string Id)
+        async Task<List<GeneratedPaper>> IPaperService.GetAllPapersByUser(string Id)
         {
             var responce = await _context.GeneratedPapers.Where(n => n.CreatedBy == Id).ToListAsync();
             return responce;
@@ -334,7 +334,7 @@ namespace ExamSystem.Data.Services
         }
 
 
-        async Task IPdfService.DeletePaper(int id)
+        async Task IPaperService.DeletePaper(int id)
         {
 
             // delete the choice table entry
@@ -398,6 +398,66 @@ namespace ExamSystem.Data.Services
             return true;
         }
 
+        public async Task<PaperSetting> GetPaperSettingByUser(ApplicationUser user)
+        {
+            var result= await _context.PaperSettings.Where(u => u.UserName == user.UserName).FirstOrDefaultAsync();
+            return result;
+        }
+
+        public async Task<PaperSetting> GetPaperSettingById(int? Id)
+        {
+            var result = await _context.PaperSettings.FindAsync(Id);
+            return result;
+        }
+
+        public async Task CreatePaperSetting(PaperSetting paperSetting)
+        {
+            await _context.PaperSettings.AddAsync(paperSetting);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdatePaperSetting(int Id, PaperSetting paperSetting)
+        {
+            // calculate the total marks
+            var total = (paperSetting.MCQsMarks * paperSetting.MCQsCount) + (paperSetting.SEQsMarks * paperSetting.SEQsCount) + (paperSetting.LongQsCount * paperSetting.LongQsMarks) + (paperSetting.FillInBlanksMarks * paperSetting.FillInBlanksCount);
+            //update record
+            var obj = await _context.PaperSettings.FindAsync(Id);
+            if (obj != null)
+            {
+                obj.UserName = paperSetting.UserName;
+                obj.SchoolLogo = paperSetting.SchoolLogo;
+                obj.SchoolName = paperSetting.SchoolName;
+                obj.ExamName = paperSetting.ExamName;
+                obj.TeacherName = paperSetting.TeacherName;
+                obj.ClassName = paperSetting.ClassName;
+                obj.SubjectName = paperSetting.SubjectName;
+                obj.ConductDate = paperSetting.ConductDate;
+                obj.Duration =  paperSetting.Duration;
+                obj.DifficultyLevel = paperSetting.DifficultyLevel;
+                obj.Medium = paperSetting.Medium;
+                obj.QrCode = paperSetting.QrCode;
+                obj.PairingScheme = paperSetting.PairingScheme;
+                obj.Instructions = paperSetting.Instructions;
+                obj.TotalMarks = paperSetting.TotalMarks;
+                obj.PassingMarks = paperSetting.PassingMarks;
+                obj.MCQsMarks = paperSetting.MCQsMarks;
+                obj.SEQsMarks = paperSetting.SEQsMarks;
+                obj.LongQsMarks = paperSetting.LongQsMarks;
+                obj.FillInBlanksMarks = paperSetting.FillInBlanksMarks;
+                obj.MCQsCount = paperSetting.MCQsCount;
+                obj.SEQsCount = paperSetting.SEQsCount;
+                obj.FillInBlanksCount = paperSetting.FillInBlanksCount;
+                obj.LongQsCount = paperSetting.LongQsCount;
+                obj.CreatedBy = paperSetting.CreatedBy;
+                obj.CreatedOn = paperSetting.CreatedOn;
+                obj.UpdatedBy = paperSetting.UpdatedBy;
+                obj.UpdatedOn = paperSetting.UpdatedOn;
+                obj.Status = paperSetting.Status;
+            };
+
+            //commet the changes to database
+            await _context.SaveChangesAsync();
+        }
     }
 
 

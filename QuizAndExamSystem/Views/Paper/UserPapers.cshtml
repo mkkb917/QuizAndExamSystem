@@ -40,6 +40,7 @@
                             </div>*@
                             <div class="col-lg-10 col-md-9 col-sm-12 col-12">
                                 <table id="tableUnits" class="table table-responsive bordered">
+                                    
                                 <!-- Table is generated dynamically using AJAX function -->
                                 </table>
                             </div>
@@ -209,6 +210,7 @@ else
                 //$('#TopicDDL').empty();
                 //$('#TopicDDL').append("<option>--Select Topic--</option>");
                 $('#tableUnits tr:not(:first)').remove();
+                $('#tableUnits').append('<h2 class="h2"> Select Chapters details with Pairing Scheme</h2>')
                 $('#tableUnits').append('<thead>' + '<tr><th>Select Units</th><th>Code</th><th>Topic Text</th><th>MCQs</th><th>SEQs</th><th>Long Qs </th><th>Blanks</th></tr>' + '</thead>');
                 $.ajax({
                     type: "POST",

@@ -74,9 +74,9 @@ namespace ExamSystem.Data.Services
         {
             var responce = new DropDownsListsVM()
             {
-                Grades = await _context.Grades.OrderBy(t => t.GradeText).ToListAsync(),
-                Subjects = await _context.Subjects.OrderBy(t => t.SubjectText).ToListAsync(),
-                Topics = await _context.Topics.OrderBy(t => t.TopicText).ToListAsync()
+                Grades = await _context.Grades.Where(s=>s.Status == Status.Active).OrderBy(t => t.GradeText ).ToListAsync(),
+                Subjects = await _context.Subjects.Where(s => s.Status == Status.Active).OrderBy(t => t.SubjectText).ToListAsync(),
+                Topics = await _context.Topics.Where(s => s.Status == Status.Active).OrderBy(t => t.TopicText).ToListAsync()
             };
             return responce;
         }

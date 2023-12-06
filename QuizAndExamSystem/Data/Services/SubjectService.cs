@@ -8,6 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using ExamSystem.Models;
 using ExamSystem.Extensions;
+using ExamSystem.Data.Static;
 
 namespace ExamSystem.Data.Services
 {
@@ -46,9 +47,9 @@ namespace ExamSystem.Data.Services
             throw new NotImplementedException();
         }
 
-        public async Task<List<Subject>> GetAllSubjectsById(int Id)
+        public async Task<List<Subject>> GetAllActiveSubjectsById(int Id)
         {
-            var responce = await _context.Subjects.Where(n => n.GradeId == Id).ToListAsync();
+            var responce = await _context.Subjects.Where(n => n.GradeId == Id&& n.Status == Status.Active).ToListAsync();
             return responce;
         }
         public async Task<Grade> GetGradeById(int Id)

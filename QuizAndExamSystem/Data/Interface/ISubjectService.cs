@@ -10,7 +10,7 @@ namespace ExamSystem.Data.Interface
         Task<DropDownsListsVM> GetGradesList();
         Task<Grade> GetGradeById(int id);
         Task<Subject> GetSubjectById(int id);
-        Task<List<Subject>> GetAllSubjectsById(int Id);
+        Task<List<Subject>> GetAllActiveSubjectsById(int Id);
         Task<List<Topic>> GetAllTopicsById(int Id);
         Task AddNewSubject(SubjectsVM data);
         Task UpdateSubject(int Id, SubjectsVM data);

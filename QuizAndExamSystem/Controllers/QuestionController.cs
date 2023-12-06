@@ -13,15 +13,17 @@ namespace ExamSystem.Controllers
     [BreadcrumbActionFilter]
     public class QuestionController : Controller
     {
+        private readonly ITopicService _topicService;
+        private readonly ISubjectService _subjectService;
         private readonly ILogger<QuestionController> _logger;
         private readonly IQuestionService _service;
-        private readonly Data.AppDbContext _context;
 
-        public QuestionController(ILogger<QuestionController> logger,IQuestionService service, Data.AppDbContext context) //, /*DbContext context*/)
+        public QuestionController(ITopicService topicService,ISubjectService subjectService,ILogger<QuestionController> logger,IQuestionService service) 
         {
+            _topicService = topicService;
+            _subjectService = subjectService;
             _logger = logger;
             _service = service;
-            _context = context;
         }
         // GET: Question
         public async Task<IActionResult> Index(int id)
@@ -61,15 +63,15 @@ namespace ExamSystem.Controllers
         //}
 
         // JSON method for dropdownlists on Create method       code OK
-        public JsonResult Subject(int id)
+        public async Task<JsonResult> SubjectAsync(int id)
         {
-            var sl = _context.Subjects.Where(s => s.GradeId == id).ToList();
+            var sl = await _subjectService.GetAllActiveSubjectsById(id);
             _logger.LogInformation("Json Subjcts of Question Controller is accessed by {0}", User.Identity.Name);
             return new JsonResult(sl);
         }
-        public JsonResult Topic(int id)
+        public async Task<JsonResult> TopicAsync(int id)
         {
-            var tl = _context.Topics.Where(s => s.SubjectId == id).ToList();
+            var tl = await _topicService.GetAllActiveTopicsById(id);
             _logger.LogInformation("Json Topics of Question Controller is accessed by {0}", User.Identity.Name);
             return new JsonResult(tl);
         }

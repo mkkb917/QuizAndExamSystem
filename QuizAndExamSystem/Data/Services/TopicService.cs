@@ -4,6 +4,7 @@ using ExamSystem.Data.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using ExamSystem.Models;
 using ExamSystem.Extensions;
+using ExamSystem.Data.Static;
 
 namespace ExamSystem.Data.Services
 {
@@ -50,9 +51,9 @@ namespace ExamSystem.Data.Services
         }
 
         // Get list of topics by subject Id
-        public async Task<List<Topic>> GetAllTopicsById(int Id)
+        public async Task<List<Topic>> GetAllActiveTopicsById(int Id)
         {
-            var responce = await _context.Topics.Where(s => s.SubjectId == Id).ToListAsync();
+            var responce = await _context.Topics.Where(s => s.SubjectId == Id && s.Status ==Status.Active).ToListAsync();
             return responce;
         }
 

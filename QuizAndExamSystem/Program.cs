@@ -36,7 +36,7 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<ISEDService, SEDService>();
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IUploadsService, UploadsService>();
-builder.Services.AddScoped<IPdfService, PdfService>();
+builder.Services.AddScoped<IPaperService, PaperService>();
 builder.Services.AddScoped<IQuizService, QuizService>();
 
 //email sending service
