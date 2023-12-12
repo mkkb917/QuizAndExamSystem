@@ -10,6 +10,8 @@ namespace ExamSystem.Data.Static
         Pending,
         [Display(Name = "Disabled")]
         Disabled,
+        [Display(Name = "Locked")]
+        Lock,
     }
     //public static class Status
     //{

@@ -13,7 +13,7 @@ namespace ExamSystem.Controllers
     [BreadcrumbActionFilter]
     public class PaperController : Controller
     {
-        private readonly IPaperService _pdfService;
+        private readonly IPaperService _paperService;
         private readonly ITopicService _topicService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<PaperController> _logger;
@@ -27,14 +27,14 @@ namespace ExamSystem.Controllers
                                 ISubjectService SubjectService,
                                 IGradeService gradeService,
                                 Data.AppDbContext context,
-                                IPaperService pdfService,
+                                IPaperService paperService,
                                 ITopicService topicService,
                                 IWebHostEnvironment webHostEnvironment,
                                 UserManager<ApplicationUser> userManager,
                                 ILogger<PaperController> logger)
         {
             _webHostEnvironment = webHostEnvironment;
-            _pdfService = pdfService;
+            _paperService = paperService;
             _topicService = topicService;
             _userManager = userManager;
             _logger = logger;
@@ -48,7 +48,7 @@ namespace ExamSystem.Controllers
         {
             _logger.LogInformation("User visited index page of Page controller");
             // list all the papers
-            var Obj = await _pdfService.GetAllPapers();
+            var Obj = await _paperService.GetAllPapers();
             return View(Obj);
         }
         
@@ -192,7 +192,7 @@ namespace ExamSystem.Controllers
                 UserName = _userManager.GetUserName(User)
             };
             // fetch the record
-            var result = await _pdfService.GetPaperSettingByUser(user);
+            var result = await _paperService.GetPaperSettingByUser(user);
             if (result != null)
             {
                 PaperSetting objsetting = new PaperSetting()
@@ -226,18 +226,20 @@ namespace ExamSystem.Controllers
                     UpdatedBy = result.UpdatedBy,
                     UpdatedOn = result.UpdatedOn,
                     Code = result.Code,
+                    PaperLayout = result.PaperLayout,
+                    PaperVersion = result.PaperVersion,
 
                     //Status = result.Status,
                 };
                 if (objsetting != null)
                 {
+                    _logger.LogInformation("{0} request to access his paper settting ", User.Identity.Name);
                     return View(objsetting);
                 }
                 else
                 {
                     return View(nameof(NotFound));
                 }
-                _logger.LogInformation("{0} request to access his paper settting ", User.Identity.Name );
 
             }
             else
@@ -258,7 +260,7 @@ namespace ExamSystem.Controllers
             }
             else if (id > 0)
             {
-                var result = await _pdfService.GetPaperSettingById(id);
+                var result = await _paperService.GetPaperSettingById(id);
                 if (result != null)
                 {
                     PaperSetting setting = new()
@@ -291,6 +293,8 @@ namespace ExamSystem.Controllers
                         UpdatedBy = result.UpdatedBy,
                         UpdatedOn = result.UpdatedOn,
                         Status = result.Status,
+                        PaperLayout = result.PaperLayout,
+                        PaperVersion = result.PaperVersion,
                     };
                     return View(setting);
                 }
@@ -311,13 +315,13 @@ namespace ExamSystem.Controllers
                 if (id == 0)
                 {
                     //Create new setting
-                    await _pdfService.CreatePaperSetting(model);
+                    await _paperService.CreatePaperSetting(model);
                     _logger.LogInformation("New PaperSetting is created by {0}", User.Identity.Name);
                     return RedirectToAction(nameof(PaperSetting));
                 }
                 else
                 {
-                    await _pdfService.UpdatePaperSetting(id, model);
+                    await _paperService.UpdatePaperSetting(id, model);
                     _logger.LogInformation("{0} Updated his Pairing Scheme", User.Identity.Name );
                     return RedirectToAction(nameof(PaperSetting));
                 }
@@ -347,12 +351,12 @@ namespace ExamSystem.Controllers
             if (User.IsInRole(UserRoles.Admin))
             {
                 // list all the papers
-                var Obj = await _pdfService.GetAllPapers();
+                var Obj = await _paperService.GetAllPapers();
                 return View(Obj);
             }
             else
             {
-                var obj = await _pdfService.GetAllPapersByUser(user);
+                var obj = await _paperService.GetAllPapersByUser(user);
                 return View(obj);
             }
         }
@@ -371,15 +375,29 @@ namespace ExamSystem.Controllers
             var subject = await _subjectService.GetSubjectById(selectedSubject);
             string subjectName = subject.SubjectText.ToString();
 
+            //paper models
+            string objectiveLayout = string.Empty;
+            string SubjectiveLayout = string.Empty;
+            string SolutionLayout = string.Empty;
+
             // get current user and school info 
             var usr = new ApplicationUser()
             { UserName = _userManager.GetUserName(User) };
 
+            var setting = await _paperService.GetPaperSettingByUser(usr);
+            //check the user quota for paper generation
+            var dailyquota = await _paperService.GetAllPapersByUserAndDate(usr.UserName,DateTime.Today);
+            if (!User.IsInRole("Admin")&& dailyquota.Count > 5)
+            {
+                return RedirectToAction(nameof(DailyQuotaFull));
+            }
+
             //create the Qr Code and pass to renderpaper method
             string guid = Guid.NewGuid().ToString().Substring(0, 5);
-            string qrstring = className + subjectName;
-            var qrcode = _pdfService.BarCodeGenerator(qrstring, guid);
+            string qrstring = className + subjectName+usr.UserName.ToString() +DateTime.Now.ToString();
+            var qrcode = _paperService.BarCodeGenerator(qrstring, guid);
             _logger.LogInformation("Barcode generated by calling BarCodeGenerator function");
+            
             var paperViewVM = new PaperViewVM();
             if (Advance == true) // its means user want to create small test of chapter wise
             {
@@ -389,34 +407,37 @@ namespace ExamSystem.Controllers
                     selectedTopics = topicList.Select(int.Parse).ToList();
                 }
             }
-            paperViewVM = await _pdfService.RenderPaper(selectedClass, selectedSubject, selectedTopics, PaperDate, TeacherName, qrcode, usr);
-            _logger.LogInformation("Render paper is called and paper onject is generated");
+            paperViewVM = await _paperService.RenderPaper(selectedClass, selectedSubject, selectedTopics, PaperDate, TeacherName, qrcode, usr);
+            _logger.LogInformation("Render paper is called and paper object is generated");
 
+            //if paper setting is null then redirect user to create setting first
             if (paperViewVM.Setting == null)
             { return RedirectToAction("PaperSetting", new { @id = 0 }); }
 
-            //inject barcode in the paperViewVM
-            //if (paperViewVM.Setting.QrCode == null)
-            //{ paperViewVM.Setting.QrCode = qrcode.ToString(); }
+            //get the layout scheme for paper
+            objectiveLayout = setting.PaperLayout == PaperLayout.Bise ? "_ObjectiveBoardLayout" : "_ObjectivePecLayout";
+            SubjectiveLayout = setting.PaperLayout == PaperLayout.Bise ? "_SubjectiveBoardLayout" : "_SubjectivePecLayout";
+            SolutionLayout = "_PaperSolutionView";
 
-            // get the html string for dinktopdf generator
-            var paperObjectiveString = await _Renderer.RenderPartialToStringAsync("_ObjectiveBoardLayout", paperViewVM);
-            var paperSubjectiveString = await _Renderer.RenderPartialToStringAsync("_SubjectiveBoardLayout", paperViewVM);
-            var solString = await _Renderer.RenderPartialToStringAsync("_PaperSolutionView", paperViewVM);
+            // get the html string of the paperviewVm object for dinktopdf generator
+            var paperObjectiveString = await _Renderer.RenderPartialToStringAsync(objectiveLayout, paperViewVM);
+            var paperSubjectiveString = await _Renderer.RenderPartialToStringAsync(SubjectiveLayout, paperViewVM);
+            var solString = await _Renderer.RenderPartialToStringAsync(SolutionLayout, paperViewVM);
             _logger.LogInformation("RenderPartial function is called and paper object is converted to string");
+            
             //// create Unique file name for Objective paper, subjective paper, and solution
             //string fileObjectiveName = "Objective " + paperViewVM.Setting.SubjectName + " " + guid + ".pdf";
             //string fileSubjectiveName = "Subjective " + paperViewVM.Setting.SubjectName + " " + guid + ".pdf";
             //string fileSolutionName = "Solution " + paperViewVM.Setting.SubjectName + " " + guid + ".pdf";
 
             //// create the pdf paper  with BarCodes
-            //var FilePaper = await _pdfService.RenderPdf(paperObjectiveString, fileObjectiveName, qrcode);
-            //var FileSubjectivePaper = await _pdfService.RenderPdf(paperSubjectiveString, fileSubjectiveName, qrcode);
-            //var FileSolution = await _pdfService.RenderPdf(solString, fileSolutionName, qrcode);
+            //var FilePaper = await _paperService.RenderPdf(paperObjectiveString, fileObjectiveName, qrcode);
+            //var FileSubjectivePaper = await _paperService.RenderPdf(paperSubjectiveString, fileSubjectiveName, qrcode);
+            //var FileSolution = await _paperService.RenderPdf(solString, fileSolutionName, qrcode);
 
             // save into database
-            var responce = await _pdfService.SavePdfAsync(className, subjectName, paperObjectiveString, paperSubjectiveString, solString, usr, guid);
-            //var responce = await _pdfService.SavePdfAsync(className, subjectName, fileObjectiveName, fileSubjectiveName, fileSolutionName, usr, guid);
+            var responce = await _paperService.SavePdfAsync(className, subjectName, paperObjectiveString, paperSubjectiveString, solString, usr, qrcode);
+            //var responce = await _paperService.SavePdfAsync(className, subjectName, fileObjectiveName, fileSubjectiveName, fileSolutionName, usr, guid);
             _logger.LogInformation("Paper string is saved into database for {0} at {1}", User.Identity.Name,DateTime.Now.Date);
             //if(responce.Equals(true))     total execution time is more than 3.63 minutes 
             //return View(paperViewVM);
@@ -426,7 +447,9 @@ namespace ExamSystem.Controllers
         // Download PAPER pdf from table
         public async Task<IActionResult> PaperView(int id, string type)
         {
-            var Obj = await _pdfService.GetPaperById(id);
+            //get the paper string
+            var Obj = await _paperService.GetPaperById(id);
+
 
             //get the barcode file name and address of file
             var QrCodePath = _webHostEnvironment.WebRootPath + WC.QrCodePath;
@@ -434,45 +457,53 @@ namespace ExamSystem.Controllers
 
             var fileName = Obj.Subject + " " + Path.GetFileNameWithoutExtension(QrCodePath + Obj.Barcode);
 
-            string? paperObj;
+            string paperObj;
             //var paperFile;
 
             if (type == "objective")
             {
                 paperObj = Obj.PaperFile;
-                var paperFile = await _pdfService.RenderPdf(paperObj, fileName);
+                var paperFile = await _paperService.RenderPdf(paperObj, fileName);
                 Response.Headers.Append("Content-Disposition", $"inline; filename={fileName}");
                 _logger.LogInformation("{0} downloaded/View the objective paper {1} ",User.Identity.Name,fileName);
-                return new FileContentResult(paperFile, "application/pdf");
+                return View("PaperView", paperObj);
+                //return new FileContentResult(paperFile, "application/pdf");
             }
             else if (type == "subjective")
             {
                 paperObj = Obj.PaperSubjetiveFile;
-                var paperFile = await _pdfService.RenderPdf(paperObj, fileName);
+                var paperFile = await _paperService.RenderPdf(paperObj, fileName);
                 Response.Headers.Append("Content-Disposition", $"inline; filename={fileName}");
                 _logger.LogInformation("{0} downloaded/View the subjective paper {1}  ", User.Identity.Name, fileName );
-                return new FileContentResult(paperFile, "application/pdf");
+                //return new FileContentResult(paperFile, "application/pdf");
+                return View("PaperView", paperObj);
+                //return new FileContentResult(paperFile, "application/pdf");
             }
             else if (type == "solution")
             {
                 paperObj = Obj.SolutionFile;
-                var paperFile = await _pdfService.RenderPdf(paperObj, fileName);
+                var paperFile = await _paperService.RenderPdf(paperObj, fileName);
                 Response.Headers.Append("Content-Disposition", $"inline; filename={fileName}");
                 _logger.LogInformation("{0} downloaded/View the solution paper {1}  ", User.Identity.Name, fileName );
-                return new FileContentResult(paperFile, "application/pdf");
+                return View("PaperView", paperObj);
+                //return new FileContentResult(paperFile, "application/pdf");
             }
 
             //Response.Headers.Add("Content-Disposition", $"inline; filename={fileName}");
 
 
             return View();
+            //return View("PaperView", );
         }
 
-
-        // Download PAPER pdf from table
+        public IActionResult DailyQuotaFull()
+        {
+            return View();
+        }
+        ////Download PAPER pdf from table
         //public async Task<FileResult> GetSubjectivePaper(int id)
         //{
-        //    var Obj = await _pdfService.GetPaperById(id);
+        //    var Obj = await _paperService.GetPaperById(id);
         //    var paperName = Obj.PaperSubjetiveFile;
         //    var path = _webHostEnvironment.WebRootPath + WC.PaperPathPDF;
         //    // call the function to downlaod
@@ -481,10 +512,10 @@ namespace ExamSystem.Controllers
         //    return File(memory.ToArray(), "application/pdf", paperName);
         //}
 
-        // Download Solution pdf from table
+        ////Download Solution pdf from table
         //public async Task<FileResult> GetSolution(int id)
         //{
-        //    var Obj = await _pdfService.GetPaperById(id);
+        //    var Obj = await _paperService.GetPaperById(id);
         //    var solutionName = Obj.SolutionFile;
         //    var path = _webHostEnvironment.WebRootPath + WC.PaperPathPDF;
         //    // call the function to downlaod
@@ -510,10 +541,10 @@ namespace ExamSystem.Controllers
         // POST: PdfController/Delete/5
         public async Task<ActionResult> Delete(int id)
         {
-            var Obj = await _pdfService.GetPaperById(id);
+            var Obj = await _paperService.GetPaperById(id);
             // delete the record from database
             if (Obj == null) return View("NotFound");
-            await _pdfService.DeletePaper(id);
+            await _paperService.DeletePaper(id);
             _logger.LogInformation("{0} deleted the paper with id:{1}", User.Identity.Name,Obj.Id );
             return RedirectToAction("UserPapers", new { @id = User.Identity.Name });
         }

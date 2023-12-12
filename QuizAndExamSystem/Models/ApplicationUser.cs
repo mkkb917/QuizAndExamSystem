@@ -49,7 +49,7 @@ namespace ExamSystem.Models
         public string? CNIC { get; set; } = string.Empty;
         [Display(Name = "Profile Image")]
         [DataType(DataType.ImageUrl)]
-        public string? ProfileImage { get; set; } = "/images/avatar/avatar.jpg";
+        public string? ProfileImage { get; set; } = "avatar.png";
         [Display(Name = "Contact Number:")]
         [DataType(DataType.PhoneNumber)]
         [RegularExpression(@"^\( ([0-9]{4})\) [-. ] ([0-9]{3})[-. ] ([0-9]{4})$", ErrorMessage = "Not a valid phone number")]
@@ -97,6 +97,8 @@ namespace ExamSystem.Models
         public string? Instagram { get; set; } = string.Empty;
         [Display(Name = "Pinterest Profile Link")]
         public string? Pinterest { get; set; } = string.Empty;
+
+        public Status Status { get; set; } = Status.Active;
 
         // relationship  to school info ( 1 to 1)
         [ForeignKey("Id")]

@@ -62,8 +62,13 @@ namespace ExamSystem.Data.Services
             var responce = await _context.GeneratedPapers.Where(n => n.CreatedBy == Id).ToListAsync();
             return responce;
         }
+        async Task<List<GeneratedPaper>> IPaperService.GetAllPapersByUserAndDate(string createdBy, DateTime date)
+        {
+            var responce = await _context.GeneratedPapers.Where(n => n.CreatedBy == createdBy).Where(d => d.CreatedOn == date).ToListAsync();
+            return responce;
+        }
 
-        public async Task<PaperViewVM> RenderPaper(int selectedClass, int selectedSubject, List<int>?selectedTopics, DateTime PaperDate, string? TeacherName, string? qrCode, ApplicationUser usr)
+        public async Task<PaperViewVM> RenderPaper(int selectedClass, int selectedSubject, List<int>? selectedTopics, DateTime PaperDate, string? TeacherName, string qrCode, ApplicationUser usr)
         {
             // get the current user question setting     
             var setting = new PaperSetting();
@@ -77,16 +82,16 @@ namespace ExamSystem.Data.Services
                 setting.SubjectName = await _context.Subjects.Where(e => e.Id == selectedSubject).Select(o => o.SubjectText).SingleOrDefaultAsync();
                 setting.TeacherName = TeacherName;
                 setting.QrCode = qrCode;
-                if (PaperDate > DateTime.Today) { setting.ConductDate = PaperDate; } else { setting.ConductDate = DateTime.Today; }
+                if (PaperDate > DateTime.Today) { setting.ConductDate = PaperDate; } else { setting.ConductDate = DateTime.Today.AddDays(1); }
             }
-
+            
             // get the questions
             List<QnAs>? objQnA = new();
             List<QnAs>? seqQnA = new();
             List<QnAs>? LongQnA = new();
             List<Topic> topics = new();
 
-            if (selectedTopics.Count==0)
+            if (selectedTopics.Count == 0)
             {
                 topics = await _context.Topics.Where(t => t.SubjectId == selectedSubject && t.Status == Status.Active).ToListAsync();
             }
@@ -94,16 +99,16 @@ namespace ExamSystem.Data.Services
             {
                 topics = await _context.Topics.Where(t => t.SubjectId == selectedSubject && t.Status == Status.Active && selectedTopics.Contains(t.Id)).ToListAsync();
             }
-            // traverse to each Unit for questions
+            // for MCQs questions
             foreach (var Titem in topics)
             {
                 List<Question> questions = new();
-                if (selectedTopics.Count==0 || setting.PairingScheme == true)
+                if (selectedTopics.Count == 0 || setting.PairingScheme == true)
                 {
                     //set the total marks as per pairing scheme
                     setting.TotalMarks = Convert.ToInt32((Titem.MCQMarks * Titem.MCQCount) + (Titem.SEQMarks * Titem.SEQCount) + (Titem.LongQMarks * Titem.LongQCount));
                     setting.MCQsMarks = Titem.MCQMarks;
-                    questions = await _context.Questions.Where(q =>q.Status==Status.Active && q.TopicId == Titem.Id && q.QuestionType == QuestionTypes.MCQ && q.DifficultyLevel == setting.DifficultyLevel).OrderBy(o => Guid.NewGuid()).Take(Titem.MCQCount).ToListAsync();
+                    questions = await _context.Questions.Where(q => q.Status == Status.Active && q.TopicId == Titem.Id && q.QuestionType == QuestionTypes.MCQ && q.DifficultyLevel == setting.DifficultyLevel).OrderBy(o => Guid.NewGuid()).Take(Titem.MCQCount).ToListAsync();
                 }
                 else
                 {
@@ -163,7 +168,7 @@ namespace ExamSystem.Data.Services
                     }
                     objQnA.Add(varQnA);
                 }
-                
+
             }
 
             // for Short Exam Questions
@@ -260,6 +265,7 @@ namespace ExamSystem.Data.Services
                     LongQnA.Add(varQnA);
                 }
             }
+
             PaperViewVM paperview = new PaperViewVM()
             {
                 Setting = setting,
@@ -271,12 +277,12 @@ namespace ExamSystem.Data.Services
             return paperview;
         }
 
-        public Task<byte[]> RenderPdf(string paperView, string fileName)
+        public async Task<byte[]> RenderPdf(string paperView, string fileName)
         {
             var converter = new BasicConverter(new PdfTools());
             string webRootPath = _webHostEnvironment.WebRootPath;
             string PaperPath = webRootPath + WC.PaperPathPDF;
-            
+
             var globalSettings = new GlobalSettings
             {
                 ColorMode = ColorMode.Color,
@@ -305,10 +311,12 @@ namespace ExamSystem.Data.Services
             };
 
             //byte[] file = _pdfConverter.Convert(pdf);
-            var file = _pdfConverter.Convert(pdf);
+            //var file = _pdfConverter.Convert(pdf);
+            var file = await Task.Run(() => _pdfConverter.Convert(pdf));
 
 
-            return Task.FromResult(file);
+            //return Task.FromResult(file);
+            return file;
 
         }
 
@@ -330,7 +338,7 @@ namespace ExamSystem.Data.Services
                 Image qrCodeImage = Image.FromStream(ms);
                 qrCodeImage.Save(QrCodePath + guid + ".png");
             }
-            return (QrCodePath + guid + ".png");
+            return (guid + ".png");
         }
 
 
@@ -389,7 +397,7 @@ namespace ExamSystem.Data.Services
                 PaperFile = fileObjectivePaper,
                 PaperSubjetiveFile = fileSubjectivePaper,
                 SolutionFile = fileSolution,
-                Barcode = qrcode + ".png",
+                Barcode = qrcode,
                 IsAstive = true,
             };
 
@@ -400,7 +408,7 @@ namespace ExamSystem.Data.Services
 
         public async Task<PaperSetting> GetPaperSettingByUser(ApplicationUser user)
         {
-            var result= await _context.PaperSettings.Where(u => u.UserName == user.UserName).FirstOrDefaultAsync();
+            var result = await _context.PaperSettings.Where(u => u.UserName == user.UserName).FirstOrDefaultAsync();
             return result;
         }
 
@@ -432,7 +440,7 @@ namespace ExamSystem.Data.Services
                 obj.ClassName = paperSetting.ClassName;
                 obj.SubjectName = paperSetting.SubjectName;
                 obj.ConductDate = paperSetting.ConductDate;
-                obj.Duration =  paperSetting.Duration;
+                obj.Duration = paperSetting.Duration;
                 obj.DifficultyLevel = paperSetting.DifficultyLevel;
                 obj.Medium = paperSetting.Medium;
                 obj.QrCode = paperSetting.QrCode;
@@ -453,6 +461,8 @@ namespace ExamSystem.Data.Services
                 obj.UpdatedBy = paperSetting.UpdatedBy;
                 obj.UpdatedOn = paperSetting.UpdatedOn;
                 obj.Status = paperSetting.Status;
+                obj.PaperVersion = paperSetting.PaperVersion;
+                obj.PaperLayout = paperSetting.PaperLayout;
             };
 
             //commet the changes to database

@@ -1,22 +1,38 @@
-﻿@model ExamSystem.Data.ViewModels.PaperViewVM
-
+﻿@model string
+@* @model ExamSystem.Data.ViewModels.PaperViewVM*@
 @{
     ViewData["Title"] = "Paper View";
     Layout = "_DashboardLayout";
 
 }
 
+
+    <div class="row" style="background-color: #fff;color: #000;">
+        <div class="col mt-2 mb-6">
+            @Html.Raw(Model)
+        </div>
+    </div>
+
 <!-- Call the Partial View to display paper-->
-<div>
+@* <div>
     <partial name="_ObjectiveBoardLayout" model="Model" />
     <br />
     <partial name="_SubjectiveBoardLayout" model="Model" />
-</div>
+</div> *@
 
-<div class="col-12">
+@* <div class="col-12">
     <div class="link-group">
-        <a asp-controller="Paper" asp-action="UserPapers" class="btn btn-success float-right">Download</a>
+        <a asp-controller="Paper" asp-action="DownloadPaper" class="btn btn-success float-right">Download</a>
         <a asp-controller="paper" asp-action="GeneratePaper" class="btn btn-primary"><i class="fas fa-new"></i> Generate New Paper</a>
     </div>
 
-</div> 
+</div> *@ 
+
+@section Scripts{
+
+    <script>
+          $(document).ready(function () {
+          
+        });
+    </script>
+}

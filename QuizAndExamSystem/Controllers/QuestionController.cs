@@ -50,18 +50,7 @@ namespace ExamSystem.Controllers
             }
             return View(obj);
         }
-
-        //public IActionResult UploadQuestionFile(int id)
-        //{
-        //    if (id != null)
-        //    {
-        //        TempData["TopicId"] = id;
-        //    }
-        //    else
-        //    {
-        //    }
-        //}
-
+        
         // JSON method for dropdownlists on Create method       code OK
         public async Task<JsonResult> SubjectAsync(int id)
         {
@@ -86,28 +75,7 @@ namespace ExamSystem.Controllers
             if (ObjQuestion == null) return View("NotFound");
 
             var choice = ObjQuestion.Choice.Answer;
-            string answer = string.Empty;
-            string answerL = string.Empty;
-            if(choice == "ChoiceTitle1")
-            {
-                answer = ObjQuestion.Choice.Choice1;
-                answerL = ObjQuestion.Choice.ChoiceL1;
-            }
-            else if (choice == "ChoiceTitle2")
-            {
-                answer = ObjQuestion.Choice.Choice2;
-                answerL = ObjQuestion.Choice.ChoiceL2;
-            }
-            else if (choice == "ChoiceTitle3")
-            {
-                answer = ObjQuestion.Choice.Choice3;
-                answerL = ObjQuestion.Choice.ChoiceL3;
-            }
-            else if (choice == "ChoiceTitle4")
-            {
-                answer = ObjQuestion.Choice.Choice4;
-                answerL = ObjQuestion.Choice.ChoiceL4;
-            }
+            
 
             var responce = new QuestionVM()
             {
@@ -123,6 +91,8 @@ namespace ExamSystem.Controllers
                 DifficultyLevel = ObjQuestion.DifficultyLevel,
                 Description = ObjQuestion.Description,
                 Status = ObjQuestion.Status,
+                QuestionType = ObjQuestion.QuestionType,
+                TopicId = ObjQuestion.TopicId,
                 // choice and answer info
                 ChoiceTitle1 = ObjQuestion.Choice.Choice1,
                 ChoiceTitle2 = ObjQuestion.Choice.Choice2,
@@ -132,8 +102,8 @@ namespace ExamSystem.Controllers
                 ChoiceTitleL2 = ObjQuestion.Choice.ChoiceL2,
                 ChoiceTitleL3 = ObjQuestion.Choice.ChoiceL3,
                 ChoiceTitleL4 = ObjQuestion.Choice.ChoiceL4,
-                CorrectAnswer = answer,
-                CorrectAnswerL = answerL,
+                CorrectAnswer = ObjQuestion.Choice.Answer,
+                CorrectAnswerL = ObjQuestion.Choice.AnswerL,
                 
             };
             return View(responce);

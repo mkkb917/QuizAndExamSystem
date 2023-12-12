@@ -1,16 +1,18 @@
 ﻿@model ExamSystem.Data.ViewModels.PaperViewVM
 @inject IWebHostEnvironment webHostEnvironment
 @{
-    ViewData["Title"] = "PaperBoardLayout";
+    ViewData["Title"] = "PaperPecLayout";
     //Layout = "PaperBoardLayout";
     // string imagePath = webHostEnvironment.WebRootPath + WC.LogoPath;
     // string qrCodePath = webHostEnvironment.WebRootPath + WC.QrCodePath;
-    int i = 1;
+    //int i = 1;
     TimeSpan t = TimeSpan.FromMinutes(Convert.ToInt32(Model.Setting.Duration));
+    int totalQuestions = Model.MCQs.Count;
+    int questionsPerPage = totalQuestions / 2; // Display half on each side
 }
-@* <div> *@
 <div style="background-repeat:no-repeat; align-items:center; background-position:center; background-size:contain;  background-image:url('https://localhost:7278/images/logo.png'); ">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div asp-validation-summary="ModelOnly" class="text-danger" style="flex-basis: 100%;"></div>
+    <!-- Header section -->
     <table style=" width:100%; border:solid;text-align:center; margin:0px;padding:0px;">
         <tr style="border:solid;">
             <td style="border:solid">
@@ -94,65 +96,11 @@
             </td>
         </tr>
     </table>
-    @*<table style="width:100%;border:solid; margin:0px; padding:0px;">
-        <tr style="margin:0px;">
-            <td style="width:5%; text-align:left; border:solid;">
-                <p style="margin:0px;">Marks</p>
-            </td>
-            <td style="width:8%; text-align:left; border:solid;">
-                <p style="margin:0px;">Q1:</p>
-            </td>
-            <td style="width:8%; text-align:left; border:solid;">
-                <p style="margin:0px;">Q2:</p>
-            </td>
-            <td style="width:8%; text-align:left; border:solid;">
-                <p style="margin:0px;">Q3:</p>
-            </td>
-            <td style="width:8%; text-align:left; border:solid;">
-                <p style="margin:0px;">Q4:</p>
-            </td>
-            <td style="width:8%; text-align:left; border:solid;">
-                <p style="margin:0px;">Q5:</p>
-            </td>
-            <td style="width:8%; text-align:left; border:solid;">
-                <p style="margin:0px;">Q6:</p>
-            </td>
-            <td style="width:8%; text-align:left; border:solid;">
-                <p style="margin:0px;">Q7:</p>
-            </td>
-            <td style="width:8%; text-align:left; border:solid;">
-                <p style="margin:0px;">Q8:</p>
-            </td>
-            <td style="width:8%; text-align:left; border:solid;">
-                <p style="margin:0px;">Q9:</p>
-            </td>
-            <td style="width:8%; text-align:left; border:solid;">
-                <p style="margin:0px;">Q10:</p>
-            </td>
-            <td style="width:10%; text-align:left; border:solid;">
-                <p style="margin:0px;">Total:</p>
-            </td>
-        </tr>
-    </table>*@
-
-    <table style="width:100%; border:solid; margin:0px;padding:0px;">
-        <tr>
-            <td colspan="2" style="margin:0px;padding:0px; ">
-                <p style="color:blue; text-align:center; margin-bottom:0px;">Examination Instructions. Read carefully....</p>
-            </td>
-        </tr>
-        <tr style="margin:auto;">
-            <td>
-                <p style="margin:2px;font-family:'Jameel Noori Nastaleeq' !important;text-align:right">@Model.Setting.Instructions</p>
-            </td>
-        </tr>
-    </table>
-    <!-- Paper Section Starts-->
-    <!-- Question Section-->
 
     <div style="text-align:center;margin:2px; padding:0px;">
         <h4 style="text-align:center; color:blue; margin:0px; padding:0px;">Section 1 : Obejctive Part </h4>
     </div>
+
     <table style="  font-size:large; font-weight:30; margin:0px; padding:0px; width:100%;" id="question">
         <tr style="text-align:justify-all; width:100%; margin:0px; padding:0px;">
             <td style="width:50%; text-align:left;">
@@ -167,43 +115,86 @@
         </tr>
     </table>
 
-    <!-- Question Section-->
-    @foreach (var qitem in Model.MCQs)
-    {
-        if (qitem.QuestionType == @QuestionTypes.MCQ)
-        {
-            <table style="  border:solid; border-block-width: 1px; width:100%; margin:0px; padding:0px;">
-                <!-- Objective Paper Part-->
-                <tr style=" width:100%; margin:0px;">
-                    <td colspan="2" style="width:60%; text-align:left;">
-                        @i:  @qitem.QuestionText
-                    </td>
-                    <td colspan="2" style="width:40%; text-align:right;" dir="rtl">
-                        @i: <span style="font-family:'Jameel Noori Nastaleeq' !important;">@qitem.QuestionTextL</span>
-                    </td>
-                </tr>
-                <tr style="width:100%; margin:0px; padding:0px;">
-                    <td style=" width:25%;text-align:left; margin-left:10px">
-                        @qitem.OptionsQnA.Choice1 &nbsp;|
-                        <span dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important;">@qitem.OptionsQnA.ChoiceL1</span>
-                    </td>
-                    <td style="width:25%; text-align:center;">
-                        @qitem.OptionsQnA.Choice2 &nbsp;|
-                        <span dir="rtl" style=" font-family:'Jameel Noori Nastaleeq' !important;">@qitem.OptionsQnA.ChoiceL2</span>
-                    </td>
-                    <td style="width:25%; text-align:center;">
-                        @qitem.OptionsQnA.Choice3 &nbsp;|
-                        <span dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important;">@qitem.OptionsQnA.ChoiceL3</span>
-                    </td>
-                    <td style="width:25%; text-align:right;">
-                        @qitem.OptionsQnA.Choice4 &nbsp;|
-                        <span dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important;">@qitem.OptionsQnA.ChoiceL4</span>
-                    </td>
-                </tr>
-            </table>
-        }
-        i++;
-    }
+    <div style="display: flex;">
+        
+        <!-- Left Column -->
+        <div style="flex: 1;">
+            @for (int i = 0; i < Model.MCQs.Count / 2; i++)
+            {
+                <table style="  border:solid; border-block-width: 1px; width:100%; margin:0px; padding:0px;">
+                    <!-- Objective Paper Part-->
+                    <tr style=" width:100%; margin:0px;">
+                        <td style="width:60%; text-align:left;">
+                            @(i+1):  @Model.MCQs[i].QuestionText
+                        </td>
+                        <td style="width:40%; text-align:right;" dir="rtl">
+                            @(i+1): <span style="font-family:'Jameel Noori Nastaleeq' !important;">@Model.MCQs[i].QuestionTextL</span>
+                        </td>
+                    </tr>
+                    <tr style="width:100%; margin-left:5px; padding:0px;">
+                        <td style=" width:50%;text-align:left; margin-left:10px">
+                            @Model.MCQs[i].OptionsQnA.Choice1 &nbsp;|
+                            <span dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important;">@Model.MCQs[i].OptionsQnA.ChoiceL1</span>
+                        </td>
+                        <td style="width:50%; margin-right:5px; text-align:right;">
+                            @Model.MCQs[i].OptionsQnA.Choice2 &nbsp;|
+                            <span dir="rtl" style=" font-family:'Jameel Noori Nastaleeq' !important;">@Model.MCQs[i].OptionsQnA.ChoiceL2</span>
+                        </td>
+                    </tr>
+                    <tr style="width:100%; margin-left:5px; padding:0px;">
+                        <td style="width:50%; text-align:left;">
+                            @Model.MCQs[i].OptionsQnA.Choice3 &nbsp;|
+                            <span dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important;">@Model.MCQs[i].OptionsQnA.ChoiceL3</span>
+                        </td>
+                        <td style="width:50%; margin-right:5px; text-align:right;">
+                            @Model.MCQs[i].OptionsQnA.Choice4 &nbsp;|
+                            <span dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important;">@Model.MCQs[i].OptionsQnA.ChoiceL4</span>
+                        </td>
+                    </tr>
+                </table>
+            }
+        </div>
 
+        <!-- Right Column -->
+        <div style="flex: 1;">
+
+            @{
+                int startIndex = Model.MCQs.Count / 2;
+                for (int i = startIndex, count = 1; i < Model.MCQs.Count; i++, count++)
+                {
+                    <table style="  border:solid; border-block-width: 1px; width:100%; margin:0px; padding:0px;">
+                        <!-- Objective Paper Part-->
+                        <tr style=" width:100%; margin:0px;">
+                            <td style="width:60%; text-align:left;">
+                                @(startIndex+count):  @Model.MCQs[i].QuestionText
+                            </td>
+                            <td style="width:40%; text-align:right;" dir="rtl">
+                                @(startIndex+count): <span style="font-family:'Jameel Noori Nastaleeq' !important;">@Model.MCQs[i].QuestionTextL</span>
+                            </td>
+                        </tr>
+                        <tr style="width:100%; margin:0px; padding:0px;">
+                            <td style=" width:50%; text-align:left; margin-left:10px">
+                                @Model.MCQs[i].OptionsQnA.Choice1 &nbsp;|
+                                <span dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important;">@Model.MCQs[i].OptionsQnA.ChoiceL1</span>
+                            </td>
+                            <td style="width:50%;margin-right:5px; text-align:right;">
+                                @Model.MCQs[i].OptionsQnA.Choice2 &nbsp;|
+                                <span dir="rtl" style=" font-family:'Jameel Noori Nastaleeq' !important;">@Model.MCQs[i].OptionsQnA.ChoiceL2</span>
+                            </td>
+                        </tr>
+                        <tr style="width:100%; margin:0px; padding:0px;">
+                            <td style="width:50%; margin-left:10px; text-align:left;">
+                                @Model.MCQs[i].OptionsQnA.Choice3 &nbsp;|
+                                <span dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important;">@Model.MCQs[i].OptionsQnA.ChoiceL3</span>
+                            </td>
+                            <td style="width:50%; margin-right:5px; text-align:right;">
+                                @Model.MCQs[i].OptionsQnA.Choice4 &nbsp;|
+                                <span dir="rtl" style="font-family:'Jameel Noori Nastaleeq' !important;">@Model.MCQs[i].OptionsQnA.ChoiceL4</span>
+                            </td>
+                        </tr>
+                    </table>
+                }
+            }
+        </div>
+    </div>
 </div>
-

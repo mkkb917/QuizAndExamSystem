@@ -2,21 +2,21 @@
 @inject IWebHostEnvironment webHostEnvironment
 @{
     ViewData["Title"] = "PaperBoardLayout";
-    string imagePath = webHostEnvironment.WebRootPath + WC.LogoPath;
-    string qrCodePath = webHostEnvironment.WebRootPath + WC.QrCodePath;
+    // string imagePath = webHostEnvironment.WebRootPath + WC.LogoPath;
+    // string qrCodePath = webHostEnvironment.WebRootPath + WC.QrCodePath;
     //Layout = "PaperBoardLayout";
     int i = 1;
     int j = 1;
     int k = 1;
     TimeSpan t = TimeSpan.FromMinutes(Convert.ToInt32(Model.Setting.Duration));
 }
-<div style="background-repeat:no-repeat; align-items:center; background-position:center; background-size:contain; background-image:url('https://localhost:7278/images/logo.png');">
+<div style="background-repeat:no-repeat; align-items:center; background-position:center; background-size:contain; background: rgba(255, 255, 255, 0.3); background-image:url('https://localhost:7278/images/logo.png');">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <table style="width:100%; border:solid;text-align:center; margin:0px;">
         <tr style="border:solid;">
             <td style="border:solid">
                 <div style="align-items:center">
-                    <img src="@imagePath@Model.Setting.SchoolLogo" style="width: 100px; height: 100px">
+                    <img src="@WC.LogoPath@Model.Setting.SchoolLogo" style="width: 100px; height: 100px">
                 </div>
             </td>
             <td colspan="2" style="width:100%;">
@@ -45,7 +45,7 @@
             <td style="border:solid">
                 <div id="QrCodeArea">
                     <!-- Image is inserted here dynamically by pdf generator-->
-                    <img src="@Model.Setting.QrCode" style="width: 100px; height: 100px; margin:0px;">
+                    <img src="@WC.QrCodePath@Model.Setting.QrCode" style="width: 100px; height: 100px; margin:0px;">
                 </div>
             </td>
         </tr>
@@ -123,7 +123,7 @@
             <td style="width:5%; text-align:center;">
                 <p style="font-size:12px;">Marks  @(@Model.Setting.MCQsMarks * @Model.MCQs.Count(x => x.QuestionType == QuestionTypes.MCQ))</p>
             </td>
-            <td style="width:40%; text-align:right" dir="rtl">
+            <td style="width:40%; align-content:end; text-align:right" dir="rtl">
                 <h5 style="font-family:'Jameel Noori Nastaleeq' !important;"><strong>سوال نمبر 1:</strong>درست جواب کا انتخاب کریں؟</h5>
             </td>
         </tr>

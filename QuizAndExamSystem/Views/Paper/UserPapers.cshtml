@@ -31,17 +31,20 @@
                                 <input name="PaperDate" type="date" class="form-control" min="@System.DateTime.Today" max="@System.DateTime.Today.AddDays(90)" />
                             </div>
                             <div class="col-lg-3 col-md-6 col-sm-12 col-12">
-                                <label class="control-label" for="Advance">Premium paper generation</label>
-                                <input type="checkbox" id="Advance" name="Advance" class="form-control" value="true" />
+                                <label class="control-label">Premium Paper Generation </label>
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" id="Advance" name="Advance" class="form-check-input" value="true" />
+                                    <label class="form-check-label" for="Advance">Chapter Wise</label>
+                                </div>
                             </div>
                             @*<div class="col-lg-3 col-md-6 col-sm-12 col-12">
-                                <label class="control-label">Choose Topics (optional) </label>
-                                <select id="TopicDDL" name="TopicDDL" onconchange="selectedText" class="form-control"> <option selected disabled>---Select Topics---</option> </select>
-                            </div>*@
+                    <label class="control-label">Choose Topics (optional) </label>
+                    <select id="TopicDDL" name="TopicDDL" onconchange="selectedText" class="form-control"> <option selected disabled>---Select Topics---</option> </select>
+                    </div>*@
                             <div class="col-lg-10 col-md-9 col-sm-12 col-12">
                                 <table id="tableUnits" class="table table-responsive bordered">
-                                    
-                                <!-- Table is generated dynamically using AJAX function -->
+
+                                    <!-- Table is generated dynamically using AJAX function -->
                                 </table>
                             </div>
                             <div class="col-lg-2 col-md-3 col-sm-12 col-12 d-grid gap-2 mx-auto">
@@ -134,7 +137,7 @@ else
     <h4 class="mt-4 mb-5"><strong>No Record found</strong></h4>
 }
 
-@section Scripts{
+@section Scripts {
     <script>
         $(document).ready(function () {
             // Hide the table by default
@@ -148,7 +151,7 @@ else
                     $('#tableUnits').hide();
                 }
             });
-            
+
 
             //// search bar
             //$(document).ready(function () {
@@ -207,10 +210,12 @@ else
             // on change of SubjectDDL                      Code OK
             $('#SubjectDDL').change(function () {
                 var id = $(this).val();
+                //$('#tableUnits tbody').empty(); // Clear table body content
                 //$('#TopicDDL').empty();
                 //$('#TopicDDL').append("<option>--Select Topic--</option>");
-                $('#tableUnits tr:not(:first)').remove();
-                $('#tableUnits').append('<h2 class="h2"> Select Chapters details with Pairing Scheme</h2>')
+                $('#tableH2').remove();
+                $('#tableUnits tr').remove();
+                $('#tableUnits').append('<h2 id="tableH2" class="h2"> Select Chapters details with Pairing Scheme</h2>')
                 $('#tableUnits').append('<thead>' + '<tr><th>Select Units</th><th>Code</th><th>Topic Text</th><th>MCQs</th><th>SEQs</th><th>Long Qs </th><th>Blanks</th></tr>' + '</thead>');
                 $.ajax({
                     type: "POST",
@@ -221,8 +226,7 @@ else
                         $.each(response, function (i, item) {
                             //$('#TopicDDL').append("<option value=" + item.id + ">" + item.topicText + "</option>");
                             //trHTML += '<tr><td>' + item.code + '</td><td>' + item.topicText + '</td><td><table><tr><td>MCQs</td><td>' + item.mcqCount + '</td><td><input type="number"></td></tr><tr><td>SEQs</td><td>' + item.seqCount + '</td></tr><tr><td>Long Questions</td><td>' + item.longQCount + '</td></tr><tr><td>Fill in the blanks</td><td>' + item.fillinBlankCount + '</td></tr></table></td>';
-                            trHTML += '<tr> <td><input id="' + item.id +'" value="'+item.id+'" type="checkbox" name="topicList"/></td> <td>' + item.code + '</td><td>' + item.topicText + '</td><td>' + item.mcqCount + '</td><td>' + item.seqCount + '</td><td>' + item.longQCount + '</td><td>' + item.fillinBlankCount + '</td></tr>';
-                            
+                            trHTML += '<tr> <td><input id="' + item.id + '" value="' + item.id + '" type="checkbox" name="topicList" class="form-check-input"/></td> <td>' + item.code + '</td><td>' + item.topicText + '</td><td>' + item.mcqCount + '</td><td>' + item.seqCount + '</td><td>' + item.longQCount + '</td><td>' + item.fillinBlankCount + '</td></tr>';
                         });
                         $('#tableUnits').append(trHTML);
                     }
@@ -233,4 +237,4 @@ else
 
         });
     </script>
-    }
+}

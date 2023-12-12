@@ -11,7 +11,7 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-9 col-md-8 col-sm-12 col-10">
-            <h2 style="text-align:center; color:red;">@(@Model.TopicName != null ? "@Model.TopicName  in @Model.SubjectName" : "All registered question")</h2>
+            <h2 style="text-align:center; color:red;">@(Model.TopicName != null ? @Model.TopicName+" in "+@Model.SubjectName : "All registered question")</h2>
         </div>
         <div class="col-lg-3 col-md-4 col-sm-12 col-2">
             @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))

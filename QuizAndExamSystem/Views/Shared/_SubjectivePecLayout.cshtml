@@ -5,8 +5,6 @@
     // string imagePath = webHostEnvironment.WebRootPath + WC.LogoPath;
     // string qrCodePath = webHostEnvironment.WebRootPath + WC.QrCodePath;
     //Layout = "PaperBoardLayout";
-    int j = 1;
-    int k = 1;
     TimeSpan t = TimeSpan.FromMinutes(Convert.ToInt32(Model.Setting.Duration));
 }
 <div style="background-repeat:no-repeat; align-items:center; background-position:center; background-size:contain; background: rgba(255, 255, 255, 0.3) background-image:url('https://localhost:7278/images/logo.png');">
@@ -147,8 +145,8 @@
         </tr>
     </table>
     <!-- Paper Section Starts-->
-
     <!-- Question Section-->
+
     <div style="text-align:center;margin:0px; padding:0px;">
         <h4 style="text-align:center; color:blue; margin:0px;">Section: Subjective Part </h4>
     </div>
@@ -165,62 +163,113 @@
             </td>
         </tr>
     </table>
-    @foreach (var sitem in Model.SEQs)
-    {
+    <div style="display: flex;">
+        <!-- Short Question Section -->
+        <!-- Left Column -->
+        <div style="flex: 1;">
+            <!-- Question Section-->
+            @for (int i = 0; i < Model.SEQs.Count / 2; i++)
+            {
+                <table style="border:solid; border-block-width: 0.5px;  width:100%; margin:0px; padding:0px;">
+                    <tr style=" width:100%; margin:0px; padding:0px;">
+                        <td style="width:55%; text-align:left;">
+                            @i+1: @Model.SEQs[i].QuestionText
+                        </td>
+                        <td style="width:5%; text-align:center;">
+                            (@Model.Setting.SEQsMarks)
+                        </td>
+                        <td style="width:40%; text-align:right;" dir="rtl">
+                            @i+1: <span style="font-family:'Jameel Noori Nastaleeq' !important;">@Model.SEQs[i].QuestionTextL</span>
+                        </td>
+                    </tr>
+                </table>
+            }
+        </div>
 
-        if (sitem.QuestionType == @QuestionTypes.SEQ)
-        {
-            <table style="border:solid; border-block-width: 0.5px;  width:100%; margin:0px; padding:0px;">
-                <tr style=" width:100%; margin:0px; padding:0px;">
-                    <td style="width:60%; text-align:left;">
-                        @j: @sitem.QuestionText
-                    </td>
-                    <td style=" text-align:center;">
-                        (@Model.Setting.SEQsMarks)
-                    </td>
-                    <td style="width:40%; text-align:right;" dir="rtl">
-                        @j: <span style="font-family:'Jameel Noori Nastaleeq' !important;">@sitem.QuestionTextL</span>
-                    </td>
-                </tr>
-            </table>
-
-        }
-        j++;
-    }
+        <!-- Right Column -->
+        <div style="flex: 1;">
+            @{
+                int startIndex = Model.SEQs.Count / 2;
+                for (int i = startIndex, count = 1; i < Model.SEQs.Count; i++, count++)
+                {
+                    <table style="border:solid; border-block-width: 0.5px;  width:100%; margin:0px; padding:0px;">
+                        <tr style=" width:100%; margin:0px; padding:0px;">
+                            <td style="width:55%; text-align:left;">
+                                @(startIndex + count): @Model.SEQs[i].QuestionText
+                            </td>
+                            <td style="width:5%; text-align:center;">
+                                (@Model.Setting.SEQsMarks)
+                            </td>
+                            <td style="width:40%; text-align:right;" dir="rtl">
+                                @(startIndex + count): <span style="font-family:'Jameel Noori Nastaleeq' !important;">@Model.SEQs[i].QuestionTextL</span>
+                            </td>
+                        </tr>
+                    </table>
+                }
+            }
+        </div>
+    </div>
     <table style="width:100%; font-size:large; font-weight:300; margin:0px; padding:0px;" id="question">
         <tr style="text-align:justify-all; width:100%;">
-            <td style="width:50%; text-align:left; margin:0px;padding:0px;">
-                <h5><strong>Question#3:</strong> Answer in details?</h5>
+            <td style="width:50%; text-align:left;">
+                <h5><strong>Question#3:</strong>Give answer in details to following questions</h5>
             </td>
             <td style="width:10%; text-align:center;">
-                <p>[@Model.Setting.LongQsMarks x @Model.LongQs.Count(x => x.QuestionType == QuestionTypes.Long_Question) = @(@Model.Setting.LongQsMarks * @Model.LongQs.Count(x => x.QuestionType == QuestionTypes.Long_Question))] </p>
+                <p>[@Model.Setting.LongQsMarks x @Model.LongQs.Count(x => x.QuestionType == QuestionTypes.Long_Question) =  @(@Model.Setting.LongQsMarks * @Model.LongQs.Count(x => x.QuestionType == QuestionTypes.Long_Question))]</p>
             </td>
             <td style="width:40%; text-align:right" dir="rtl">
-                <h5 style="font-family:'Jameel Noori Nastaleeq' !important;"><strong>سوال نمبر 3:</strong>تفصیل سے جواب دیں </h5>
+                <h5 style="font-family:'Jameel Noori Nastaleeq' !important;"><strong>سوال نمبر 2:</strong>درج زیل سوالات کا مختصر جواب دیں۔</h5>
             </td>
         </tr>
     </table>
-    @foreach (var litem in Model.LongQs)
-    {
-        if (litem.QuestionType == @QuestionTypes.Long_Question)
-        {
-            <!-- Long Questions -->
-            <table style="border:solid; border-block-width: 0.5px; width:100%">
-                <tr style=" width:100%; margin:0px;padding:0px;">
-                    <td style="width:60%; text-align:left;">
-                        @k: @litem.QuestionText
-                    </td>
-                    <td style=" text-align:center;">
-                        (@Model.Setting.LongQsMarks)
-                    </td>
-                    <td style="width:40%; text-align:right;" dir="rtl">
-                        @k: <span style="font-family:'Jameel Noori Nastaleeq' !important;">@litem.QuestionTextL</span>
-                    </td>
-                </tr>
-            </table>
-        }
-        k++;
-    }
+    <div style="display: flex;">
+        <!-- Long Question Section -->
+        <!-- Left Column -->
+        <div style="flex: 1;">
+            <!-- Question Section-->
+            @for (int i = 0; i < Model.LongQs.Count / 2; i++)
+            {
+                <table style="border:solid; border-block-width: 0.5px;  width:100%; margin:0px; padding:0px;">
+                    <tr style=" width:100%; margin:0px; padding:0px;">
+                        <td style="width:55%; text-align:left;">
+                            @(i+1): @Model.LongQs[i].QuestionText
+                        </td>
+                        <td style="width:5%; text-align:center;">
+                            (@Model.Setting.LongQsMarks)
+                        </td>
+                        <td style="width:40%; text-align:right;" dir="rtl">
+                            @(i+1): <span style="font-family:'Jameel Noori Nastaleeq' !important;">@Model.LongQs[i].QuestionTextL</span>
+                        </td>
+                    </tr>
+                </table>
+            }
+        </div>
+
+        <!-- Right Column -->
+        <div style="flex: 1;">
+
+            @{
+                int startLIndex = Model.LongQs.Count / 2;
+                for (int i = startLIndex, count = 1; i < Model.LongQs.Count; i++, count++)
+                {
+                    <table style="border:solid; border-block-width: 0.5px;  width:100%; margin:0px; padding:0px;">
+                        <tr style=" width:100%; margin:0px; padding:0px;">
+                            <td style="width:55%; text-align:left;">
+                                @(startLIndex + count): @Model.LongQs[i].QuestionText
+                            </td>
+                            <td style="width:5%; text-align:center;">
+                                (@Model.Setting.LongQsCount)
+                            </td>
+                            <td style="width:40%; text-align:right;" dir="rtl">
+                                @(startLIndex + count): <span style="font-family:'Jameel Noori Nastaleeq' !important;">@Model.LongQs[i].QuestionTextL</span>
+                            </td>
+                        </tr>
+                    </table>
+                }
+            }
+        </div>
+    </div>
+
     <!-- Paper footer section -->
     <div id="meta" class="table  table-hover">
         <div class="row">
@@ -229,8 +278,8 @@
 </div>
 
 
-@section Scripts{
+@section Scripts {
     <script>
 
     </script>
-    }
+}

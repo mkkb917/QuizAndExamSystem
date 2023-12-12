@@ -56,7 +56,10 @@ namespace ExamSystem.Models
         [Display(Name = "Fill in the Blanks Count")]
         public int FillInBlanksCount { get; set; }
         public string? QrCode { get; set; }
-
+        [Display(Name = "Paper Layout")]
+        public PaperLayout? PaperLayout { get; set; }
+        [Display(Name = "Paper Version")]
+        public PaperVersion? PaperVersion { get; set; }
 
 
     }

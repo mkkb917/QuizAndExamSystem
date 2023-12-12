@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.13.3/css/OverlayScrollbars.css" integrity="sha512-LSGPGnehGYGsh7/QTPRwe1VGplv3tVHmlDw6hI/hrEYaaI0OBFE2x6Pdo8DdAKIkJuYfbShXwDjq/SJxbsE9Tg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- dataTable cdn for bootstrap tables-->
     <link rel="stylesheet" type="text/css" href="~/admin/css/datatables.min.css" />
+    <!-- Rich Text Editor SummerNote-->
 
     <!-- Rich Text Editor SummerNote-->
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
@@ -517,13 +518,19 @@
     <!-- ChartJS -->
     <script src="~/admin/js/chart.js/Chart.min.js"></script>
 
+    <!-- script for CK Editor to inject mathjax in editor -->
+    <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
+    <!-- MathJax script for mathe equations display -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
     <!-- DataTable for bootstrap tables -->
     <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>   <!-- SweetAlerts-->
     <!-- Include the summerNote library for RichTextEditor -->
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 
-    @await RenderSectionAsync("Scripts", required: false)    //, required: false
+    @await RenderSectionAsync("Scripts", required: false)   
 </body>
 </html>
 

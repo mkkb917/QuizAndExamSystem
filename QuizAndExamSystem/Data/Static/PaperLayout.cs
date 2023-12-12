@@ -12,6 +12,17 @@ namespace ExamSystem.Data.Static
         Ppsc,
 
     }
+
+    public enum PaperVersion
+    {
+        [Display(Name ="None")]
+        None = 1,
+        [Display(Name = "Four Versions (Stars)")]
+        FourVersion,
+        
+    }
+
+
     public static class PaperLayouts
     {
         [Display(Name ="BISE Layout")]

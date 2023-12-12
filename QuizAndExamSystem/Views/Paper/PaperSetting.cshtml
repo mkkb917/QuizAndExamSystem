@@ -45,26 +45,26 @@
                     </div>
                     <div class="row">
                         <div class="col-lg-3 col-md-6 col-sm-12 col-12">
-                            <label class="contol-label">Paper Versions</label>
-                            <div class=" form-check">
-                                <label class="form-check-label">
-                                    <input type="checkbox" class="form-check-input" value="" disabled>4 versions
-                                </label>
-                            </div>
+                            <label asp-for=" PaperLayout" class="control-label"></label>
+                            <label class="form-control">@Html.DisplayFor(Model => Model.PaperLayout) </label>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-12 col-12">
+                            <label asp-for=" PaperVersion" class="control-label"></label>
+                            <label class="form-control">@Html.DisplayFor(Model => Model.PaperVersion) </label>
                         </div>
                         <div class="col-lg-3 col-md-6 col-sm-12 col-12">
                             <label class="contol-label">Secure paper with</label>
                             <div class=" form-check">
                                 <label class="form-check-label">
-                                    <input type="checkbox" class="form-check-input" check="@(Model.QrCode!=null?"checked":"")" disabled>Barcode
+                                    <input type="checkbox" class="form-check-input" checked disabled>Barcode <!--  check="@(Model.QrCode!=null?"checked":"")" -->
                                 </label>
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-6 col-sm-12 col-12">
                             <label class="contol-label">Marks distribution for the paper</label>
-                            <div class=" form-check">
-                                <label class="form-check-label">
-                                    <input id="pairingCheckBox" type="checkbox" class="form-check-input" check="@(Model.PairingScheme==true?"checked":"")" disabled>
+                            <div class="form-check form-switch">
+                                <input id="pairingCheckBox" type="checkbox" class="form-check-input" check="@(Model.PairingScheme==true?"checked":"")" disabled>
+                                <label class="form-check-label" for="pairingCheckBox">
                                     Use Default <a asp-action="PairingScheme">Pairing Schemas</a>
                                 </label>
                             </div>

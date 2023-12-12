@@ -5,7 +5,6 @@
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
 }
 
-<script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
 
 <div class="container">
     <h2 style="text-align:center; color:red;">New Question</h2>
@@ -90,17 +89,20 @@
                     </div>
                     <hr style="background-color: white; height: 1px; border: 0;" />
                     <!-- Question Section-->
+                    <div >
+                        <p>Use latex to write math eqautions <a href="https://www.hostmath.com/" target="_blank">Hostmath</a> dont forget the paWS \( latex code \)</p>
+                    </div>
                     <div id="question" class="table  table-hover">
                         <div class="row"><h5>Enter the Question Statement</h5></div>
                         <div class="row">
                             <div class=" col-lg-2 col-md-2 col-sm-12 col-12"> Question</div>
                             <div class="col-lg-5 col-md-5 col-sm-12 col-12 ">
-                                <textarea id="QuestionText" name="QuestionText" asp-for="QuestionText" rows="10" cols="80" class="form-control" placeholder="Question in English"></textarea>
+                                <textarea id="QuestionText" name="QuestionText" @* asp-for="QuestionText" *@ rows="10" cols="80" class="form-control" placeholder="Question in English"></textarea>
                                 <span asp-validation-for="QuestionText" class="text-danger"></span>
                             </div>
                             <div class="col-lg-5 col-md-5 col-sm-12 col-12 ">
                                 <span style="font-family:'Jameel Noori Nastaleeq' !important;">
-                                    <textarea id="QuestionTextL" name="QuestionTextL" asp-for="QuestionTextL" rows="10" cols="80" class=" form-control" dir="rtl" placeholder="سوال اردو میں "></textarea>
+                                    <textarea id="QuestionTextL" name="QuestionTextL" @* asp-for="QuestionTextL" *@ rows="10" cols="80" class=" form-control" dir="rtl" placeholder="سوال اردو میں "></textarea>
                                 </span>
                                 <span asp-validation-for="QuestionTextL" class="text-danger"></span>
                             </div>
@@ -281,7 +283,6 @@
 
 @section Scripts{
     <script>
-        
 
         // script code for Question Type DDL
         $(function () {
