@@ -9,7 +9,7 @@ namespace ExamSystem.Data.Interface
     {
         Task<List<QnAs>> GetQuestionBank(int? SubjectId, List<Topic>? Topics);
         Task<Question> GetQuesDetailById(int id);
-        Task<List<QuestionMeta>> GetQuestionMetaById(int id);
+        Task<QuestionMeta> GetQuestionMetaById(int id);
         Task<bool> SearchQuestionByString(string questionString);
         Task<List<Question>> GetAllQuestionsById(int Id);
         Task<List<Question>> GetAllQuestionsByStatus(Status status);
@@ -18,6 +18,7 @@ namespace ExamSystem.Data.Interface
         Task AddNewQuestionMeta(QuestionMeta data);
         Task UpdateQuestion(int id, QuestionVM data);
         Task DeleteQuestion(int id);
+        Task DeleteQuestionMeta(int id);
 
         Task<Topic> GetTopicById(int id);
         Task<Subject> GetSubjectById(int id);

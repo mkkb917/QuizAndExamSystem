@@ -282,6 +282,13 @@ namespace ExamSystem.Controllers
             return View(responce);
         }
 
+        #region QuestionMeta Section
+        /// <summary>
+        /// meta section starts 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+
         //Add new question meta 
         [HttpGet]
         public IActionResult CreateQuestionMeta(int id)
@@ -289,7 +296,6 @@ namespace ExamSystem.Controllers
             var obj = new QuestionMetaVM();
             if (id != 0)
             {
-                //TempData["QId"] = id;
                 obj.QuestionId = id;
             }
             
@@ -297,6 +303,84 @@ namespace ExamSystem.Controllers
             return View(obj);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CreateQuestionMeta(QuestionMetaVM model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var obj = new QuestionMeta()
+                    {
+                        QuestionId = model.QuestionId,
+                        BoardName = model.BoardName,
+                        Session = model.Session,
+                        ExamName = model.ExamName,
+                        ExamYear = model.ExamYear,
+                        Keywords = model.Keywords,
+                        MarkAs = model.MarkAs,
+                        Description = model.Description,
+                    };
+                    await _service.AddNewQuestionMeta(obj);
+                    _logger.LogInformation("New question meta record is created by {0}", User.Identity.Name);
+                    return RedirectToAction(nameof(Details), new { @id = model.QuestionId });
+                }
+                else
+                {
+                    return View(model);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        //edit the question meta
+        [HttpGet]
+        public async Task<IActionResult> EditQuestionMeta(int id)
+        {
+            var obj = new QuestionMetaVM();
+            if (id != 0)
+            {
+                var responce = await _service.GetQuestionMetaById(id);
+                if (responce != null)
+                {
+                    obj.BoardName = responce.BoardName;
+                    obj.Session = responce.Session;
+                    obj.Keywords = responce.Keywords;
+                    obj.ExamName = responce.ExamName;
+                    obj.ExamYear = responce.ExamYear;
+                    obj.MarkAs = responce.MarkAs;
+                    obj.Description = responce.Description;
+                    obj.QuestionId = id;
+
+                    _logger.LogInformation("edit of metaQuestion is requested by {0}", User.Identity.Name);
+                    return View(obj);
+                }
+                else
+                {
+                    return RedirectToAction(nameof(CreateQuestionMeta));
+                }
+            }
+            return RedirectToAction(nameof(NotFound));
+        }
+
+        //POST: 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteMeta(int id)
+        {
+            var Obj = await _service.GetQuestionMetaById(id);
+            if (Obj == null) return View("NotFound");
+            await _service.DeleteQuestionMeta(id);
+            _logger.LogInformation("Delete button of Question Meta is accessed by {0}", User.Identity.Name);
+            _logger.LogInformation("Record is successfully deleted by {0}", User.Identity.Name);
+            return RedirectToAction(nameof(Details), new { @id = id });
+        }
+
+        #endregion
 
         // GET: Question/Delete/5
         public async Task<IActionResult> Delete(int id)

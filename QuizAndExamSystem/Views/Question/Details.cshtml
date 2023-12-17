@@ -188,6 +188,7 @@
                         <th>Year</th>
                         <th>Granularity</th>
                         <th>Keywords</th>
+                        <th>Action</th>
                     </tr>
                     @foreach (var MetaVM in Model.QuestionMetaVMs)
                     {
@@ -211,13 +212,22 @@
                                 @MetaVM.Session
                             </td>
                             <td class="col-lg-2 col-md-2 col-sm-6 col-12">
-                                @MetaVM.Session
+                                @MetaVM.ExamYear.Year
                             </td>
                             <td class="col-lg-2 col-md-2 col-sm-6 col-12">
                                 @MetaVM.MarkAs
                             </td>
                             <td class="col-lg-6 col-md-6 col-sm-12 col-12">
                                 @MetaVM.Keywords
+                            </td>
+                            <td class="col-lg-2 col-md-2 col-sm-6 col-12">
+                                <a asp-action="EditQuestionMeta" asp-route-id="@Model.Id" class="btn btn-outline-primary float-right"><i class="fas fa-pencil-square"></i></a>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <form asp-action="DeleteMeta" asp-route-id="@Model.Id" method="POST">
+                                        <button type="submit" class="btn btn-outline-primary float-right"><i class="fas fa-trash"></i></button>
+                                    </form>
+                                }
                             </td>
                         </tr>
                     }

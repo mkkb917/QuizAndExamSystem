@@ -15,16 +15,16 @@
             <!-- /.card-header -->
             <div class="card-body table-responsive">
                 <table id="tblData" class="table table-bordered table-hover">
-                    <form asp-action="CreateQuestionMeta" method="post" enctype="multipart/form-data">
-                        <input asp-for="QuestionId" type="hidden" value="@Model.QuestionId"/>
-                        
+                    <form asp-action="EditQuestionMeta" method="post" enctype="multipart/form-data">
+                        <input asp-for="QuestionId" type="hidden" value="@Model.QuestionId" />
+
                         <div class="form-group">
-                            <button type="submit" value="Create" class="btn btn-success float-right"><i class="fas fa-floppy-disk"></i> Create </button>
+                            <button type="submit" value="Create" class="btn btn-success float-right"><i class="fas fa-floppy-disk"></i> Update </button>
                             <a asp-controller="Question" asp-action="Details" asp-route-id="@Model.QuestionId" class="btn btn-secondary"> <i class="fas fa-arrow-back"></i> Cancel</a>
                         </div>
 
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        
+
                         <div class="form-group">
                             <label asp-for="ExamName" class="control-label"></label>
                             <select asp-for="ExamName" class="form-control" asp-items="Html.GetEnumSelectList<Exam>()"></select>
@@ -32,7 +32,7 @@
                         </div>
                         <div class="form-group">
                             <label asp-for="ExamYear" class="control-label"></label>
-                            <input asp-for="ExamYear" class="form-control" placeholder="2020" type="date"/>
+                            <input asp-for="ExamYear" class="form-control" placeholder="2020" type="date" />
                             <span asp-validation-for="ExamYear" class="text-danger"></span>
                         </div>
                         <div class="form-group">
@@ -60,9 +60,9 @@
                             <textarea asp-for="Description" class="form-control" type="text" placeholder="Some detail about question"></textarea>
                             <span asp-validation-for="Description" class="text-danger"></span>
                         </div>
-                        
+
                         <div class="form-group">
-                            <button type="submit" value="Create" class="btn btn-success float-right"><i class="fas fa-floppy-disk"></i> Create </button>
+                            <button type="submit" value="Create" class="btn btn-success float-right"><i class="fas fa-floppy-disk"></i> Update </button>
                             <a asp-controller="Question" asp-action="Details" asp-route-id="@Model.QuestionId" class="btn btn-secondary"> <i class="fas fa-arrow-back"></i> Cancel</a>
                         </div>
                     </form>

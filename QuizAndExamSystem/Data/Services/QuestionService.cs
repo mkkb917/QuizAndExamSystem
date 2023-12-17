@@ -163,7 +163,7 @@ namespace ExamSystem.Data.Services
             }
 
             //delete teh metaquestion tabel entries
-            System.Collections.Generic.List<QuestionMeta> ObjMeta = await _context.QuestionMetas.Where(n => n.QuestionId == Id).ToListAsync();
+            List<QuestionMeta> ObjMeta = await _context.QuestionMetas.Where(n => n.QuestionId == Id).ToListAsync();
             if (ObjMeta != null)
             {
                 _context.QuestionMetas.RemoveRange(ObjMeta);
@@ -279,9 +279,9 @@ namespace ExamSystem.Data.Services
             return true;
         }
 
-        public async Task<List<QuestionMeta>> GetQuestionMetaById(int id)
+        public async Task<QuestionMeta> GetQuestionMetaById(int id)
         {
-            var responce = await _context.QuestionMetas.Where(q => q.QuestionId == id).ToListAsync();
+            var responce = await _context.QuestionMetas.Where(q => q.QuestionId == id).FirstOrDefaultAsync();
             return responce;
         }
 
@@ -289,6 +289,16 @@ namespace ExamSystem.Data.Services
         {
             await _context.QuestionMetas.AddAsync(data);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteQuestionMeta(int id)
+        {
+            var Obj = await _context.QuestionMetas.FirstOrDefaultAsync(n => n.Id == id);
+            if (Obj != null)
+            {
+                _context.Remove(Obj);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }
