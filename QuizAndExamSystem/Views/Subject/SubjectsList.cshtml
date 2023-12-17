@@ -18,7 +18,7 @@
                 {
                     <a asp-controller="Subject" asp-action="Create" asp-route-id="@Model.GradeId" class="btn btn-primary float-right"> <i class="fas fa-plus-circle"></i> Add New Subject</a>
                 }
-                <a class="btn btn-secondary" asp-controller="Grade" asp-action="index"> <i class="fa fa-arrow-left"></i> Back</a>
+                <a class="btn btn-secondary" asp-controller="Grade" asp-action="Details" asp-route-id="@Model.GradeId"> <i class="fa fa-arrow-left"></i> Back</a>
             </div>
             <!-- /.card-header -->
             <div class="card-body">

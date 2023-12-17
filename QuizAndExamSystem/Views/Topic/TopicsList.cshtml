@@ -15,7 +15,7 @@
             <div class="card">
                 <div>
                     <a class="btn btn-primary float-right" asp-action="Create" asp-route-id="@Model.SubjectId"><i class="fas fa-pencil-square"></i> Add New Unit</a>
-                    <a asp-controller="Subject" asp-action="SubjectsList" asp-route-id="@Model.GradeId" class="btn btn-secondary"> <i class="fa fa-arrow-left"></i> Back</a>
+                    <a asp-controller="Subject" asp-action="Details" asp-route-id="@Model.SubjectId" class="btn btn-secondary"> <i class="fa fa-arrow-left"></i> Back</a>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body ">
@@ -25,7 +25,7 @@
                             <div class="col-12 col-sm-8 col-md-6 col-lg-4">
                                 <div class="card">
                                     <a href="@Url.Action("Details", new { id = item.Id })" class="card-link">
-                                        <img class="card-img-top" src="@WC.TopicImagePath@item.Image" alt="Topic Image">
+                                        <img class="card-img-top" src="@WC.TopicImagePath@item.Image" alt="Unit Image">
                                         <div class="card-body @((item.Status == Status.Active) ? "bg-primary" : "")">
                                             <h4 class="card-title text-center">
                                                 @sno @item.TopicText

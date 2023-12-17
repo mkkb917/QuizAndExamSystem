@@ -74,7 +74,7 @@ namespace ExamSystem.Data.Services
         {
             var responce = new DropDownsListsVM()
             {
-                Grades = await _context.Grades.Where(s=>s.Status == Status.Active).OrderBy(t => t.GradeText ).ToListAsync(),
+                Grades = await _context.Grades.Where(s => s.Status == Status.Active).OrderBy(t => t.GradeText).ToListAsync(),
                 Subjects = await _context.Subjects.Where(s => s.Status == Status.Active).OrderBy(t => t.SubjectText).ToListAsync(),
                 Topics = await _context.Topics.Where(s => s.Status == Status.Active).OrderBy(t => t.TopicText).ToListAsync()
             };
@@ -229,7 +229,7 @@ namespace ExamSystem.Data.Services
                     //varQnA.OptionsQnA = _objOlst;
                     objQnA.Add(varQnA);
                 }
-                
+
             }
             else
             {
@@ -274,9 +274,21 @@ namespace ExamSystem.Data.Services
         {
             var responce = await _context.Questions
                 .Where(e => e.QuestionText == questionString).FirstOrDefaultAsync();
-            if(responce==null)
+            if (responce == null)
                 return false;
             return true;
+        }
+
+        public async Task<List<QuestionMeta>> GetQuestionMetaById(int id)
+        {
+            var responce = await _context.QuestionMetas.Where(q => q.QuestionId == id).ToListAsync();
+            return responce;
+        }
+
+        public async Task AddNewQuestionMeta(QuestionMeta data)
+        {
+            await _context.QuestionMetas.AddAsync(data);
+            await _context.SaveChangesAsync();
         }
     }
 }

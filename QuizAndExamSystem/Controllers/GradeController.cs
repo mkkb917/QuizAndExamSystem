@@ -148,7 +148,7 @@ namespace ExamSystem.Controllers
             grade.UpdatedOn = DateTime.Now.Date;
             await _service.UpdateAsync(id, grade);
             _logger.LogInformation("The Record is updated successfully by {0}", User.Identity.Name);
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Details),new { @id = grade.Id });
         }
 
         //delete a grade

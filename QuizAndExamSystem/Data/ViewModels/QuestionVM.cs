@@ -20,20 +20,28 @@ namespace ExamSystem.Data.ViewModels
         // question details
         public string? Code { get; set; } = "NoCode";
         [Required(ErrorMessage ="Enter the Question here")]
+        [Display(Name = "Quesion")]
         public string? QuestionText { get; set; }                   //
         [Required(ErrorMessage = "Enter the Question in Urdu")]
+        [Display(Name = "Quesion L")]
         public string? QuestionTextL { get; set; }                  //
         
         [Required(ErrorMessage ="Select the question Type")]
+        [Display(Name = "Quesion Type")]
         public QuestionTypes  QuestionType { get; set; }                      //
-        [Required(ErrorMessage = "Select the question Difficulty level")]
+        [Display(Name = "Quesion Status")]
         public Status? Status { get; set; }                   //
+        [Display(Name = "Difficulty Level")]
         public DifficultyLevel DifficultyLevel { get; set; }        //
         //[Required(ErrorMessage = "Enter the Question description")]
-        public string? Description { get; set; } = "description";                  //
+        public string? Description { get; set; } = "Description";
+        [Display(Name = "Created on")]
         public DateTime CreatedOn { get; set; } = DateTime.Now;       //
+        [Display(Name = "Created by")]
         public string? CreatedBy { get; set; } = string.Empty;        //
+        [Display(Name = "Updated on")]
         public DateTime UpdatedOn { get; set; } = DateTime.Now;         //
+        [Display(Name = "Updated by")]
         public string? UpdatedBy { get; set; } = string.Empty;  //
 
         // Choices 
@@ -49,9 +57,16 @@ namespace ExamSystem.Data.ViewModels
         public string? ChoiceTitleL4 { get; set; }              //  
         public string? CorrectAnswer { get; set; }              //
         public string? CorrectAnswerL { get; set; }             //
-
+        [Display(Name = "Answer")]
         public int SelectedAnswer { get; set; }
 
+        //metadata 
+        public List<QuestionMetaVM>? QuestionMetaVMs { get; set; }
+    }
+
+    public class QuestionMetaVM
+    {
+        public int QuestionId { get; set; }
         //metadata 
         [Display(Name = "Board Name:")]
         public BoardNames BoardName { get; set; }                 //
@@ -60,17 +75,20 @@ namespace ExamSystem.Data.ViewModels
         [Display(Name = "Examination Year:")]
         public DateTime ExamYear { get; set; }                  //
         [Display(Name = "Session:")]
-        public Session SessionId { get; set; }                  //
+        public Session Session { get; set; }                  //
+        [Display(Name = "Mark as")]
         public MarkAs MarkAs { get; set; }
         public string? Keywords { get; set; }                   //
+        public string? Description { get; set; }
     }
-
     public class QuestionIndexVM
     {
         public List<Question>? Questions { get; set; }
         public int TopicId { get; set; }
+        [Display(Name = "Topic Name")]
         public string? TopicName { get; set; }
         public int SubjectId { get; set; }
+        [Display(Name = "Subject Name")]
         public string? SubjectName { get; set; }
     }
 }

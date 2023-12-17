@@ -37,15 +37,15 @@
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-6 col-12">
                             <label asp-for="Status" class="control-label"></label>
-                            @{
-                                if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-                                {
-                                    <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()"></select>
-                                }
-                                else
-                                {
-                                    <input asp-for="Status" value="1" type="number" class="form-control" disabled="disabled" />
-                                }
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <select asp-for="Status" class="form-control"
+                                        asp-items="@(User.IsInRole("Admin") ? Html.GetEnumSelectList<Status>() : null)">
+                                    @if (!User.IsInRole("Admin"))
+                                    {
+                                        <option selected disabled value="1">Pending</option>
+                                    }
+                                </select>
                             }
                             <span asp-validation-for="Status" class="text-danger"></span>
                         </div>

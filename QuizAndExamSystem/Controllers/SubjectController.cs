@@ -196,6 +196,7 @@ namespace ExamSystem.Controllers
                 Code = ObjSubject.Code,
                 Topics = topicslist,
                 Status = ObjSubject.Status,
+                Image = ObjSubject.Image,
                 Description = ObjSubject.Description,
                 CreatedOn = ObjSubject.CreatedOn,
                 CreatedBy = ObjSubject.CreatedBy,

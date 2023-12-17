@@ -415,8 +415,8 @@ namespace ExamSystem.Controllers
             { return RedirectToAction("PaperSetting", new { @id = 0 }); }
 
             //get the layout scheme for paper
-            objectiveLayout = setting.PaperLayout == PaperLayout.Bise ? "_ObjectiveBoardLayout" : "_ObjectivePecLayout";
-            SubjectiveLayout = setting.PaperLayout == PaperLayout.Bise ? "_SubjectiveBoardLayout" : "_SubjectivePecLayout";
+            objectiveLayout = setting.PaperLayout == PaperLayout.OneColumn ? "_ObjectiveBoardLayout" : "_ObjectivePecLayout";
+            SubjectiveLayout = setting.PaperLayout == PaperLayout.OneColumn ? "_SubjectiveBoardLayout" : "_SubjectivePecLayout";
             SolutionLayout = "_PaperSolutionView";
 
             // get the html string of the paperviewVm object for dinktopdf generator

@@ -4,19 +4,19 @@ namespace ExamSystem.Data.Static
 {
     public enum PaperLayout
     {
-        [Display(Name = "BISE Layout")]
-        Bise = 1,
-        [Display(Name = "PEC Layout")]
-        Pec,
-        [Display(Name = "PPSC Layout")]
-        Ppsc,
+        [Display(Name = "One Column")]
+        OneColumn = 1,
+        [Display(Name = "Two Column")]
+        TwoColumn,
+        [Display(Name = "Three Column")]
+        ThreeColumn,
 
     }
 
     public enum PaperVersion
     {
-        [Display(Name ="None")]
-        None = 1,
+        [Display(Name ="Single Version")]
+        Single = 1,
         [Display(Name = "Four Versions (Stars)")]
         FourVersion,
         

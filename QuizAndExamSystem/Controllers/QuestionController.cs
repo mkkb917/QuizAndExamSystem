@@ -6,6 +6,8 @@ using ExamSystem.Data.ViewModels;
 using ExamSystem.Data.Static;
 using Microsoft.AspNetCore.Authorization;
 using ExamSystem.Filters;
+using ExamSystem.Models;
+using Microsoft.AspNetCore.JsonPatch.Adapters;
 
 namespace ExamSystem.Controllers
 {
@@ -69,13 +71,9 @@ namespace ExamSystem.Controllers
         public async Task<IActionResult> Details(int id)
         {
             _logger.LogInformation("Details page of Question Controller is accessed by {0}", User.Identity.Name);
-            //var SubjectText = await _service.GetByIdAsync(id);
-            //TempData["SubjectText"] = SubjectText;
+            
             var ObjQuestion = await _service.GetQuesDetailById(id);
             if (ObjQuestion == null) return View("NotFound");
-
-            var choice = ObjQuestion.Choice.Answer;
-            
 
             var responce = new QuestionVM()
             {
@@ -104,8 +102,20 @@ namespace ExamSystem.Controllers
                 ChoiceTitleL4 = ObjQuestion.Choice.ChoiceL4,
                 CorrectAnswer = ObjQuestion.Choice.Answer,
                 CorrectAnswerL = ObjQuestion.Choice.AnswerL,
-                
+                // question meta info
+                QuestionMetaVMs = ObjQuestion.QuestionMeta.Select(qm => new QuestionMetaVM
+                {
+                   BoardName = qm.BoardName,
+                   ExamName = qm.ExamName,
+                   ExamYear = qm.ExamYear,
+                   MarkAs = qm.MarkAs,
+                   Keywords = qm.Keywords,
+                   Session = qm.Session,
+                   
+                }).ToList()
+
             };
+            
             return View(responce);
         }
 
@@ -271,6 +281,22 @@ namespace ExamSystem.Controllers
             _logger.LogInformation("Approve page of Question Controller is accessed by {0}", User.Identity.Name);
             return View(responce);
         }
+
+        //Add new question meta 
+        [HttpGet]
+        public IActionResult CreateQuestionMeta(int id)
+        {
+            var obj = new QuestionMetaVM();
+            if (id != 0)
+            {
+                //TempData["QId"] = id;
+                obj.QuestionId = id;
+            }
+            
+            _logger.LogInformation("Create page of QuestionMeta Information is accessed by {0}", User.Identity.Name);
+            return View(obj);
+        }
+
 
         // GET: Question/Delete/5
         public async Task<IActionResult> Delete(int id)

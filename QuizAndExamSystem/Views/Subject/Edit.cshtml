@@ -21,7 +21,7 @@
                         <div class="form-group">
                             <input type="hidden" value="@Model.Id" />
                             <button type="submit" value="Update" class="btn btn-success float-right" > <i class="fas fa-floppy-disk"></i> Update </button>
-                            <a class="btn btn-secondary" asp-action="SubjectsList" asp-route-id="@Model.GradeId"> <i class="fas fa-arrow-left"></i> Back</a>
+                            <a class="btn btn-secondary" asp-action="Details" asp-route-id="@Model.Id"> <i class="fas fa-arrow-left"></i> Back</a>
                         </div>
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <input asp-for="user" type="hidden" value="@User.Identity.Name" />
@@ -58,7 +58,7 @@
                             <button type="submit" value="Update" class="btn btn-success float-right" ><i class="fas fa-floppy-disk"></i> Update</button>
                             <!-- hidden value for redirection of method back to SubjectsList after post -->
                            
-                            <a class="btn btn-secondary" asp-action="SubjectsList" asp-route-id="@Model.GradeId"><i class="fas fa-arrow-left"></i> Back</a>
+                            <a class="btn btn-secondary" asp-action="Details" asp-route-id="@Model.Id"> <i class="fas fa-arrow-left"></i> Back</a>
                         </div>
                     </form>
                 </table>

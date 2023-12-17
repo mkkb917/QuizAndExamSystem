@@ -174,7 +174,7 @@
                     <h5>Appeared in the exams (Metadata)</h5>
                     @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
                     {
-                        <h5 style="float:right;" class="align-content-end"><a asp-controller="Question" asp-action="Edit" asp-route-id="@Model.Id" class="float-right"><i class="fas fa-plus-square"></i></a></h5>
+                        <a asp-controller="Question" asp-action="CreateQuestionMeta" asp-route-id="@Model.Id" class="btn btn-primary float-right"><i class="fas fa-plus-square"></i></a>
                     }
                 </div>
                 <table class="table table-hover table-responsive">
@@ -189,35 +189,38 @@
                         <th>Granularity</th>
                         <th>Keywords</th>
                     </tr>
-                    <tr>
-                        <td class="col-lg-2 col-md-2 col-sm-6 col-12">
-                            @Html.DisplayFor(model => model.Status)
-                        </td>
-                        <td class="col-lg-2 col-md-2 col-sm-6 col-12">
-                            @Html.DisplayFor(model => model.QuestionType)
-                        </td>
-                        <td class="col-lg-2 col-md-2 col-sm-6 col-12">
-                            @Html.DisplayFor(model => model.DifficultyLevel)
-                        </td>
-                        <td class="col-lg-2 col-md-2 col-sm-6 col-12">
-                            @Html.DisplayFor(model => model.BoardName)
-                        </td>
-                        <td class="col-lg-2 col-md-2 col-sm-6 col-12">
-                            @Html.DisplayFor(model => model.ExamName)
-                        </td>
-                        <td class="col-lg-2 col-md-2 col-sm-6 col-12">
-                            @Html.DisplayFor(model => model.SessionId)
-                        </td>
-                        <td class="col-lg-2 col-md-2 col-sm-6 col-12">
-                            2023
-                        </td>
-                        <td class="col-lg-2 col-md-2 col-sm-6 col-12">
-                            @Html.DisplayFor(model => model.MarkAs)
-                        </td>
-                        <td class="col-lg-6 col-md-6 col-sm-12 col-12">
-                            @Html.DisplayFor(model => model.Keywords)
-                        </td>
-                    </tr>
+                    @foreach (var MetaVM in Model.QuestionMetaVMs)
+                    {
+                        <tr>
+                            <td class="col-lg-2 col-md-2 col-sm-6 col-12">
+                                @Model.Status
+                            </td>
+                            <td class="col-lg-2 col-md-2 col-sm-6 col-12">
+                                @Model.QuestionType
+                            </td>
+                            <td class="col-lg-2 col-md-2 col-sm-6 col-12">
+                                @Model.DifficultyLevel
+                            </td>
+                            <td class="col-lg-2 col-md-2 col-sm-6 col-12">
+                                @MetaVM.BoardName
+                            </td>
+                            <td class="col-lg-2 col-md-2 col-sm-6 col-12">
+                                @MetaVM.ExamName
+                            </td>
+                            <td class="col-lg-2 col-md-2 col-sm-6 col-12">
+                                @MetaVM.Session
+                            </td>
+                            <td class="col-lg-2 col-md-2 col-sm-6 col-12">
+                                @MetaVM.Session
+                            </td>
+                            <td class="col-lg-2 col-md-2 col-sm-6 col-12">
+                                @MetaVM.MarkAs
+                            </td>
+                            <td class="col-lg-6 col-md-6 col-sm-12 col-12">
+                                @MetaVM.Keywords
+                            </td>
+                        </tr>
+                    }
                 </table>
             </div>
             <hr style="background-color: white; height: 1px; border: 0;" />
