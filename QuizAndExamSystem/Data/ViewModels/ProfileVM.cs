@@ -1,20 +1,25 @@
 ﻿using ExamSystem.Data.Static;
 using ExamSystem.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
 namespace ExamSystem.Data.ViewModels
 {
     public class ProfileVM
     {
-        public string?  Id { get; set; }
-
+        //account information
+        public string? Id { get; set; }
         public string Role { get; set; } = string.Empty;
+        public List<string> Permissions { get; set; }
+        public bool IsEmailConfirmed { get; set; }
+        public Status Status { get; set; } 
+        //personal information
         [Display(Name = "First Name:")]
         [DataType(DataType.Text)]
         [MaxLength(255)]
-        [Required(ErrorMessage ="Please Enter Your First Name")]
-        public string?  FirstName { get; set; } = String.Empty;
+        [Required(ErrorMessage = "Please Enter Your First Name")]
+        public string? FirstName { get; set; } = String.Empty;
         [Display(Name = "Last Name:")]
         [DataType(DataType.Text)]
         [MaxLength(255)]
@@ -22,39 +27,39 @@ namespace ExamSystem.Data.ViewModels
         public string? LastName { get; set; } = String.Empty;
         [Required(ErrorMessage = "Please Enter Your Email Address")]
         [DataType(DataType.EmailAddress, ErrorMessage = "E-mail is not valid")]
-        public string?  Email { get; set; }
+        public string? Email { get; set; }
 
         [Required(ErrorMessage = "Please Enter Your User Name")]
         [Display(Name = "User Name:")]
         [DataType(DataType.Text)]
-        [StringLength(30,ErrorMessage ="User Name must be between 5 to 30 characters")]
-        public string?  UserName { get; set; } = string.Empty;
+        [StringLength(30, ErrorMessage = "User Name must be between 5 to 30 characters")]
+        public string? UserName { get; set; } = string.Empty;
 
         // personal information
         [Display(Name = "Date of Birth")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd, MM, yyyy}")]
-        public DateTime  DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; }
         [Display(Name = "Biography")]
         [DataType(DataType.MultilineText)]
         [Required(ErrorMessage = "Please Enter Your Biography")]
-        public string?  Biography { get; set; } = string.Empty;
+        public string? Biography { get; set; } = string.Empty;
         [Display(Name = "Gender")]
         [DataType(DataType.Text)]
         [Required(ErrorMessage = "Please Select Your Gender")]
-        public Gender Gender { get; set; } 
+        public Gender Gender { get; set; }
         [Display(Name = "Father Name:")]
         [DataType(DataType.Text)]
         [MaxLength(255)]
         [Required(ErrorMessage = "Please Enter Your Father Name")]
-        public string?  FatherName { get; set; } = String.Empty;
+        public string? FatherName { get; set; } = String.Empty;
         [Display(Name = "CNIC Number:")]
         [DisplayFormat(DataFormatString = "{0:#####-#######-#}")]
         [Required(ErrorMessage = "Please Enter Your CNIC Number")]
-        public string?  CNIC { get; set; } = String.Empty;
+        public string? CNIC { get; set; } = String.Empty;
         [Display(Name = "Profile Image")]
         [DataType(DataType.ImageUrl)]
-        public string?  ProfileImage { get; set; } = String.Empty;
+        public string? ProfileImage { get; set; } = String.Empty;
         [Display(Name = "Contact Number:")]
         [Required(ErrorMessage = "Please Enter Your Phone Number")]
         [DataType(DataType.PhoneNumber)]
@@ -126,5 +131,22 @@ namespace ExamSystem.Data.ViewModels
         [Required(ErrorMessage = "Please paste Your Pinterest profile link ")]
         public string? Pinterest { get; set; } = "https://pinterest.com/";
 
+
+
+        // for only edit profile 
+
+        // Property to populate the dropdown
+        public List<SelectListItem> AvailablePermissions { get; set; }
+
+        public ProfileVM()
+        {
+            AvailablePermissions = new List<SelectListItem>
+            {
+                new SelectListItem { Value = UserPermissions.Manager, Text = "Manager" },
+                new SelectListItem { Value = UserPermissions.Moderator, Text = "Moderator" },
+                new SelectListItem { Value = UserPermissions.Reader, Text = "Reader" }
+                // Add other permissions as needed
+            };
+        }
     }
 }

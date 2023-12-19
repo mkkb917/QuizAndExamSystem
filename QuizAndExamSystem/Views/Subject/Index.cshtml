@@ -14,7 +14,7 @@
         <div class="col-12">
             <div class="card">
                 <div>
-                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                    @if (User.Identity.IsAuthenticated && User.IsInRole(UserRoles.Admin))
                     {
                         <a asp-controller="Subject" asp-action="Create" class="btn btn-primary float-right"> <i class="fas fa-plus-circle"></i> Add New Subject</a>
                     }
@@ -42,7 +42,7 @@
                                             {
                                                 <a class="btn  btn-primary" asp-controller="Topic" asp-action="TopicsList" asp-route-id="@item.Id"><i class="fas fa-pencil-square"></i> Chapters:@item.Topic.Count </a>
                                             }
-                                            @if (User.IsInRole("Admin"))
+                                            @if (User.IsInRole(UserRoles.Admin))
                                             {
                                                 <a class="btn btn-danger" asp-controller="Subject" asp-action="Delete" asp-route-id="@item.Id">
                                                     <i class="fas fa-trash"></i>

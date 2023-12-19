@@ -387,7 +387,7 @@ namespace ExamSystem.Controllers
             var setting = await _paperService.GetPaperSettingByUser(usr);
             //check the user quota for paper generation
             var dailyquota = await _paperService.GetAllPapersByUserAndDate(usr.UserName,DateTime.Today);
-            if (!User.IsInRole("Admin")&& dailyquota.Count > 5)
+            if (!User.IsInRole(UserRoles.Admin)&& dailyquota.Count > 5)
             {
                 return RedirectToAction(nameof(DailyQuotaFull));
             }

@@ -8,9 +8,9 @@ namespace ExamSystem.Data.Static
         Active = 0,
         [Display(Name = "Pending")]
         Pending,
-        [Display(Name = "Disabled")]
+        [Display(Name = "Disable")]
         Disabled,
-        [Display(Name = "Locked")]
+        [Display(Name = "Lock")]
         Lock,
     }
     //public static class Status

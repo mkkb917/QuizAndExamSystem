@@ -72,7 +72,7 @@
                                 <th> @Html.DisplayNameFor(model => model.PaperSubjetiveFile) </th>
                                 <th> @Html.DisplayNameFor(model => model.SolutionFile) and Rubrics </th>
                                 <th> @Html.DisplayNameFor(model => model.Barcode) </th>
-                                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                                @if (User.Identity.IsAuthenticated && User.IsInRole(UserRoles.Admin))
                                 {
                                     <th>Users</th>
                                     <th>Actions</th>
@@ -108,7 +108,7 @@
                                     <td>
                                         <img src="@WC.QrCodePath@item.Barcode" alt="QrCode" class="rounded-square" width="50" height="50">
                                     </td>
-                                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                                    @if (User.Identity.IsAuthenticated && User.IsInRole(UserRoles.Admin))
                                     {
                                         <td>
                                             @Html.DisplayFor(modelItem => item.CreatedBy)

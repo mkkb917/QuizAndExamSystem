@@ -46,7 +46,7 @@
                     <div class="form-group">
                         <label asp-for="Status" class="control-label"></label>
                         @{
-                            var selectList = User.IsInRole("Admin") ? Html.GetEnumSelectList<Status>() : new SelectList(Enum.GetValues(typeof(Status)).Cast<Status>().Where(s => s == Status.Pending));
+                            var selectList = User.IsInRole(UserRoles.Admin) ? Html.GetEnumSelectList<Status>() : new SelectList(Enum.GetValues(typeof(Status)).Cast<Status>().Where(s => s == Status.Pending));
                         }
                         <select asp-for="Status" class="form-control" asp-items="selectList"></select>
                         <span asp-validation-for="Status" class="text-danger"></span>

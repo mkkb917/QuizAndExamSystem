@@ -40,8 +40,8 @@
                             @if (User.Identity.IsAuthenticated)
                             {
                                 <select asp-for="Status" class="form-control"
-                                        asp-items="@(User.IsInRole("Admin") ? Html.GetEnumSelectList<Status>() : null)">
-                                    @if (!User.IsInRole("Admin"))
+                                        asp-items="@(User.IsInRole(UserRoles.Admin) ? Html.GetEnumSelectList<Status>() : null)">
+                                    @if (!User.IsInRole(UserRoles.Admin))
                                     {
                                         <option selected disabled value="1">Pending</option>
                                     }

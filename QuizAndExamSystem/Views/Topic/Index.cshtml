@@ -60,7 +60,7 @@
                                             {
                                                 <a asp-controller="Question" asp-action="Index" asp-route-id="@item.Id" class="btn btn-primary"><i class="fas fa-pencil-square"></i> Manage Questions</a>
                                             }
-                                            @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                                            @if (User.Identity.IsAuthenticated && User.IsInRole(UserRoles.Admin))
                                             {
                                                 <a asp-controller="Topic" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary"><i class="fas fa-pencil-square"></i> Edit</a>
                                                 <a asp-controller="Topic" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger"><i class="fas fa-trash"></i> Delete</a>

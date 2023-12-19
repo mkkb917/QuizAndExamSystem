@@ -71,7 +71,7 @@
             {
                 <p>
                     <a asp-controller="Corner" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary float-left"><i class="fas fa-pencil"></i>Edit</a>
-                    @if (User.IsInRole("Admin"))
+                    @if (User.IsInRole(UserRoles.Admin))
                     {
                         <a asp-controller="Corner" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger float-right"><i class="fas fa-recycle"></i>Delete</a>
                         @if (currentAction == "Approve")

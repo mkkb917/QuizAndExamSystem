@@ -166,7 +166,7 @@ namespace ExamSystem.Controllers
                 ViewBag.Subjects = new SelectList(newQuestionDropdown.Subjects, "Id", "SubjectText");
                 ViewBag.Topics = new SelectList(newQuestionDropdown.Topics, "Id", "TopicText");
                 _logger.LogInformation("Create page of Question Controller is accessed by {0}", User.Identity.Name);
-                _logger.LogInformation("The new Record is successfully created by {0}", User.Identity.Name);
+                _logger.LogInformation("The new Question Record is successfully created by {0}", User.Identity.Name);
                 return View(model);
             }
             catch (Exception ex)

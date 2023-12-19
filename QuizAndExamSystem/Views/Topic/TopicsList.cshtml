@@ -36,7 +36,7 @@
                                             {
                                                 <a class="btn  btn-primary" asp-controller="Question" asp-action="Index" asp-route-id="@item.Id"><i class="fas fa-pencil-square"></i> Questions:@item.Question.Count </a>
                                             }
-                                            @if (User.IsInRole("Admin"))
+                                            @if (User.IsInRole(UserRoles.Admin))
                                             {
                                                 <a class="btn btn-danger" asp-controller="Topic" asp-action="Delete" asp-route-id="@item.Id">
                                                     <i class="fas fa-trash"></i>

@@ -20,7 +20,7 @@
                 <form asp-action="Delete" method="POST">
                     <div class="col-12">
                         <a asp-controller="Question" asp-action="Index" asp-route-id="@Model.TopicId" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
-                        @if (User.IsInRole("Admin"))
+                        @if (User.IsInRole(UserRoles.Admin))
                         {
                             <button type="submit" class="btn btn-success mr-2 float-right"><i class="fas fa-trash"></i> Delete</button>
                         }
@@ -172,7 +172,7 @@
             <div id="meta" class="table  table-hover">
                 <div class="row">
                     <h5>Appeared in the exams (Metadata)</h5>
-                    @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
+                    @if (User.IsInRole(UserRoles.Admin) || (User.IsInRole(UserRoles.Teacher) && (User.HasClaim(c => c.Type == "Permission" && c.Value == "Moderator"))))
                     {
                         <a asp-controller="Question" asp-action="CreateQuestionMeta" asp-route-id="@Model.Id" class="btn btn-primary float-right"><i class="fas fa-plus-square"></i></a>
                     }
@@ -222,7 +222,7 @@
                             </td>
                             <td class="col-lg-2 col-md-2 col-sm-6 col-12">
                                 <a asp-action="EditQuestionMeta" asp-route-id="@Model.Id" class="btn btn-outline-primary float-right"><i class="fas fa-pencil-square"></i></a>
-                                @if (User.IsInRole("Admin"))
+                                @if (User.IsInRole(UserRoles.Admin))
                                 {
                                     <form asp-action="DeleteMeta" asp-route-id="@Model.Id" method="POST">
                                         <button type="submit" class="btn btn-outline-primary float-right"><i class="fas fa-trash"></i></button>
@@ -237,7 +237,7 @@
             <form asp-action="Delete" method="POST">
                 <div class="col-12">
                     <a asp-controller="Question" asp-action="index" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
-                    @if (User.IsInRole("Admin"))
+                    @if (User.IsInRole(UserRoles.Admin))
                     {
                         <button type="submit" class="btn btn-success mr-2 float-right"><i class="fas fa-trash"></i> Delete</button>
                     }

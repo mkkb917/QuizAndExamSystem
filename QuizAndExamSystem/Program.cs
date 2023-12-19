@@ -10,11 +10,9 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Converters;
 using ExamSystem.Models;
 using Serilog;
-using Microsoft.AspNetCore.Hosting;
 using ExamSystem;
-using System.Configuration;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using ExamSystem.Data.Static;
+
 
 var builder = WebApplication.CreateBuilder(args);
 var environment = builder.Environment;
@@ -103,6 +101,17 @@ builder.Services.AddAuthentication().AddGoogle(option =>
 //    option.AppId = Configuration["Facebook:AppId"];     // stored in Secrets.json file 
 //    option.AppSecret = Configuration["Facebook:AppSecret"];
 //});
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Manager", policy =>
+        policy.RequireClaim(UserPermissions.Manager));
+    options.AddPolicy("Moderator", policy =>
+        policy.RequireClaim(UserPermissions.Moderator));
+    options.AddPolicy("Reader", policy =>
+       policy.RequireClaim(UserPermissions.Reader));
+
+});
 
 //limitize the pasword complexity
 builder.Services.Configure<IdentityOptions>(options =>

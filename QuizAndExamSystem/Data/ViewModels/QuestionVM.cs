@@ -16,13 +16,13 @@ namespace ExamSystem.Data.ViewModels
         public int SubjectId { get; set; }
         [Required(ErrorMessage = "Select the Unit for this Question")]
         public int TopicId { get; set; }
+        public string? Code { get; set; } = "NoCode";
 
         // question details
-        public string? Code { get; set; } = "NoCode";
-        [Required(ErrorMessage ="Enter the Question here")]
+        //[Required(ErrorMessage ="Enter the Question here")]
         [Display(Name = "Quesion")]
         public string? QuestionText { get; set; }                   //
-        [Required(ErrorMessage = "Enter the Question in Urdu")]
+        //[Required(ErrorMessage = "Enter the Question in Urdu")]
         [Display(Name = "Quesion L")]
         public string? QuestionTextL { get; set; }                  //
         

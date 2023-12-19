@@ -193,10 +193,10 @@
                                             <p>School Profile</p>
                                         </a>
                                     </li>
-                                    @if (User.IsInRole("Admin"))
+                                    @if (User.IsInRole(UserRoles.Admin))
                                     {
                                         <li class="nav-item">
-                                            <a asp-controller="Account" asp-action="Roles" class="nav-link">
+                                            <a asp-controller="Account" asp-action="UserPermissions" class="nav-link">
                                                 <i class="nav-icon fas fa-key"></i>
                                                 <p>User Permissions</p>
                                             </a>
@@ -228,7 +228,7 @@
                                 </p>
                             </a>
                         </li>
-                        @if (User.IsInRole("Admin")||User.IsInRole("Teacher"))
+                        @if (User.IsInRole(UserRoles.Admin) || User.IsInRole(UserRoles.Teacher) && (User.HasClaim(c => c.Type == "Permission" && c.Value == "Moderator")))
                         {
                             <li class="nav-item">
                                 <a asp-controller="Grade" asp-action="Index" class="nav-link">
@@ -347,7 +347,7 @@
                                 </li>
                             </ul>
                         </li>
-                        @if(User.IsInRole("Admin"))
+                        @if(User.IsInRole(UserRoles.Admin))
                         {
                             <li class="nav-item">
                                 <a href="#" class="nav-link">
@@ -380,7 +380,7 @@
                                 </ul>
                             </li>
                         }
-                        @if (User.IsInRole("Admin")||User.IsInRole("Teacher"))
+                        @if (User.IsInRole(UserRoles.Admin)||User.IsInRole(UserRoles.Teacher))
                         {
                             <li class="nav-item">
                                 <a asp-controller="Dashboard" asp-action="index" class="nav-link">
@@ -412,7 +412,7 @@
                                 </ul>
                             </li>
                         }
-                        @if (User.IsInRole("Admin") || User.IsInRole("Student"))
+                        @if (User.IsInRole(UserRoles.Admin) || User.IsInRole("Student"))
                         {
                             <li class="nav-item">
                                 <a asp-controller="Dashboard" asp-action="index" class="nav-link">

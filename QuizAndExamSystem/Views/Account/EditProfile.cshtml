@@ -81,7 +81,7 @@
                                     <h6 class="mb-0">Profile Type:</h6>
                                 </div>
                                 <div class="col-sm-8 text-secondary">
-                                    @if (string.IsNullOrEmpty(Model.Role) || User.IsInRole("Admin"))
+                                    @if (string.IsNullOrEmpty(Model.Role) || User.IsInRole(UserRoles.Admin))
                                     {
                                         <select id="Role" asp-for="Role" class="form-control">
                                             <option value="">Select Role</option>
@@ -97,6 +97,19 @@
                                 </div>
                             </div>
                             <hr>
+                            @if (User.IsInRole(UserRoles.Admin))
+                            {
+                                <div class="row" style="">
+                                    <div class="col-sm-4">
+                                        <h6 class="mb-0">Permissions:</h6>
+                                    </div>
+                                    <div class="col-sm-8 text-secondary">
+                                        <select asp-for="Permissions" asp-items="Model.AvailablePermissions" class="form-control" multiple></select>
+                                        <span asp-validation-for="Permissions" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <hr>
+                            }
                             <div class="row">
                                 <div class="col-sm-4">
                                     <h6 class="mb-0">Gender:</h6>

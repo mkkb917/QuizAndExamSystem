@@ -39,7 +39,7 @@
                 <div class="form-group">
                     <label asp-for="Status" class="control-label"></label>
                     @{
-                        if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        if (User.Identity.IsAuthenticated && User.IsInRole(UserRoles.Admin))
                         {
                             <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()"></select>
                         }

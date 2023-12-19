@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text;
 using ExamSystem.Data.Interface;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ExamSystem.Controllers
 {
@@ -52,6 +53,7 @@ namespace ExamSystem.Controllers
             _logger.LogInformation("All User page of Account Contorller is accessed by {0}", User.Identity.Name);
             return View(user);
         }
+
         public async Task<IActionResult> AllProfiles()
         {
             var obj = await _context.SchoolInfos.ToListAsync();
@@ -70,12 +72,19 @@ namespace ExamSystem.Controllers
         {
             var userdata = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id);
             // Get the role names for the user
-            var roleNames = await _userManager.GetRolesAsync(userdata);
-            string? role = roleNames.FirstOrDefault();  // Now 'roles' is a list of role names the user belongs to
+            if (userdata == null) return NotFound();
+            var userRoles = await _userManager.GetRolesAsync(userdata);
+            string role = userRoles.FirstOrDefault();
+            var userClaims = await _userManager.GetClaimsAsync(userdata);
+
+
             var profile = new ProfileVM()
             {
                 Id = userdata.Id,
                 Role = role,
+                Permissions = userClaims.Select(c => $"{c.Type}: {c.Value}").ToList(),
+                IsEmailConfirmed = userdata.EmailConfirmed,
+                Status = userdata.Status,
                 //profile information
                 FirstName = userdata.FirstName,
                 LastName = userdata.LastName,
@@ -121,11 +130,13 @@ namespace ExamSystem.Controllers
             // Get the role names for the user
             var roleNames = await _userManager.GetRolesAsync(userdata);
             string? role = roleNames.FirstOrDefault();  // Now 'roles' is a list of role names the user belongs to
+            var userClaims = await _userManager.GetClaimsAsync(userdata);
 
             var profile = new ProfileVM()
             {
                 Id = userdata.Id,
                 Role = role,
+                Permissions = userClaims.Select(c => $"{c.Type}: {c.Value}").ToList(),
                 //profile information
                 FirstName = userdata.FirstName,
                 LastName = userdata.LastName,
@@ -230,26 +241,145 @@ namespace ExamSystem.Controllers
                 //commet changes to database
                 await _userManager.UpdateAsync(user);
             }
-                //check the selected role and assign to it
-                var roleNames = await _userManager.GetRolesAsync(user);
-                string? myrole = roleNames.FirstOrDefault();
-            if (string.IsNullOrEmpty(myrole))
+            //check the selected role and assign to it
+            // update the permissions accoriding to user roles
+            // Update or set permissions for the user based on the selected role
+
+            var roleNames = await _userManager.GetRolesAsync(user);
+            var existingRole = roleNames.FirstOrDefault();
+            if (string.IsNullOrEmpty(existingRole))
             {
                 string role = model.Role;
                 if (role == UserRoles.Teacher)
                 {
+                    // add the permissions 
                     await _userManager.AddToRoleAsync(user, UserRoles.Teacher);
+                    await _userManager.AddClaimAsync(user, new Claim("Permission", UserPermissions.Reader));
                     _logger.LogInformation("Teacher role is assigned in profile to {0}", user.UserName);
                 }
                 else if (role == UserRoles.Student)
                 {
                     await _userManager.AddToRoleAsync(user, UserRoles.Student);
+                    await _userManager.AddClaimAsync(user, new Claim("Permission", UserPermissions.Reader));
                     _logger.LogInformation("Student role is assigned in profile to {0}", user.UserName);
                 }
+                // Commit changes to the database
+                await _userManager.UpdateAsync(user);
             }
+            else
+            {
+                // Update permissions based on role change
+                // For example, remove old permissions and add new permissions
+
+                // Remove existing claims (permissions) associated with the old role
+                var existingClaims = await _userManager.GetClaimsAsync(user);
+                foreach (var claim in existingClaims)
+                {
+                    // Check and remove claims based on the old role's permissions
+                    if (claim.Type == "Permission") /* &&  condition to check old role's permission )*/
+                    {
+                        await _userManager.RemoveClaimAsync(user, claim);
+                    }
+                }
+
+                string role = model.Role;
+
+                if (role == UserRoles.Teacher)
+                {
+                    // Add new permissions based on the selected permissions in the ViewModel
+                    foreach (var selectedPermission in model.Permissions)
+                    {
+                        await _userManager.AddClaimAsync(user, new Claim("Permission", selectedPermission));
+                        _logger.LogInformation("Permission '{0}' assigned to {1}", selectedPermission, user.UserName);
+                    }
+                }
+                else if (role == UserRoles.Student)
+                {
+                    // Add new permissions based on the selected permissions in the ViewModel
+                    foreach (var selectedPermission in model.Permissions)
+                    {
+                        await _userManager.AddClaimAsync(user, new Claim("Permission", selectedPermission));
+                        _logger.LogInformation("Permission '{0}' assigned to {1}", selectedPermission, user.UserName);
+                    }
+                }
+
+                // ... other updates to user data ...
+
+                // Commit changes to the database
+                await _userManager.UpdateAsync(user);
+            }
+
             _logger.LogInformation("Profile is successfully modified by {0}", User.Identity.Name);
             return RedirectToAction("Profile", new { @id = model.Id });
         }
+
+
+        [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<IActionResult> ConfirmEmailByAdmin(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (!user.EmailConfirmed)
+            {
+                user.EmailConfirmed = true;
+
+                var result = await _userManager.UpdateAsync(user);
+
+                if (result.Succeeded)
+                {
+                    // Email confirmed successfully
+                    return RedirectToAction(nameof(Profile), new { @id = user.Id });
+                }
+                else
+                {
+                    // Handle error while confirming email
+                    ModelState.AddModelError(string.Empty, "Error confirming email.");
+                    return RedirectToAction(nameof(Profile), new { @id = user.Id });
+                }
+            }
+            else
+            {
+                // Email is already confirmed
+
+                return RedirectToAction(nameof(Profile), new { @id = user.Id });
+            }
+        }
+
+
+        [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<IActionResult> ChangeUserStatusByAdmin(string id, Status status)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+          
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            user.Status = status;
+            var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                // Profile status updated successfully
+                return RedirectToAction(nameof(Profile), new { @id = user.Id });
+            }
+            else
+            {
+                // Handle error while updating profile status
+                ModelState.AddModelError(string.Empty, "Error Chnging status of profile.");
+                return RedirectToAction(nameof(Profile), new { @id = user.Id });
+            }
+        }
+
+
 
         //disply School Porfile
         public async Task<IActionResult> SchoolProfile(string id)
@@ -485,7 +615,7 @@ namespace ExamSystem.Controllers
         #region Login
 
 
-        public async Task<IActionResult> LoginAsync(string? returnUrl=null)
+        public async Task<IActionResult> LoginAsync(string? returnUrl = null)
         {
             _logger.LogInformation("login function called");
             LoginVM model = new LoginVM()
@@ -589,7 +719,7 @@ namespace ExamSystem.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ExternalLoginCallback(string? returnUrl = null, string? remoteError = null)
         {
-            
+
 
             LoginVM loginVM = new LoginVM
             {
@@ -652,7 +782,7 @@ namespace ExamSystem.Controllers
                     await _signInManager.SignInAsync(user, isPersistent: false);
 
                     _logger.LogInformation("External Login attempt of Account Contorller is  by {0}", User.Identity.Name);
-                    returnUrl = Url.Content("~/Account/EditProfile/"+user.Id);
+                    returnUrl = Url.Content("~/Account/EditProfile/" + user.Id);
 
                     return LocalRedirect(returnUrl);
                 }

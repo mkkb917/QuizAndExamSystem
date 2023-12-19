@@ -1,0 +1,47 @@
+﻿@model List<UserRolesAndPermissionsVM>
+@using ExamSystem;
+
+@{
+    ViewData["Title"] = "User Permissions";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+<h1>User Permissions</h1>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>User Name</th>
+            <th>Email</th>
+            <th>Roles</th>
+            <th>Permissions</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.User.UserName</td>
+                <td>@user.User.Email</td>
+                <td>
+                    <ul>
+                        @foreach (var role in user.Roles)
+                        {
+                            <li>@role</li>
+                        }
+                    </ul>
+                </td>
+                <td>
+                    <ul>
+                        @foreach (var permission in user.Permissions)
+                        {
+                            <li>@permission</li>
+                        }
+                    </ul>
+                </td>
+                <td>
+                    <a asp-action="UpdatePermissions" asp-route-id="@user.User.Id" class="btn btn-outline-primary">Modify</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

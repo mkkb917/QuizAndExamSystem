@@ -33,7 +33,7 @@
                                 <th> @Html.DisplayNameFor(model => model.TotalScores) </th>
                                 <th> @Html.DisplayNameFor(model => model.ObtainedScores) </th>
                                 <th> @Html.DisplayNameFor(model => model.Result) </th>
-                                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                                @if (User.Identity.IsAuthenticated && User.IsInRole(UserRoles.Admin))
                                 {
                                     <th>Actions</th>
                                 }
@@ -55,7 +55,7 @@
                                     <td> @Html.DisplayFor(modelItem => item.TotalScores)</td>
                                     <td> @Html.DisplayFor(modelItem => item.ObtainedScores)</td>
                                     <td> @Html.DisplayFor(modelItem => item.Result)</td>
-                                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                                    @if (User.Identity.IsAuthenticated && User.IsInRole(UserRoles.Admin))
                                     {
                                         <th>
                                             <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i>Delete</a>
