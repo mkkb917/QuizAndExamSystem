@@ -62,7 +62,7 @@ namespace ExamSystem.Controllers
         }
         public async Task<JsonResult> TopicAsync(int id)
         {
-            var tl = await _topicService.GetAllActiveTopicsById(id);
+            var tl = await _topicService.GetAllTopicsById(id);
             _logger.LogInformation("Json Topics of Question Controller is accessed by {0}", User.Identity.Name);
             return new JsonResult(tl);
         }

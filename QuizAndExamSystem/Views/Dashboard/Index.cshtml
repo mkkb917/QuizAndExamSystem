@@ -8,81 +8,101 @@
 
 @if (User.Identity.IsAuthenticated)
 {
-    <!-- Info boxes -->
     <div class="row">
-        <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box">
-                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-pen-to-square"></i></span>
-                <a asp-controller="Grade" asp-action="Index">
-                    <div class="info-box-content">
-                        <span class="info-box-text">Classes: @Model.Grades.Count</span>
-                        <span class="info-box-number">
-                            <small>My Classes: @Model.MyGrades.Count</small>
-                        </span>
-                    </div>
-                </a>
-                <!-- /.info-box-content -->
+        @if (User.IsInRole(UserRoles.Teacher) || User.IsInRole(UserRoles.Admin))
+        {
+            <!-- Info boxes -->
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box">
+                    <span class="info-box-icon bg-info elevation-1"><i class="fas fa-pen-to-square"></i></span>
+                    <a asp-controller="Grade" asp-action="Index">
+                        <div class="info-box-content">
+                            <span class="info-box-text">Classes: @Model.Grades.Count</span>
+                            <span class="info-box-number">
+                                <small>My Classes: @Model.MyGrades.Count</small>
+                            </span>
+                        </div>
+                    </a>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
             </div>
-            <!-- /.info-box -->
-        </div>
-        <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box">
-                <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-book"></i></span>
-                <a asp-controller="Subject" asp-action="Index">
-                    <div class="info-box-content">
-                        <span class="info-box-text">Subjects: @Model.Subjects.Count</span>
-                        <span class="info-box-number">
-                            <small>My Subjects: @Model.MySubjects.Count</small>
-                        </span>
-                    </div>
-                </a>
-                <!-- /.info-box-content -->
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box">
+                    <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-book"></i></span>
+                    <a asp-controller="Subject" asp-action="Index">
+                        <div class="info-box-content">
+                            <span class="info-box-text">Subjects: @Model.Subjects.Count</span>
+                            <span class="info-box-number">
+                                <small>My Subjects: @Model.MySubjects.Count</small>
+                            </span>
+                        </div>
+                    </a>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
             </div>
-            <!-- /.info-box -->
-        </div>
-        <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box">
-                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-question"></i></span>
-                <a asp-controller="Question" asp-action="Index">
-                    <div class="info-box-content">
-                        <span class="info-box-text">Questions: @Model.Questions.Count</span>
-                        <span class="info-box-number">
-                            <small>MyQuestions: @Model.MyQuestions.Count</small>
-                        </span>
-                    </div>
-                </a>
-                <!-- /.info-box-content -->
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box">
+                    <span class="info-box-icon bg-info elevation-1"><i class="fas fa-question"></i></span>
+                    <a asp-controller="Question" asp-action="Index">
+                        <div class="info-box-content">
+                            <span class="info-box-text">Questions: @Model.Questions.Count</span>
+                            <span class="info-box-number">
+                                <small>MyQuestions: @Model.MyQuestions.Count</small>
+                            </span>
+                        </div>
+                    </a>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
             </div>
-            <!-- /.info-box -->
-        </div>
-        <!-- /.col -->
-        <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box mb-3">
-                <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-clipboard"></i></span>
-                <a asp-controller="Paper" asp-action="UserPapers">
-                    <div class="info-box-content">
-                        <span class="info-box-text">Generated Papers: @Model.Papers.Count</span>
-                        <span class="info-box-number"><small>My Papers: @Model.MyPapers.Count</small></span>
-                    </div>
-                </a>
-                <!-- /.info-box-content -->
+            <!-- /.col -->
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box mb-3">
+                    <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-clipboard"></i></span>
+                    <a asp-controller="Paper" asp-action="UserPapers">
+                        <div class="info-box-content">
+                            <span class="info-box-text">Generated Papers: @Model.Papers.Count</span>
+                            <span class="info-box-number"><small>My Papers: @Model.MyPapers.Count</small></span>
+                        </div>
+                    </a>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
             </div>
-            <!-- /.info-box -->
-        </div>
-        <!-- /.col -->
-        <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box mb-3">
-                <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-list-check"></i></span>
-                <a asp-controller="Quiz" asp-action="UserQuiz">
-                    <div class="info-box-content">
-                        <span class="info-box-text">Quizes taken: @Model.Quizes.Count</span>
-                        <span class="info-box-number"><small>My quizes: @Model.MyQuizes.Count</small></span>
-                    </div>
-                </a>
-                <!-- /.info-box-content -->
+
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box mb-3">
+                    <span class="info-box-icon bg-success elevation-1"><i class="fas fa-upload"></i></span>
+                    <a asp-controller="SED" asp-action="Index">
+                        <div class="info-box-content">
+                            <span class="info-box-text">SED: @Model.Sed.Count</span>
+                            <span class="info-box-number"><small>My SED Contributions: @Model.MySed.Count</small></span>
+                        </div>
+                    </a>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
             </div>
-            <!-- /.info-box -->
-        </div>
+        }
+        @if (User.IsInRole(UserRoles.Student) || User.IsInRole(UserRoles.Admin))
+        {
+            <!-- /.col -->
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box mb-3">
+                    <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-list-check"></i></span>
+                    <a asp-controller="Quiz" asp-action="UserQuiz">
+                        <div class="info-box-content">
+                            <span class="info-box-text">Quizes taken: @Model.Quizes.Count</span>
+                            <span class="info-box-number"><small>My quizes: @Model.MyQuizes.Count</small></span>
+                        </div>
+                    </a>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+        }
         <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box mb-3">
                 <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-upload"></i></span>
@@ -99,19 +119,6 @@
         <!-- fix for small devices only -->
         <div class="clearfix hidden-md-up"></div>
 
-        <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box mb-3">
-                <span class="info-box-icon bg-success elevation-1"><i class="fas fa-upload"></i></span>
-                <a asp-controller="SED" asp-action="Index">
-                    <div class="info-box-content">
-                        <span class="info-box-text">SED: @Model.Sed.Count</span>
-                        <span class="info-box-number"><small>My SED Contributions: @Model.MySed.Count</small></span>
-                    </div>
-                </a>
-                <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-        </div>
         <!-- /.col -->
         @if (User.IsInRole(UserRoles.Admin))
         {
@@ -130,17 +137,17 @@
         <!-- /.col -->
     </div>
 
-    <div class="row">
+     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">
+                 <div class="card-header">
                     <h5 class="card-title">My todo List Tasks</h5>
                     <!--Card title-->
                     <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse">
                             <i class="fas fa-minus"></i>
                         </button>
-                        <div class="btn-group">
+                         <div class="btn-group">
                             <button type="button" class="btn btn-tool dropdown-toggle" data-toggle="dropdown">
                                 <i class="fas fa-wrench"></i>
                             </button>
@@ -151,21 +158,21 @@
                                 <a class="dropdown-divider"></a>
                                 <a href="#" class="dropdown-item">Separated link</a>
                             </div>
-                        </div>
+                        </div> 
                         <button type="button" class="btn btn-tool" data-card-widget="remove">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
                 </div>
                 <!-- /.card-header -->
-                @*<div class="card-body">
+                @* <div class="card-body"> 
             <div class="row">
             <div class="col-md-8">
             <p class="text-center">
             <strong>Todo items </strong>
             </p>
 
-            @*<div class="chart">
+            <div class="chart">
             <!-- Sales Chart Canvas -->
             <canvas id="salesChart" height="180" style="height: 180px;"></canvas>
             </div>
@@ -223,7 +230,7 @@
             <!-- /.col -->
             </div>
             <!-- /.row -->
-            </div>*@
+            </div> *@
                 <!-- ./card-body -->
                 <div class="card-body">
                     <div class="row">
@@ -278,8 +285,9 @@
         <!-- /.col -->
     </div>
     <!-- /.row -->
+
     <!-- Main row -->
-    <div class="row">
+    @* <div class="row"> 
         <!-- Left col -->
         <div class="col-md-8">
             <!-- MAP & BOX PANE -->
@@ -911,7 +919,7 @@
         </div>
         <!-- /.col -->
     </div>
-    <!-- /.row -->
+    <!-- /.row --> *@
 }
 @*@section Script{
 <script>

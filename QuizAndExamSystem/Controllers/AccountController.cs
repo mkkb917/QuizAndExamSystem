@@ -455,7 +455,7 @@ namespace ExamSystem.Controllers
             if (files.Count > 0)
             {
                 string webRootPath = _webHostEnvironment.WebRootPath;
-                string logoUpload = webRootPath + WC.ProfileImagePath;
+                string logoUpload = webRootPath + WC.LogoPath;
                 string fileName = User.Identity.Name + Guid.NewGuid().ToString().Substring(0, 5);
                 string extension = Path.GetExtension(files[0].FileName);
 

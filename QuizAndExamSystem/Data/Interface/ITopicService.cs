@@ -8,7 +8,7 @@ namespace ExamSystem.Data.Interface
     {
         Task<DropDownsListsVM> GetSubjectList();
         Task<Subject> GetSubjectById(int id);
-        Task<List<Topic>> GetAllActiveTopicsById(int Id);
+        Task<List<Topic>> GetAllTopicsById(int Id);
         Task<List<Question>> GetAllQuestionsById(int Id);
         Task AddNewTopic(TopicsVM data);
         Task UpdateTopic(int Id, TopicsVM data);

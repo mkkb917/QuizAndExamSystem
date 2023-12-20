@@ -63,7 +63,7 @@ namespace ExamSystem.Controllers
         public async Task<JsonResult> GetTopicsDataAsync(int id)
         {
 
-            var query = await _topicService.GetAllActiveTopicsById(id);
+            var query = await _topicService.GetAllTopicsById(id);
             var objtopiclist = new List<TopicsWithQCountsVM>();
 
             if (query.Any() == true)
@@ -93,7 +93,7 @@ namespace ExamSystem.Controllers
         // GET: Pairing scheme dropdown fetch data
         public async Task<JsonResult> GetPairingDataAsync(int id)
         {
-            var responce = await _topicService.GetAllActiveTopicsById(id);
+            var responce = await _topicService.GetAllTopicsById(id);
             if (responce != null)
             {
                 return new JsonResult(responce);

@@ -51,9 +51,9 @@ namespace ExamSystem.Data.Services
         }
 
         // Get list of topics by subject Id
-        public async Task<List<Topic>> GetAllActiveTopicsById(int Id)
+        public async Task<List<Topic>> GetAllTopicsById(int Id)
         {
-            var responce = await _context.Topics.Where(s => s.SubjectId == Id && s.Status ==Status.Active).ToListAsync();
+            var responce = await _context.Topics.Where(s => s.SubjectId == Id).ToListAsync();
             return responce;
         }
 
