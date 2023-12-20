@@ -109,15 +109,20 @@
                                 <h6 class="mb-0">Full Name:</h6>
                             </div>
                             <div class="col-sm-4 text-primary">
-                                @Model.FirstName &nbsp; @Model.LastName
+                    @Model.FirstName &nbsp; @Model.LastName
                             </div>
+
                             <div class="col-sm-4 text-danger">
                                 Role: @Model.Role
-                                @foreach (var perm in Model.Permissions)
-                                {
-                                    <br />
-                                    @perm
-                                }
+                    @if (User.IsInRole(UserRoles.Admin))
+                    {
+                        @foreach (var perm in Model.Permissions)
+                        {
+                                        <br />
+                            @perm
+                        }
+
+                    }
                             </div>
                         </div>
                         <hr>
@@ -126,7 +131,7 @@
                                 <h6 class="mb-0">CNIC Number:</h6>
                             </div>
                             <div class="col-sm-8 text-primary ">
-                                @Model.CNIC
+                    @Model.CNIC
                             </div>
                         </div>
                         <hr>
@@ -135,8 +140,8 @@
                                 <h6 class="mb-0">Gender:</h6>
                             </div>
                             <div class="col-sm-8 text-primary ">
-                                @Model.Gender
-                                @*@Html.DisplayFor(Model=>Model.Gender)*@
+                    @Model.Gender
+                    @*@Html.DisplayFor(Model=>Model.Gender)*@
                             </div>
                         </div>
                         <hr>
@@ -145,7 +150,7 @@
                                 <h6 class="mb-0">Qualification:</h6>
                             </div>
                             <div class="col-sm-8 text-primary">
-                                @Model.DegreeName
+                    @Model.DegreeName
                             </div>
                         </div>
                         <hr>
@@ -154,7 +159,7 @@
                                 <h6 class="mb-0">Phone:</h6>
                             </div>
                             <div class="col-sm-8 text-primary">
-                                @Model.ContactNo
+                    @Model.ContactNo
                             </div>
                         </div>
                         <hr>
@@ -163,7 +168,7 @@
                                 <h6 class="mb-0">Mobile:</h6>
                             </div>
                             <div class="col-sm-8 text-primary">
-                                @Model.CellPhoneNo
+                    @Model.CellPhoneNo
                             </div>
                         </div>
                         <hr>
@@ -172,7 +177,7 @@
                                 <h6 class="mb-0">Whatsapp:</h6>
                             </div>
                             <div class="col-sm-8 text-primary">
-                                @Model.WhatsApp
+                    @Model.WhatsApp
                             </div>
                         </div>
                         <hr>
@@ -181,7 +186,7 @@
                                 <h6 class="mb-0">Address:</h6>
                             </div>
                             <div class="col-sm-8 text-primary">
-                                @Model.HomeAddress , @Model.PostalCode, @*@Enum.GetName(typeof(Model.State))*@, @Html.DisplayFor(Model => Model.Country)
+                    @Model.HomeAddress , @Model.PostalCode, @*@Enum.GetName(typeof(Model.State))*@, @Html.DisplayFor(Model => Model.Country)
                             </div>
                         </div>
                     </div>
@@ -191,36 +196,37 @@
         </div>
         <div class="row">
             <a class="btn btn-outline-info" asp-controller="Home" asp-action="Index"> <i class="bi bi-arrow"></i> Home</a>
+            <a class="btn btn-outline-info" asp-controller="Dashboard" asp-action="Index"> <i class="bi bi-arrow"></i> Dashboard</a>
 
-            @if (User.IsInRole(UserRoles.Admin))
-            {
-                <a class="btn btn-outline-info" asp-action="AllUsers"> <i class="bi bi-arrow"></i> Back</a>
-                List<Status> statuses = Enum.GetValues(typeof(Status)).Cast<Status>().ToList();
-
-                foreach (var status in statuses)
-                {
-                    string buttonText = status.ToString();
-                    if (status == Model.Status)
+                    @if (User.IsInRole(UserRoles.Admin))
                     {
+                <a class="btn btn-outline-info  mr-5" asp-action="AllUsers"> <i class="bi bi-arrow"></i> Back</a>
+                        List<Status> statuses = Enum.GetValues(typeof(Status)).Cast<Status>().ToList();
+
+                        foreach (var status in statuses)
+                        {
+                            string buttonText = status.ToString();
+                            if (status == Model.Status)
+                            {
                         <button class="btn btn-primary" disabled>@buttonText</button>
-                    }
-                    else
-                    {
+                            }
+                            else
+                            {
                         <form method="post" asp-action="ChangeUserStatusByAdmin" asp-route-id="@Model.Id" asp-route-status="@status">
                             <button type="submit" class="btn btn-outline-primary">@buttonText</button>
                         </form>
+                            }
+                        }
                     }
-                }
-            }
         </div>
     </div>
 </div>
 
-@section Scripts {
+                    @section Scripts {
     <script>
         $("#ProfilePicturePreview").on("change", function () {
             var output = document.getElementById('ProfilePicturePreview');
             output.src = $(this).val();
         })
     </script>
-}
+                    }

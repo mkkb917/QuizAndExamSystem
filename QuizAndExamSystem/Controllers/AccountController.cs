@@ -136,6 +136,7 @@ namespace ExamSystem.Controllers
             {
                 Id = userdata.Id,
                 Role = role,
+                Status = userdata.Status,
                 Permissions = userClaims.Select(c => $"{c.Type}: {c.Value}").ToList(),
                 //profile information
                 FirstName = userdata.FirstName,
@@ -179,7 +180,7 @@ namespace ExamSystem.Controllers
             if (!ModelState.IsValid)
             {
                 TempData["error"] = "Model is not valid";
-                return View(nameof(NotFound));
+                return View(model);
             }
             var oldProfileData = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id);
             var files = HttpContext.Request.Form.Files;
@@ -215,6 +216,7 @@ namespace ExamSystem.Controllers
             if (user != null)
             {
                 //profile data bind
+                user.Status = model.Status;
                 user.FirstName = model.FirstName;
                 user.LastName = model.LastName;
                 user.ProfileImage = model.ProfileImage;
@@ -268,41 +270,43 @@ namespace ExamSystem.Controllers
             }
             else
             {
-                // Update permissions based on role change
-                // For example, remove old permissions and add new permissions
-
-                // Remove existing claims (permissions) associated with the old role
-                var existingClaims = await _userManager.GetClaimsAsync(user);
-                foreach (var claim in existingClaims)
+                // chek if the current user is admin (User cannot change its own claims)
+                if (User.IsInRole(UserRoles.Admin))
                 {
-                    // Check and remove claims based on the old role's permissions
-                    if (claim.Type == "Permission") /* &&  condition to check old role's permission )*/
+                    // Update permissions based on role change
+                    // For example, remove old permissions and add new permissions
+                    // Remove existing claims (permissions) associated with the old role
+                    var existingClaims = await _userManager.GetClaimsAsync(user);
+                    foreach (var claim in existingClaims)
                     {
-                        await _userManager.RemoveClaimAsync(user, claim);
+                        // Check and remove claims based on the old role's permissions
+                        if (claim.Type == "Permission") /* &&  condition to check old role's permission )*/
+                        {
+                            await _userManager.RemoveClaimAsync(user, claim);
+                        }
+                    }
+
+                    string role = model.Role;
+
+                    if (role == UserRoles.Teacher)
+                    {
+                        // Add new permissions based on the selected permissions in the ViewModel
+                        foreach (var selectedPermission in model.Permissions)
+                        {
+                            await _userManager.AddClaimAsync(user, new Claim("Permission", selectedPermission));
+                            _logger.LogInformation("Permission '{0}' assigned to {1}", selectedPermission, user.UserName);
+                        }
+                    }
+                    else if (role == UserRoles.Student)
+                    {
+                        // Add new permissions based on the selected permissions in the ViewModel
+                        foreach (var selectedPermission in model.Permissions)
+                        {
+                            await _userManager.AddClaimAsync(user, new Claim("Permission", selectedPermission));
+                            _logger.LogInformation("Permission '{0}' assigned to {1}", selectedPermission, user.UserName);
+                        }
                     }
                 }
-
-                string role = model.Role;
-
-                if (role == UserRoles.Teacher)
-                {
-                    // Add new permissions based on the selected permissions in the ViewModel
-                    foreach (var selectedPermission in model.Permissions)
-                    {
-                        await _userManager.AddClaimAsync(user, new Claim("Permission", selectedPermission));
-                        _logger.LogInformation("Permission '{0}' assigned to {1}", selectedPermission, user.UserName);
-                    }
-                }
-                else if (role == UserRoles.Student)
-                {
-                    // Add new permissions based on the selected permissions in the ViewModel
-                    foreach (var selectedPermission in model.Permissions)
-                    {
-                        await _userManager.AddClaimAsync(user, new Claim("Permission", selectedPermission));
-                        _logger.LogInformation("Permission '{0}' assigned to {1}", selectedPermission, user.UserName);
-                    }
-                }
-
                 // ... other updates to user data ...
 
                 // Commit changes to the database

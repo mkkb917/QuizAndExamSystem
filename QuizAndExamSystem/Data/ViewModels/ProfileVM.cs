@@ -1,6 +1,7 @@
 ﻿using ExamSystem.Data.Static;
 using ExamSystem.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
@@ -14,6 +15,7 @@ namespace ExamSystem.Data.ViewModels
         public List<string> Permissions { get; set; }
         public bool IsEmailConfirmed { get; set; }
         public Status Status { get; set; } 
+
         //personal information
         [Display(Name = "First Name:")]
         [DataType(DataType.Text)]
@@ -108,27 +110,27 @@ namespace ExamSystem.Data.ViewModels
         //Social Media Details
         [Display(Name = "Facebook Profile Link")]
         [BindProperty(SupportsGet = true)]
-        [Required(ErrorMessage = "Please paste Your Facebook profile link ")]
+        //[Required(ErrorMessage = "Please paste Your Facebook profile link ")]
         public string? Facebook { get; set; } = "https://www.facebook.com/";
 
         [Display(Name = "Twitter Profile Link")]
-        [Required(ErrorMessage = "Please paste Your Twitter profile link ")]
+        //[Required(ErrorMessage = "Please paste Your Twitter profile link ")]
         [BindProperty(SupportsGet = true)]
         public string? Twitter { get; set; } = "https://twitter.com/";
 
         [Display(Name = "Linkedin Profile Link")]
-        [Required(ErrorMessage = "Please paste Your Linkedin profile link ")]
+        //[Required(ErrorMessage = "Please paste Your Linkedin profile link ")]
         [BindProperty(SupportsGet = true)]
         public string? Linkedin { get; set; } = "https://linkedin.com/";
 
         [Display(Name = "Instagram Profile Link")]
-        [Required(ErrorMessage = "Please paste Your Instagram profile link ")]
+        //[Required(ErrorMessage = "Please paste Your Instagram profile link ")]
         [BindProperty(SupportsGet = true)]
         public string? Instagram { get; set; } = "https://instagram.com/";
 
         [Display(Name = "Pinterest Profile Link")]
         [BindProperty(SupportsGet = true)]
-        [Required(ErrorMessage = "Please paste Your Pinterest profile link ")]
+        //[Required(ErrorMessage = "Please paste Your Pinterest profile link ")]
         public string? Pinterest { get; set; } = "https://pinterest.com/";
 
 

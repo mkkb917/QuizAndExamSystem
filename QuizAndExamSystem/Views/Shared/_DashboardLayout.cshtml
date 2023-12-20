@@ -228,7 +228,7 @@
                                 </p>
                             </a>
                         </li>
-                        @if (User.IsInRole(UserRoles.Admin) || User.IsInRole(UserRoles.Teacher) && (User.HasClaim(c => c.Type == "Permission" && c.Value == "Moderator")))
+                        @if (User.IsInRole(UserRoles.Admin) || (User.IsInRole(UserRoles.Teacher) && (User.HasClaim(c => c.Type == "Permission" && c.Value == UserPermissions.Moderator))))
                         {
                             <li class="nav-item">
                                 <a asp-controller="Grade" asp-action="Index" class="nav-link">
@@ -412,7 +412,7 @@
                                 </ul>
                             </li>
                         }
-                        @if (User.IsInRole(UserRoles.Admin) || User.IsInRole("Student"))
+                        @if (User.IsInRole(UserRoles.Admin) || User.IsInRole(UserRoles.Student))
                         {
                             <li class="nav-item">
                                 <a asp-controller="Dashboard" asp-action="index" class="nav-link">

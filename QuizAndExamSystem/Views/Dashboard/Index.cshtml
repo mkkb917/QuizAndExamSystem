@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
-   
+
 }
 
 
@@ -14,12 +14,12 @@
             <div class="info-box">
                 <span class="info-box-icon bg-info elevation-1"><i class="fas fa-pen-to-square"></i></span>
                 <a asp-controller="Grade" asp-action="Index">
-                <div class="info-box-content">
-                    <span class="info-box-text">Classes: @Model.Grades.Count</span>
-                    <span class="info-box-number">
-                        <small>My Classes: @Model.MyGrades.Count</small>
-                    </span>
-                </div>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Classes: @Model.Grades.Count</span>
+                        <span class="info-box-number">
+                            <small>My Classes: @Model.MyGrades.Count</small>
+                        </span>
+                    </div>
                 </a>
                 <!-- /.info-box-content -->
             </div>
@@ -29,12 +29,12 @@
             <div class="info-box">
                 <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-book"></i></span>
                 <a asp-controller="Subject" asp-action="Index">
-                <div class="info-box-content">
-                    <span class="info-box-text">Subjects: @Model.Subjects.Count</span>
-                    <span class="info-box-number">
-                        <small>My Subjects: @Model.MySubjects.Count</small>
-                    </span>
-                </div>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Subjects: @Model.Subjects.Count</span>
+                        <span class="info-box-number">
+                            <small>My Subjects: @Model.MySubjects.Count</small>
+                        </span>
+                    </div>
                 </a>
                 <!-- /.info-box-content -->
             </div>
@@ -44,12 +44,13 @@
             <div class="info-box">
                 <span class="info-box-icon bg-info elevation-1"><i class="fas fa-question"></i></span>
                 <a asp-controller="Question" asp-action="Index">
-                <div class="info-box-content">
-                    <span class="info-box-text">Questions: @Model.Questions.Count</span>
-                    <span class="info-box-number">
-                        <small>MyQuestions: @Model.MyQuestions.Count</small>
-                    </span>
-                </div></a>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Questions: @Model.Questions.Count</span>
+                        <span class="info-box-number">
+                            <small>MyQuestions: @Model.MyQuestions.Count</small>
+                        </span>
+                    </div>
+                </a>
                 <!-- /.info-box-content -->
             </div>
             <!-- /.info-box -->
@@ -59,10 +60,11 @@
             <div class="info-box mb-3">
                 <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-clipboard"></i></span>
                 <a asp-controller="Paper" asp-action="UserPapers">
-                <div class="info-box-content">
-                    <span class="info-box-text">Generated Papers: @Model.Papers.Count</span>
-                    <span class="info-box-number"><small>My Papers: @Model.MyPapers.Count</small></span>
-                </div></a>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Generated Papers: @Model.Papers.Count</span>
+                        <span class="info-box-number"><small>My Papers: @Model.MyPapers.Count</small></span>
+                    </div>
+                </a>
                 <!-- /.info-box-content -->
             </div>
             <!-- /.info-box -->
@@ -73,9 +75,9 @@
                 <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-list-check"></i></span>
                 <a asp-controller="Quiz" asp-action="UserQuiz">
                     <div class="info-box-content">
-                    <span class="info-box-text">Quizes taken: @Model.Quizes.Count</span>
-                    <span class="info-box-number"><small>My quizes: @Model.MyQuizes.Count</small></span>
-                </div>
+                        <span class="info-box-text">Quizes taken: @Model.Quizes.Count</span>
+                        <span class="info-box-number"><small>My quizes: @Model.MyQuizes.Count</small></span>
+                    </div>
                 </a>
                 <!-- /.info-box-content -->
             </div>
@@ -85,10 +87,10 @@
             <div class="info-box mb-3">
                 <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-upload"></i></span>
                 <a asp-controller="StudyMaterial" asp-action="UserIndex10th">
-                <div class="info-box-content">
-                    <span class="info-box-text">Contributions: @Model.Uploads.Count</span>
-                    <span class="info-box-number"><small>My Contributions: @Model.MyUploads.Count</small></span>
-                </div>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Contributions: @Model.Uploads.Count</span>
+                        <span class="info-box-number"><small>My Contributions: @Model.MyUploads.Count</small></span>
+                    </div>
                 </a>
                 <!-- /.info-box-content -->
             </div>
@@ -101,17 +103,17 @@
             <div class="info-box mb-3">
                 <span class="info-box-icon bg-success elevation-1"><i class="fas fa-upload"></i></span>
                 <a asp-controller="SED" asp-action="Index">
-                <div class="info-box-content">
-                    <span class="info-box-text">SED: @Model.Sed.Count</span>
-                    <span class="info-box-number"><small>My SED Contributions: @Model.MySed.Count</small></span>
-                </div>
+                    <div class="info-box-content">
+                        <span class="info-box-text">SED: @Model.Sed.Count</span>
+                        <span class="info-box-number"><small>My SED Contributions: @Model.MySed.Count</small></span>
+                    </div>
                 </a>
                 <!-- /.info-box-content -->
             </div>
             <!-- /.info-box -->
         </div>
         <!-- /.col -->
-        @if(User.IsInRole(UserRoles.Admin))
+        @if (User.IsInRole(UserRoles.Admin))
         {
             <div class="col-12 col-sm-6 col-md-3">
                 <div class="info-box mb-3">
@@ -157,106 +159,115 @@
                 </div>
                 <!-- /.card-header -->
                 @*<div class="card-body">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <p class="text-center">
-                                <strong>Todo items </strong>
-                            </p>
+            <div class="row">
+            <div class="col-md-8">
+            <p class="text-center">
+            <strong>Todo items </strong>
+            </p>
 
-                            @*<div class="chart">
-                                <!-- Sales Chart Canvas -->
-                                <canvas id="salesChart" height="180" style="height: 180px;"></canvas>
-                            </div>
-                            <div class="progress-group">
-                                Generate New Paper
-                                <span class="float-right"><b>160</b>/200</span>
-                                <div class="btn btn-primary">
-                                    <a asp-controller="Paper" asp-action="UserPapers"></a>
-                                </div>
-                            </div>
-                            <!-- /.chart-responsive -->
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-md-4">
-                            <p class="text-center">
-                                <strong>Goal Completion</strong>
-                            </p>
+            @*<div class="chart">
+            <!-- Sales Chart Canvas -->
+            <canvas id="salesChart" height="180" style="height: 180px;"></canvas>
+            </div>
+            <div class="progress-group">
+            Generate New Paper
+            <span class="float-right"><b>160</b>/200</span>
+            <div class="btn btn-primary">
+            <a asp-controller="Paper" asp-action="UserPapers"></a>
+            </div>
+            </div>
+            <!-- /.chart-responsive -->
+            </div>
+            <!-- /.col -->
+            <div class="col-md-4">
+            <p class="text-center">
+            <strong>Goal Completion</strong>
+            </p>
 
-                            <div class="progress-group">
-                                Add Products to Cart
-                                <span class="float-right"><b>160</b>/200</span>
-                                <div class="progress progress-sm">
-                                    <div class="progress-bar bg-primary" style="width: 80%"></div>
-                                </div>
-                            </div>
-                            <!-- /.progress-group -->
+            <div class="progress-group">
+            Add Products to Cart
+            <span class="float-right"><b>160</b>/200</span>
+            <div class="progress progress-sm">
+            <div class="progress-bar bg-primary" style="width: 80%"></div>
+            </div>
+            </div>
+            <!-- /.progress-group -->
 
-                            <div class="progress-group">
-                                Complete Purchase
-                                <span class="float-right"><b>310</b>/400</span>
-                                <div class="progress progress-sm">
-                                    <div class="progress-bar bg-danger" style="width: 75%"></div>
-                                </div>
-                            </div>
+            <div class="progress-group">
+            Complete Purchase
+            <span class="float-right"><b>310</b>/400</span>
+            <div class="progress progress-sm">
+            <div class="progress-bar bg-danger" style="width: 75%"></div>
+            </div>
+            </div>
 
-                            <!-- /.progress-group -->
-                            <div class="progress-group">
-                                <span class="progress-text">Visit Premium Page</span>
-                                <span class="float-right"><b>480</b>/800</span>
-                                <div class="progress progress-sm">
-                                    <div class="progress-bar bg-success" style="width: 60%"></div>
-                                </div>
-                            </div>
+            <!-- /.progress-group -->
+            <div class="progress-group">
+            <span class="progress-text">Visit Premium Page</span>
+            <span class="float-right"><b>480</b>/800</span>
+            <div class="progress progress-sm">
+            <div class="progress-bar bg-success" style="width: 60%"></div>
+            </div>
+            </div>
 
-                            <!-- /.progress-group -->
-                            <div class="progress-group">
-                                Send Inquiries
-                                <span class="float-right"><b>250</b>/500</span>
-                                <div class="progress progress-sm">
-                                    <div class="progress-bar bg-warning" style="width: 50%"></div>
-                                </div>
-                            </div>
-                            <!-- /.progress-group -->
-                        </div>
-                        <!-- /.col -->
-                    </div>
-                    <!-- /.row -->
-                </div>*@
+            <!-- /.progress-group -->
+            <div class="progress-group">
+            Send Inquiries
+            <span class="float-right"><b>250</b>/500</span>
+            <div class="progress progress-sm">
+            <div class="progress-bar bg-warning" style="width: 50%"></div>
+            </div>
+            </div>
+            <!-- /.progress-group -->
+            </div>
+            <!-- /.col -->
+            </div>
+            <!-- /.row -->
+            </div>*@
                 <!-- ./card-body -->
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-sm-3 col-6">
-                            <div class="description-block border-right">
-                                <a asp-controller="Paper" asp-action="UserPapers">
-                                <span class="description-percentage text-success"><i class="fas fa-caret-up"></i> Generate new Paper</span>
-                                <h5 class="description-header">@Model.MyPapers.Count()</h5>
-                                <span class="description-text">My Papers</span>
-                                </a>
+                        @if (User.IsInRole(UserRoles.Admin) || (User.IsInRole(UserRoles.Teacher)))
+                        {
+                            <div class="col-sm-3 col-6">
+                                <div class="description-block border-right">
+                                    <a asp-controller="Paper" asp-action="UserPapers">
+                                        <span class="description-percentage text-success"><i class="fas fa-caret-up"></i> Generate new Paper</span>
+                                        <h5 class="description-header">@Model.MyPapers.Count()</h5>
+                                        <span class="description-text">My Papers</span>
+                                    </a>
+                                </div>
+                                <!-- /.description-block -->
                             </div>
-                            <!-- /.description-block -->
-                        </div>
+                        }
+                        @if (User.IsInRole(UserRoles.Admin) || (User.IsInRole(UserRoles.Student)))
+                        {
+                            <!-- /.col -->
+                            <div class="col-sm-3 col-6">
+                                <div class="description-block border-right">
+                                    <a asp-controller="Quiz" asp-action="UserQuiz">
+                                        <span class="description-percentage text-warning"><i class="fas fa-caret-left"></i>@Model.MyQuizes.Count()</span>
+                                        <h5 class="description-header"> Take a Quiz</h5>
+                                        <span class="description-text">My Quizes</span>
+                                    </a>
+                                </div>
+                                <!-- /.description-block -->
+                            </div>
+                        }
                         <!-- /.col -->
-                        <div class="col-sm-3 col-6">
-                            <div class="description-block border-right">
-                                <a asp-controller="Quiz" asp-action="UserQuiz">
-                                    <span class="description-percentage text-warning"><i class="fas fa-caret-left"></i>@Model.MyQuizes.Count()</span>
-                                    <h5 class="description-header"> Take a Quiz</h5>
-                                <span class="description-text">My Quizes</span>
-                                </a>
+                        @if (User.IsInRole(UserRoles.Admin) || (User.IsInRole(UserRoles.Teacher) && (User.HasClaim(c => c.Type == "Permission" && c.Value == UserPermissions.Moderator))))
+                        {
+                            <div class="col-sm-3 col-6">
+                                <div class="description-block border-right">
+                                    <a asp-controller="Question" asp-action="index">
+                                        <span class="description-percentage text-success"><i class="fas fa-caret-up"></i> My questions:@Model.MyQuestions.Count()</span>
+                                        <h5 class="description-header">Add New Question</h5>
+                                        <span class="description-text">TOTAL Questions: @Model.Questions.Count()</span>
+                                    </a>
+                                </div>
+                                <!-- /.description-block -->
                             </div>
-                            <!-- /.description-block -->
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-sm-3 col-6">
-                            <div class="description-block border-right">
-                                <a asp-controller="Question" asp-action="index">
-                                <span class="description-percentage text-success"><i class="fas fa-caret-up"></i> My questions:@Model.MyQuestions.Count()</span>
-                                <h5 class="description-header">Add New Question</h5>
-                                <span class="description-text">TOTAL Questions: @Model.Questions.Count()</span>
-                                </a>
-                            </div>
-                            <!-- /.description-block -->
-                        </div>
+                        }
                     </div>
                     <!-- /.row -->
                 </div>

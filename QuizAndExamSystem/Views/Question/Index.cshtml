@@ -44,7 +44,13 @@
                 <label class="text-center">Total:  <button class="badge badge-info" disabled="disabled">@Model.Questions.Count </button> </label>
                 @if (User.Identity.IsAuthenticated)
                 {
-                    <a asp-controller="Question" asp-action="Create" asp-route-id="@Model.TopicId" class="btn btn-primary float-right"><i class="fas fa-plus-plus"></i> Add New Question</a>
+                    @if(User.IsInRole(UserRoles.Admin)){
+                        <a asp-controller="Question" asp-action="Create" asp-route-id="@Model.TopicId" class="btn btn-primary float-right"><i class="fas fa-plus-plus"></i> Add New Question</a>
+                    }
+                    else if((User.IsInRole(UserRoles.Teacher) && (User.HasClaim(c => c.Type == "Permission" && c.Value == UserPermissions.Moderator))))
+                    {
+                        <a asp-controller="Question" asp-action="Create" asp-route-id="@Model.TopicId" class="btn btn-primary float-right"><i class="fas fa-plus-plus"></i> Add New Question</a>
+                    }
                 }
             </div>
             <!-- /.card-header -->

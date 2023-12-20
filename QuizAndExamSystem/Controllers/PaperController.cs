@@ -364,6 +364,7 @@ namespace ExamSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> GeneratePaper(string? GradeDDL, string? SubjectDDL, DateTime PaperDate, string? TeacherName, bool Advance, List<string>? topicList)
         {
+
             _logger.LogInformation("Generate Paper functioned called by {0}",User.Identity.Name);
             // get the class and subject DDL selected value
             int selectedClass = Convert.ToInt32(GradeDDL);
@@ -387,7 +388,7 @@ namespace ExamSystem.Controllers
             var setting = await _paperService.GetPaperSettingByUser(usr);
             //check the user quota for paper generation
             var dailyquota = await _paperService.GetAllPapersByUserAndDate(usr.UserName,DateTime.Today);
-            if (!User.IsInRole(UserRoles.Admin)&& dailyquota.Count > 5)
+            if (!User.IsInRole(UserRoles.Admin)&& (dailyquota.Count > 5))
             {
                 return RedirectToAction(nameof(DailyQuotaFull));
             }
