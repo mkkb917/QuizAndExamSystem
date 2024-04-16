@@ -1,5 +1,6 @@
 using AspNetCore.ReCaptcha;
 using DinkToPdf;
+using QRCoder;
 using DinkToPdf.Contracts;
 using ExamSystem.Data;
 using ExamSystem.Data.Interface;
@@ -12,11 +13,20 @@ using ExamSystem.Models;
 using Serilog;
 using ExamSystem;
 using ExamSystem.Data.Static;
+using static System.Net.Mime.MediaTypeNames;
+using System.Runtime.Loader;
 
 
 var builder = WebApplication.CreateBuilder(args);
 var environment = builder.Environment;
+
+//// Custom action for DinkToPdf initialization
+//var context = new CustomAssemblyLoadContext();
+//var wkhtmltoxPath = Path.Combine(Directory.GetCurrentDirectory(), "libwkhtmltox");
+//context.LoadUnmanagedLibrary(wkhtmltoxPath);
+
 // Add services to the container 
+
 
 // Add filters to controllers and methods such as [Authorize]
 builder.Services.AddControllersWithViews(/*q=>q.Filters.Add(new AuthorizeFilter())*/)
@@ -36,6 +46,7 @@ builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IUploadsService, UploadsService>();
 builder.Services.AddScoped<IPaperService, PaperService>();
 builder.Services.AddScoped<IQuizService, QuizService>();
+builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 
 //email sending service
 builder.Services.AddTransient<IEmailService>(s=> new EmailService("smtp.ethereal.email", 587, "no-reply@opegs.com"));
@@ -174,3 +185,10 @@ await AppDbInitializer.SeedUsersAndRollAsync(app);
 
 app.Run();
 
+//public class CustomAssemblyLoadContext : AssemblyLoadContext
+//{
+//    protected override IntPtr LoadUnmanagedDll(string unmanagedDllName)
+//    {
+//        return LoadUnmanagedDllFromPath(unmanagedDllName);
+//    }
+//}

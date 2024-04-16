@@ -302,29 +302,40 @@ namespace ExamSystem.Data
                 //save the changes to database
                 context.SaveChanges();
 
-                ////schoolInfo
-                //if (!context.SchoolInfos.Any())
-                //{
-                //    context.SchoolInfos.AddRange(new List<SchoolInfo>()
-                //    {
-                //        new SchoolInfo()
-                //        {
-                //            SchoolType = "High School",
-                //            SchoolCode= "3000009",
-                //            SchoolName="Govt Boys High School",
-                //            SchoolAddress = "O/O Headmaster GBHS School vpo dhoke ",
-                //            SchoolContactNumber = "03211234567",
-                //            SchoolEmail = "HMOffice@school.com",
-                //            SchoolDescription = "Only High School in the village",
-                //            SchoolLogoUrl = "No Url Porvided",
-                //            // primary admin user need to be available 
-                //            id = 1
-                //        }
-                //    });
-                //}
+                //schoolInfo
+                if (!context.Plans.Any())
+                {
+                    context.Plans.AddRange(new List<Plan>()
+                    {
+                        new Plan()
+                        {
+                            // primary admin user need to be available 
+                            Id = 1,
+                            Name= "Free",
+                            Price=0,
+                            Description="Free plan for all users",
+                        },
+                        new Plan()
+                        {
+                            // primary admin user need to be available 
+                            Id = 2,
+                            Name= "Basic",
+                            Price=500,
+                            Description="Basic plan for all users. The user will only generate one exam paper per day.",
+                        },
+                        new Plan()
+                        {
+                            // primary admin user need to be available 
+                            Id = 3,
+                            Name= "Premium",
+                            Price=5000,
+                            Description="full plan for all users. The user will generate unlimited exam paper per day.",
+                        }
+                    });
+                }
 
                 //save the changes to database
-                //context.SaveChanges();
+                context.SaveChanges();
             }
         }
 

@@ -1,28 +1,35 @@
 ﻿
-<div class="row">
-    <div class="col-md-12 md-15">
-        <div class="error-template">
-            <h1>
-                Oops!
-            </h1>
-            <h2>
-                404 Not Found
-            </h2>
-            <div class="error-details">
-                Sorry, an error has occured, Requested page not found!
-            </div>
-            <div class="error-actions">
-                <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-lg">
-                    <span class="glyphicon glyphicon-home"></span>
-                    Take Me Home
-                </a>
-                <a asp-controller="Dashboard" asp-action="Index" class="btn btn-primary btn-lg">
-                    <span class="glyphicon glyphicon-home"></span>
-                    Take Me Dashboard
-                </a>
-                <a asp-controller="Home" asp-action="Contact" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-envelope"></span> Contact Support </a>
-            </div>
-        </div>
-    </div>
-</div>
+<section class="py-6">
+	<div class="container bg-light min-vh-50 py-6 d-flex justify-content-center align-items-center" style="max-width:1920px">
+		<div class="row">
+			<div class="col-md-12 text-center">
+				<div class="lc-block mb-4">
+					<div editable="rich">
+						<h1 class="fw-bold display-1">404</h1>
+					</div>
+				</div>
+				<div class="lc-block">
+					<div editable="rich">
+						<p class="h2">Sorry, we can’t find the page you’re looking for. </p>
+						<p class="lead">Click the button below to go back to the homepage</p>
+					</div>
+				</div>
+				<div class="lc-block">
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-lg">
+                        <span class="glyphicon glyphicon-home"></span>
+                        Take Me Home
+                    </a>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <a asp-controller="Dashboard" asp-action="Index" class="btn btn-primary btn-lg">
+                            <span class="glyphicon glyphicon-home"></span>
+                            Take Me Dashboard
+                        </a>
+                    }
+                    <a asp-controller="Home" asp-action="Contact" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-envelope"></span> Contact Support </a>
+				</div><!-- /lc-block -->
+			</div><!-- /col -->
+		</div>
+	</div>
+</section>
 

@@ -27,6 +27,8 @@ namespace ExamSystem.Models
         //public string? SchoolMedium { get; set; } = string.Empty;
 
 
+        
+
         // one to one relation with ApplicationUser class
         public virtual ApplicationUser? AppUser { get; set; }
     }

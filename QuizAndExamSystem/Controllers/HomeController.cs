@@ -30,7 +30,11 @@ namespace ExamSystem.Controllers
             _logger.LogInformation("Notes page of Home Controller is accessed by {0}", User.Identity.Name);
             return View();
         }
-
+        public IActionResult Plans()
+        {
+            _logger.LogInformation("Notes page of Home Controller is accessed by {0}", User.Identity.Name);
+            return View();
+        }
         public IActionResult Notifications()
         {
             _logger.LogInformation("Notifications page of Home Controller is accessed by {0}", User.Identity.Name);
@@ -40,6 +44,11 @@ namespace ExamSystem.Controllers
         public IActionResult Privacy()
         {
             _logger.LogInformation("Privacy page of Home Controller is accessed by {0}", User.Identity.Name);
+            return View();
+        }
+        public IActionResult Terms()
+        {
+            _logger.LogInformation("Terms and Condtions page of Home Controller is accessed by {0}", User.Identity.Name);
             return View();
         }
 
@@ -63,18 +72,18 @@ namespace ExamSystem.Controllers
         public IActionResult Career()
         {
             _logger.LogInformation("Career page of Home Controller is accessed by {0}", User.Identity.Name);
-            return NotFound();
+            return View("NotFound");
         }
 
         public IActionResult Investor()
         {
             _logger.LogInformation("Investor page of Home Controller is accessed by {0}", User.Identity.Name);
-            return NotFound();
+            return View("NotFound");
         }
         public IActionResult Team()
         {
             _logger.LogInformation("team page of Home Controller is accessed by {0}", User.Identity.Name);
-            return NotFound();
+            return View("NotFound");
         }
     }
 }

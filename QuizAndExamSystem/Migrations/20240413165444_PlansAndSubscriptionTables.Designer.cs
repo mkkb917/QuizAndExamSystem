@@ -4,6 +4,7 @@ using ExamSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExamSystem.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240413165444_PlansAndSubscriptionTables")]
+    partial class PlansAndSubscriptionTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -90,6 +93,9 @@ namespace ExamSystem.Migrations
                     b.Property<string>("Instagram")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsSubscribed")
+                        .HasColumnType("bit");
+
                     b.Property<string>("LastName")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
@@ -138,6 +144,18 @@ namespace ExamSystem.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("SubscriptionEndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("SubscriptionId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("SubscriptionStartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SubscriptionType")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Twitter")
                         .HasColumnType("nvarchar(max)");
 
@@ -160,6 +178,8 @@ namespace ExamSystem.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("SubscriptionId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -559,16 +579,15 @@ namespace ExamSystem.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Image")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<float>("Price")
-                        .HasColumnType("real");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("SubscriptionId")
                         .HasColumnType("int");
@@ -931,18 +950,7 @@ namespace ExamSystem.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("_applicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("_applicationUserId");
 
                     b.ToTable("Subscriptions");
                 });
@@ -1195,6 +1203,15 @@ namespace ExamSystem.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("ExamSystem.Models.ApplicationUser", b =>
+                {
+                    b.HasOne("ExamSystem.Models.Subscription", "Subscription")
+                        .WithMany("Users")
+                        .HasForeignKey("SubscriptionId");
+
+                    b.Navigation("Subscription");
+                });
+
             modelBuilder.Entity("ExamSystem.Models.Choice", b =>
                 {
                     b.HasOne("ExamSystem.Models.Question", "Question")
@@ -1255,21 +1272,6 @@ namespace ExamSystem.Migrations
                         .IsRequired();
 
                     b.Navigation("Grade");
-                });
-
-            modelBuilder.Entity("ExamSystem.Models.Subscription", b =>
-                {
-                    b.HasOne("ExamSystem.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ExamSystem.Models.ApplicationUser", null)
-                        .WithMany("Subscription")
-                        .HasForeignKey("_applicationUserId");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ExamSystem.Models.Topic", b =>
@@ -1337,8 +1339,6 @@ namespace ExamSystem.Migrations
             modelBuilder.Entity("ExamSystem.Models.ApplicationUser", b =>
                 {
                     b.Navigation("SchoolInfo");
-
-                    b.Navigation("Subscription");
                 });
 
             modelBuilder.Entity("ExamSystem.Models.Grade", b =>
@@ -1362,6 +1362,8 @@ namespace ExamSystem.Migrations
             modelBuilder.Entity("ExamSystem.Models.Subscription", b =>
                 {
                     b.Navigation("Plan");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("ExamSystem.Models.Topic", b =>

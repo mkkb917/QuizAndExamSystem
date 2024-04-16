@@ -1,0 +1,80 @@
+﻿
+
+
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Choose a Subscription Plan</h1>
+    <div class="row">
+        <!-- Basic Plan -->
+        <div class="col-md-12">
+            <div class="card mb-4 shadow-sm text-center">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">Basic Plan</h4>
+                </div>
+                <div class="card-body">
+                    <h1 class="card-title pricing-card-title">$9.99 <small class="text-muted">/ month</small></h1>
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li>Access to basic study materials</li>
+                        <li>Limited access to advanced features</li>
+                    </ul>
+                    <a asp-controller="Subscription" asp-action="Subscribe" asp-route-planId="basic" class="btn btn-lg btn-block btn-outline-primary">Choose Plan</a>
+                </div>
+            </div>
+        </div>
+        <!-- Standard Plan -->
+        <div class="col-md-12">
+            <div class="card mb-4 shadow-sm text-center" >
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">Standard Plan</h4>
+                </div>
+                <div class="card-body">
+                    <h1 class="card-title pricing-card-title">$19.99 <small class="text-muted">/ month</small></h1>
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li>Access to a wider range of study materials</li>
+                        <li>Generate exam papers</li>
+                        <li>Priority email support</li>
+                        <li>Basic analytics and progress tracking</li>
+                    </ul>
+                    <a asp-controller="Subscription" asp-action="Subscribe" asp-route-planId="standard" class="btn btn-lg btn-block btn-outline-primary">Choose Plan</a>
+                </div>
+            </div>
+        </div>
+        <!-- Premium Plan -->
+        <div class="col-md-12">
+            <div class="card mb-4 shadow-sm text-center">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">Premium Plan</h4>
+                </div>
+                <div class="card-body">
+                    <h1 class="card-title pricing-card-title">$29.99 <small class="text-muted">/ month</small></h1>
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li>Full access to all study materials</li>
+                        <li>Advanced exam paper customization</li>
+                        <li>Priority email and chat support</li>
+                        <li>Detailed analytics and performance insights</li>
+                    </ul>
+                    <a asp-controller="Subscription" asp-action="Subscribe" asp-route-planId="premium" class="btn btn-lg btn-block btn-outline-primary">Choose Plan</a>
+                </div>
+            </div>
+        </div>
+        <!-- School/Institution Plan -->
+        <div class="col-md-12 ">
+            <div class="card mb-4 shadow-sm text-center">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">School/Institution Plan</h4>
+                </div>
+                <div class="card-body">
+                    <h1 class="card-title pricing-card-title">Custom Pricing</h1>
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li>Tailored solutions for educational institutions</li>
+                        <li>Bulk user management</li> 
+                        <li>Customizable content integration</li>
+                        <li>Dedicated account manager</li>
+                    </ul>
+                    <a asp-controller="Subscription" asp-action="Subscribe" asp-route-planId="custom" class="btn btn-lg btn-block btn-outline-primary">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExamSystem.Data
 {
-    public class AppDbContext:IdentityDbContext<ApplicationUser>
+    public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
         //default constructor
         public AppDbContext()
@@ -46,11 +46,20 @@ namespace ExamSystem.Data
                         .HasForeignKey<SchoolInfo>(up => up.Id);
 
 
+
+
+            //one to many realtionship between ApplicationUser and Plan
+            modelBuilder.Entity<Subscription>()
+                        .HasOne<ApplicationUser>()
+                        .WithMany(u => u.Subscription)
+                        .HasForeignKey("_applicationUserId");  // Use shadow property as the foreign key
+
+
             base.OnModelCreating(modelBuilder);
 
         }
-        
-        
+
+
 
         //defining table names for each model
         public DbSet<Topic> Topics { get; set; }
@@ -64,17 +73,19 @@ namespace ExamSystem.Data
         public DbSet<PaperSetting> PaperSettings { get; set; }
         public DbSet<GeneratedPaper> GeneratedPapers { get; set; }
         public DbSet<Notification> Notification { get; set; } // table need to be droped 
+        public DbSet<Plan> Plans { get; set; } 
+        public DbSet<Subscription> Subscriptions { get; set; } 
 
-        
+
         public DbSet<SED> SED { get; set; }
         public DbSet<Books> Books { get; set; }
         public DbSet<Uploads> Uploads { get; set; }
         public DbSet<Quiz> Quizes { get; set; }
 
-        
+
 
 
     }
 
-    
+
 }

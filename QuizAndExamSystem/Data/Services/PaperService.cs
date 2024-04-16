@@ -310,8 +310,9 @@ namespace ExamSystem.Data.Services
                 Objects = { objectSettings }
             };
 
-            //byte[] file = _pdfConverter.Convert(pdf);
-            //var file = _pdfConverter.Convert(pdf);
+            // use dingtopdf to create pdf file
+            // here the error of Qt: Could not initialize OLE (error 80010106) occured
+            // 
             var file = await Task.Run(() => _pdfConverter.Convert(pdf));
 
 

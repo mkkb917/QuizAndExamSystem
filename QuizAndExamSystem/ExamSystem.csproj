@@ -103,31 +103,29 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNetCore.ReCaptcha" Version="1.7.0" />
-    <PackageReference Include="bootstrap" Version="5.3.2" />
+    <PackageReference Include="AspNetCore.ReCaptcha" Version="1.8.1" />
+    <PackageReference Include="bootstrap" Version="5.3.3" />
     <PackageReference Include="DinkToPdf" Version="1.0.8" />
     <PackageReference Include="DotNetZip" Version="1.16.0" />
-    <PackageReference Include="HiQPdf" Version="15.0.8" />
-    <PackageReference Include="HiQPdf.Free" Version="15.0.8" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0">
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0" />
-    <PackageReference Include="PDFtoImage" Version="2.4.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
+    <PackageReference Include="PDFtoImage" Version="4.0.1" />
     <PackageReference Include="QRCoder" Version="1.4.3" />
     <PackageReference Include="RazorEngine.NetCore" Version="3.1.0" />
-    <PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
     <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-    <PackageReference Include="Spire.PDF" Version="9.11.4" />
+    <PackageReference Include="Spire.PDF" Version="10.3.7" />
   </ItemGroup>
 
   <ItemGroup>

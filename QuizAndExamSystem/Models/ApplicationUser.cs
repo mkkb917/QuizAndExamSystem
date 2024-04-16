@@ -100,9 +100,17 @@ namespace ExamSystem.Models
 
         public Status Status { get; set; } = Status.Active;
 
+
+
+        // Subscription properties
+        //relationship to subscription plan ( 1 to many)
+        public virtual List<Subscription>? Subscription { get; set; }  // Navigation property
+
+
+
         // relationship  to school info ( 1 to 1)
         [ForeignKey("Id")]
-        public virtual SchoolInfo SchoolInfo { get; set; }
+        public virtual SchoolInfo? SchoolInfo { get; set; }
 
 
     }
